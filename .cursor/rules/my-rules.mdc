@@ -1,0 +1,14 @@
+---
+description:
+globs:
+alwaysApply: true
+---
+# 项目概述
+项目名称：理赔公社。向用户提供理赔咨询服务
+# 项目技术栈
+
+
+基于vue3的uniapp项目,最终运行在微信小程序上。
+组件使用的顺序：
+wot-design-ui
+uniapp自带的组件

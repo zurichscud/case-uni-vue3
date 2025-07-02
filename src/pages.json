@@ -1,0 +1,394 @@
+{
+  "easycom": {
+    "autoscan": true,
+    "custom": {
+      "^wd-(.*)": "wot-design-uni/components/wd-$1/wd-$1.vue"
+    }
+  },
+  "pages": [
+    //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
+    {
+      "path": "pages/index/index",
+      "style": {
+        "navigationBarTitleText": "理赔公社",
+        "navigationStyle": "custom",
+        "navigationBarTextStyle": "white",
+        "backgroundColor": "#FFFFFF"
+      }
+    },
+    {
+      "path": "pages/case/case",
+      "style": {
+        "navigationBarTitleText": "案件列表(往期)",
+        "backgroundColor": "#FFFFFF"
+      }
+    },
+    {
+      "path": "pages/index/user",
+      "style": {
+        "navigationBarTitleText": "我的",
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/login/login",
+      "style": {
+        "navigationBarTitleText": "登录"
+      }
+    },
+    {
+      "path": "pages/index/message",
+      "style": {
+        "navigationBarTitleText": "消息"
+      }
+    },
+    {
+      "path": "pages/index/advanced",
+      "style": {
+        "navigationBarTitleText": "提交案件"
+      }
+    },
+    {
+      "path": "pages/case/caseList",
+      "style": {
+        "navigationBarTitleText": "我提交的案件(往期)"
+      }
+    },
+    {
+      "path": "pages/case/classiccase",
+      "style": {
+        "navigationBarTitleText": "典型案例"
+      }
+    },
+    {
+      "path": "pages/case/morecases",
+      "style": {
+        "navigationBarTitleText": "案例列表",
+        "onReachBottomDistance": 50
+      }
+    },
+    {
+      "path": "pages/login/phoneLogin",
+      "style": {
+        "navigationBarTitleText": "登录"
+      }
+    },
+
+    {
+      "path": "pages/case/all-case",
+      "style": {
+        "navigationBarTitleText": "案件列表"
+      }
+    }
+  ],
+
+  "subPackages": [
+    {
+      "root": "pages/public",
+      "pages": [
+        {
+          "path": "y9net",
+          "style": {
+            "navigationBarTitleText": ""
+          }
+        },
+        {
+          "path": "agreement/serviceText",
+          "style": {}
+        },
+        {
+          "path": "agreement/privacyText",
+          "style": {}
+        }
+      ]
+    },
+    {
+      "root": "pages/user",
+      "pages": [
+        {
+          "path": "userInfo",
+          "style": {
+            "navigationBarTitleText": "编辑个人信息"
+          }
+        },
+        {
+          "path": "workpoints",
+          "style": {
+            "navigationBarTitleText": "我的工分"
+          }
+        },
+        {
+          "path": "inviteList",
+          "style": {
+            "navigationBarTitleText": "我的邀请记录",
+            "enablePullDownRefresh": true
+          }
+        }
+      ]
+    },
+    {
+      "root": "pages/meeting",
+      "pages": [
+        {
+          "path": "verification",
+          "style": {
+            "navigationBarTitleText": "门票核销"
+          }
+        },
+        {
+          "path": "verResult",
+          "style": {
+            "navigationBarTitleText": "核销结果"
+          }
+        }
+      ]
+    },
+    {
+      "root": "pages/message",
+      "pages": [
+        {
+          "path": "caseSpeed",
+          "style": {
+            "navigationBarTitleText": "案件进度通知"
+          }
+        },
+        {
+          "path": "interaction",
+          "style": {
+            "navigationBarTitleText": "互动消息"
+          }
+        },
+        {
+          "path": "system",
+          "style": {
+            "navigationBarTitleText": "系统消息",
+            "onReachBottomDistance": 20
+          }
+        }
+      ]
+    },
+    {
+      "root": "pages/chat",
+      "pages": [
+        {
+          "path": "chatroom",
+          "style": {
+            "navigationBarTitleText": "聊天"
+          }
+        },
+        {
+          "path": "advanced",
+          "style": {
+            "navigationBarTitleText": "提交案件"
+          }
+        },
+        {
+          "path": "files",
+          "style": {
+            "navigationBarTitleText": "查看附件/图片"
+          }
+        },
+        {
+          "path": "newCaseList",
+          "style": {
+            "navigationBarTitleText": "我提交的案件"
+          }
+        }
+      ]
+    },
+    {
+      "root": "pages/AI",
+      "pages": [
+        {
+          "path": "AiChatDS",
+          "style": {
+            "navigationBarTitleText": "弈寻",
+            "enablePullDownRefresh": false,
+            "navigationStyle": "custom"
+          }
+        }
+      ]
+    },
+    {
+      "root": "pages/lpgs",
+      "pages": [
+        {
+          "path": "reward",
+          "style": {
+            "navigationBarTitleText": "奖励政策"
+          }
+        },
+        {
+          "path": "promotion",
+          "style": {
+            "navigationBarTitleText": "晋升大队长条件"
+          }
+        },
+        {
+          "path": "apply",
+          "style": {
+            "navigationBarTitleText": "上传证明",
+            "onReachBottomDistance": 20
+          }
+        },
+        {
+          "path": "processing",
+          "style": {
+            "navigationBarTitleText": "上传证明",
+            "onReachBottomDistance": 20
+          }
+        }
+      ]
+    },
+    {
+      "root": "pages/invite",
+      "pages": [
+        {
+          "path": "fuli",
+          "style": {
+            "navigationBarTitleText": "邀请好友享两大福利"
+          }
+        },
+        {
+          "path": "record",
+          "style": {
+            "navigationBarTitleText": "往期我的邀请记录",
+            "enablePullDownRefresh": true
+          }
+        },
+        {
+          "path": "team",
+          "style": {
+            "navigationBarTitleText": "团队"
+          }
+        }
+      ]
+    },
+    {
+      "root": "pages/deprecated",
+      "pages": [
+        {
+          "path": "myOrder",
+          "style": {
+            "navigationBarTitleText": "我的订单"
+          }
+        },
+        {
+          "path": "meeting/list",
+          "style": {
+            "navigationBarTitleText": "我的会议",
+            "onReachBottomDistance": 20
+          }
+        },
+        {
+          "path": "meeting/detail",
+          "style": {
+            "navigationStyle": "custom"
+          }
+        },
+        {
+          "path": "myteam",
+          "style": {
+            "navigationBarTitleText": "团队成员"
+          }
+        },
+        {
+          "path": "hxChat/chat",
+          "style": {
+            "navigationBarTitleText": "聊天"
+          }
+        },
+        {
+          "path": "chatroom",
+          "style": {
+            "navigationBarTitleText": "聊天"
+          }
+        }
+      ]
+    },
+    {
+      "root": "pages/pay",
+      "pages": [
+        {
+          "path": "payPage",
+          "style": {
+            "navigationBarTitleText": "支付订单"
+          }
+        },
+        {
+          "path": "payResults",
+          "style": {
+            "navigationBarTitleText": "支付结果"
+          }
+        }
+      ]
+    },
+    {
+      "root": "pages/mcd",
+      "pages": [
+        {
+          "path": "mcd-list",
+          "style": {
+            "navigationBarTitleText": "兵棋推演"
+          }
+        },
+        {
+          "path": "mcd-detail",
+          "style": {
+            "navigationBarTitleText": "活动详情",
+            "backgroundColor": "#FFFFFF"
+          }
+        },
+        {
+          "path": "ranking",
+          "style": {
+            "navigationBarTitleText": "排行榜",
+            "backgroundColor": "#FFFFFF"
+          }
+        }
+      ]
+    }
+  ],
+  "globalStyle": {
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "uni-app",
+    "navigationBarBackgroundColor": "#F8F8F8",
+    "backgroundColor": "#F8F8F8",
+    "app-plus": {
+      "bounce": "none",
+      "scrollIndicator": "none" //重点是这行，其他的是我自己的需求，我这里选的是全局样式，如果要根据页面配置，则在相应的页面节点配置
+    }
+  },
+  "tabBar": {
+    "color": "#7A7E83",
+    "selectedColor": "#0091EA", //专家端 “#0091EA” 保护端‘#FF821D’
+    "borderStyle": "black",
+    "backgroundColor": "#ffffff",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "iconPath": "static/tabBar/home.png",
+        "selectedIconPath": "static/tabBar/home-active.png",
+        "text": "首页"
+      },
+      {
+        "pagePath": "pages/case/all-case",
+        "iconPath": "static/tabBar/workplace.png",
+        "selectedIconPath": "static/tabBar/workplace-active.png",
+        "text": "案件"
+      },
+      {
+        "pagePath": "pages/index/message",
+        "iconPath": "static/tabBar/message.png",
+        "selectedIconPath": "static/tabBar/message-active.png",
+        "text": "消息"
+      },
+      {
+        "pagePath": "pages/index/user",
+        "iconPath": "static/tabBar/mine.png",
+        "selectedIconPath": "static/tabBar/mine-active.png",
+        "text": "我的"
+      }
+    ]
+  }
+}

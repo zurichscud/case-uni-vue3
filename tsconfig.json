@@ -1,0 +1,40 @@
+{
+  "extends": "@vue/tsconfig/tsconfig.json",
+  "compilerOptions": {
+    "allowJs": true,
+    "sourceMap": true,
+    "outDir": "./dist",
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"]
+    },
+    "lib": ["esnext", "dom"],
+    "types": [
+      "wot-design-uni/global",
+      "@dcloudio/types",
+      "miniprogram-api-typings",
+      "@uni-helper/uni-app-types",
+      "@uni-helper/uni-ui-types"
+    ]
+  },
+  "vueCompilerOptions": {
+    // 请安装Vue-official 2.0.12
+    "plugins": ["@uni-helper/uni-app-types/volar-plugin"]
+
+    // "nativeTags": [
+    //   "block",
+    //   "component",
+    //   "template",
+    //   "slot"
+    // ]
+  },
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.d.ts",
+    "src/**/*.tsx",
+    "src/**/*.vue",
+    "src/utils/router.ts",
+    "src/utils/http.ts",
+    "src/apis/product.ts"
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  // 指定默认的代码格式化工具为 Prettier
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+
+  // 配置语言的文件关联
+  "files.associations": {
+    "pages.json": "jsonc", // pages.json 可以写注释
+    "manifest.json": "jsonc" // manifest.json 可以写注释
+  },
+  // 启用代码缩略图
+  "editor.minimap.enabled": true,
+  // 启用 vue 自动插入
+  "vue.autoInsert.dotValue": true,
+  // 文件夹紧凑模式显示
+  "explorer.compactFolders": false,
+  // 删除文件时确认
+  "explorer.confirmDelete": false,
+  // 禁用 typescript 路径提示
+  "typescript.suggest.paths": false,
+  // 禁用 javascript 路径提示
+  "javascript.suggest.paths": false,
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+}
