@@ -30,7 +30,6 @@ declare module 'vue' {
     UniSteps: typeof import('./src/components/uni-steps/uni-steps.vue')['default']
     UniTransition: typeof import('./src/components/uni-transition/uni-transition.vue')['default']
     WdButton: typeof import('wot-design-uni/components/wd-button/wd-button.vue')['default']
-    WdLoadmore: typeof import('wot-design-uni/components/wd-loadmore/wd-loadmore.vue')['default']
     WdMessageBox: typeof import('wot-design-uni/components/wd-message-box/wd-message-box.vue')['default']
     WdTag: typeof import('wot-design-uni/components/wd-tag/wd-tag.vue')['default']
     Webview: typeof import('./src/components/webview.vue')['default']
