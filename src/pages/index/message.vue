@@ -10,7 +10,11 @@
       @refresherrestore="onRestore"
     >
       <!-- 空状态 -->
-      <view v-if="msgList?.length === 0 && !loading" class="empty-state">
+      <view
+        v-if="msgList?.length === 0 && !loading"
+        class="empty-state"
+        :class="{ 'empty-enter': showEmptyAnimation }"
+      >
         <view class="empty-icon">
           <text class="empty-icon-text">📫</text>
         </view>
@@ -19,11 +23,17 @@
       </view>
       <!-- 消息列表 -->
       <view v-else class="message-list">
-        <view v-for="(item, index) in msgList" :key="index" class="message-card">
+        <view
+          v-for="(item, index) in msgList"
+          :key="index"
+          class="message-card"
+          :class="{ 'card-enter': animatedCards.includes(index) }"
+          :style="{ 'animation-delay': `${index * 100}ms` }"
+        >
           <!-- 消息图标 -->
           <view class="message-icon">
             <view class="icon-container" :class="getIconClass(item.type)">
-              <text class="icon-text">{{ getIconText(item.type) }}</text>
+              <uni-icons :type="getIcon(item.type)" size="24" color="#ffffff"></uni-icons>
             </view>
           </view>
 
@@ -65,6 +75,8 @@ import { useUserStore } from '@/stores'
 const msgList = ref([])
 const loading = ref(false)
 const refreshing = ref(false)
+const animatedCards = ref([])
+const showEmptyAnimation = ref(false)
 
 const userStore = useUserStore()
 
@@ -72,6 +84,10 @@ const userStore = useUserStore()
 async function getMessageListData() {
   try {
     loading.value = true
+    // 重置动画状态
+    animatedCards.value = []
+    showEmptyAnimation.value = false
+
     const res = await MessageAPI.getMessageList({
       userId: userStore.id,
       category: 0,
@@ -79,6 +95,9 @@ async function getMessageListData() {
       pageSize: 20,
     })
     msgList.value = res.rows || []
+
+    // 触发进入动画
+    triggerEnterAnimation()
   } catch (error) {
     console.error('获取消息列表失败:', error)
     uni.showToast({
@@ -88,6 +107,24 @@ async function getMessageListData() {
   } finally {
     loading.value = false
   }
+}
+
+// 触发进入动画
+function triggerEnterAnimation() {
+  // 延迟一帧确保DOM已更新
+  setTimeout(() => {
+    if (msgList.value.length === 0) {
+      // 空状态动画
+      showEmptyAnimation.value = true
+    } else {
+      // 消息卡片依次进入动画
+      msgList.value.forEach((_, index) => {
+        setTimeout(() => {
+          animatedCards.value.push(index)
+        }, index * 100)
+      })
+    }
+  }, 50)
 }
 
 // 下拉刷新
@@ -114,17 +151,17 @@ function getIconClass(type) {
   }
 }
 
-// 根据消息类型获取图标文字
-function getIconText(type) {
+// 根据消息类型获取图标
+function getIcon(type) {
   switch (type) {
     case 'insurance':
-      return '保'
+      return 'settings' // 设置图标
     case 'system':
-      return '系'
+      return 'gear' // 齿轮图标
     case 'notification':
-      return '通'
+      return 'chatbubble' // 聊天气泡图标
     default:
-      return '消'
+      return 'email' // 邮件图标
   }
 }
 
@@ -202,6 +239,17 @@ onShow(() => {
   justify-content: center;
   padding: 120rpx 60rpx;
 
+  /* 初始状态 - 淡入动画 */
+  opacity: 0;
+  transform: scale(0.9);
+  transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+
+  /* 进入动画状态 */
+  &.empty-enter {
+    opacity: 1;
+    transform: scale(1);
+  }
+
   .empty-icon {
     width: 200rpx;
     height: 200rpx;
@@ -239,6 +287,17 @@ onShow(() => {
     margin-bottom: 20rpx;
     box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.08);
 
+    /* 初始状态 - 隐藏在下方 */
+    opacity: 0;
+    transform: translateY(60rpx);
+    transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+
+    /* 进入动画状态 */
+    &.card-enter {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
     .message-icon {
       margin-right: 24rpx;
       flex-shrink: 0;
@@ -250,12 +309,6 @@ onShow(() => {
         display: flex;
         align-items: center;
         justify-content: center;
-
-        .icon-text {
-          color: white;
-          font-size: 32rpx;
-          font-weight: 600;
-        }
 
         &.icon-insurance {
           background: linear-gradient(135deg, #1890ff, #40a9ff);
@@ -332,9 +385,23 @@ onShow(() => {
   justify-content: center;
   padding: 40rpx;
 
+  /* 加载状态脉动动画 */
+  animation: pulse 2s infinite;
+
   .loading-text {
     font-size: 28rpx;
     color: #999;
+  }
+}
+
+/* 脉动动画 */
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 1;
   }
 }
 
