@@ -9,8 +9,6 @@ export default {
   //拦截器初始化
   interceptor: {
     request(config) {
-      // const user = store.state.user
-      // console.log('[ token ]-20', user.token)
       const user = uni.getStorageSync("user");
       config.header.Authorization = `Bearer ${user?.token}`
     },
