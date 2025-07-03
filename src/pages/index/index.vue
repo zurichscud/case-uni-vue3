@@ -15,14 +15,14 @@
 
       <!-- 快捷功能按钮 -->
       <view class="icon-buttons">
-        <view class="icon-btn" @click="handleSubmit">
+        <view class="icon-btn" @click="router.go('/pages/index/submit/poster')">
           <text class="iconfont icon-renwujihua icon-white"></text>
           <text class="btn-text">提交案件</text>
         </view>
 
-        <view class="icon-btn" @click="router.go('/pages/chat/newCaseList')">
-          <text class="iconfont icon-xiaoxi icon-white"></text>
-          <text class="btn-text">案件沟通</text>
+        <view class="icon-btn" @click="router.go('/pages/AI/AiChatDS')">
+          <text class="iconfont icon-rengongzhineng1 icon-white"></text>
+          <text class="btn-text">弈寻AI</text>
         </view>
 
         <view class="icon-btn" @click="handleShare">
@@ -64,7 +64,7 @@
             <view class="title_text">典型案例</view>
           </view>
           <!-- 更多案例链接 -->
-          <view class="view_title_right" @click="router.go('/pages/case/morecases')">
+          <view class="view_title_right" @click="router.go('/pages/index/article/more')">
             <text>更多案例</text>
             <text class="iconfont icon-jiantou_liebiaoxiangyou"></text>
           </view>
@@ -100,26 +100,16 @@ const query = {
   pageSize: 3,
   pageNum: 1,
 }
-const remark = computed(() => {
-  return userStore.remark
-})
 
 function handleSubmit() {
-  // 顾问身份直接生成案例并跳转到聊天
-  if (remark.value === REMARK.BaoMin) {
-    router.go('/pages/chat/chatroom', {
-      caseId: 1,
-      isNew: 1,
-    })
-  } else {
-    router.go('/pages/chat/advanced')
-  }
+    router.go('/pages/index/advanced')
+
 }
 
 
 function handleShare() {
   uni.showToast({
-    title: '敬请期待',
+    title: '敬请期待!',
     icon: 'none',
   })
 }
@@ -134,6 +124,7 @@ onShow(() => {})
 onLoad(() => {
   getArticleListData()
 })
+
 </script>
 
 <!-- 全局页面样式 -->

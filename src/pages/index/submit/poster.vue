@@ -11,36 +11,34 @@
       <view class="btm_text"> 为客户提供专业服务 </view>
     </view>
     <view class="pontion_btm">
-      <view class="btm_btn submit" @click="pushNav"> 开始提交 </view>
-      <view class="btm_btn invitation" @click="invitation"> 邀请客户提交案件 </view>
-      <button plain="true" open-type="share" class="item"></button>
+      <view class="btm_btn submit" @tap="handleSubmit"> 开始提交 </view>
+      <view class="btm_btn invitation" @tap="handleShare"> 邀请客户提交案件 </view>
     </view>
   </view>
 </template>
 
-<script>
-  export default {
-    data() {
-      return {}
+<script setup>
+function handleSubmit() {
+  wx.openCustomerServiceChat({
+    extInfo: {
+      url: 'https://work.weixin.qq.com/kfid/kfc0661c6f158062ace'
     },
-    onShareAppMessage(res) {
-      return {
-        title: '快来和我一起加入理赔公社吧!',
-        path: `/pages/index/index?pid=${this?.user?.id}&userRemark=true`,
-        imageUrl: 'https://app.y9net.cn/data/01/33/wKgBNmNrSeSAbR2TAAEp5UKyBy8155.png',
-        success(res) {
-          console.log('分享成功', res)
-        }
-      }
+    corpId: 'ww0defd58c63edff8e',
+    success(res) {
+      console.log('success', res)
     },
-    methods: {
-      pushNav() {
-        uni.navigateTo({
-          url: '/pages/deprecated/hxChat/chat'
-        })
-      }
-    }
-  }
+    fail(res) {
+      console.log('fail', res)
+    },
+  })
+}
+
+function handleShare() {
+  uni.showToast({
+    title: '敬请期待',
+    icon: 'none',
+  })
+}
 </script>
 <style scoped lang="scss">
   .backimg {

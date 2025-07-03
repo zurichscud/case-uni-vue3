@@ -19,12 +19,12 @@ export const useUserStore = defineStore('user', {
     userInfo(state: UserState) {
       return { ...state }
     },
-    isLogin() {
+    isLogin(): boolean {
       return !!this.token
     },
-    remarkText(){
-      return getRemarkText(this.remark)
-    }
+    remarkText(): string {
+      return getRemarkText(this.remark || '')
+    },
   },
 
   actions: {
@@ -38,35 +38,35 @@ export const useUserStore = defineStore('user', {
     },
     // 获取用户信息
     async getUserInfo() {
-      const {data}=await UserAPI.getUserInfo({id:this.id})
+      const { data } = await UserAPI.getUserInfo({ id: this.id })
       this.setUser({
-        id:data.id,
-        nickName:data.nickName,
-        mobile:data.mobile,
-        photo:data.photo,
-        remark:data.remark,
+        id: data.id,
+        nickName: data.nickName,
+        mobile: data.mobile,
+        photo: data.photo,
+        remark: data.remark,
       })
     },
     // 登录
     async login(loginForm: { source: number; mobile: string; registerType: number }) {
-      const { datas } = await UserAPI.register(loginForm)
+      const { data } = await UserAPI.register(loginForm)
       this.setUser({
-        id:datas.id,
-        nickName:datas.nickName,
-        mobile:datas.mobile,
-        photo:datas.photo,
-        remark:datas.remark,
-        token:datas.token,
+        id: data.id,
+        nickName: data.nickName,
+        mobile: data.mobile,
+        photo: data.photo,
+        remark: data.remark,
+        token: data.token,
       })
-      if(this.remark){
+      if (this.remark) {
         uni.reLaunch({
-          url: '/pages/index/index'
+          url: '/pages/index/index',
         })
-      }else{
+      } else {
         //TODO：我也不知道有啥用
         await UserAPI.selectIdentity({
-          userId:this.id,
-          type:'2'
+          userId: this.id,
+          type: '2',
         })
       }
     },
@@ -74,7 +74,7 @@ export const useUserStore = defineStore('user', {
     logout() {
       this.resetInfo()
       uni.reLaunch({
-        url:'/pages/index/index'
+        url: '/pages/index/index',
       })
     },
   },

@@ -44,7 +44,7 @@
       }
     },
     {
-      "path": "pages/index/advanced",
+      "path": "pages/index/submit/poster",
       "style": {
         "navigationBarTitleText": "提交案件"
       }
@@ -56,13 +56,13 @@
       }
     },
     {
-      "path": "pages/case/classiccase",
+      "path": "pages/index/article/detail",
       "style": {
         "navigationBarTitleText": "典型案例"
       }
     },
     {
-      "path": "pages/case/morecases",
+      "path": "pages/index/article/more",
       "style": {
         "navigationBarTitleText": "案例列表",
         "onReachBottomDistance": 50
@@ -175,12 +175,6 @@
           "path": "chatroom",
           "style": {
             "navigationBarTitleText": "聊天"
-          }
-        },
-        {
-          "path": "advanced",
-          "style": {
-            "navigationBarTitleText": "提交案件"
           }
         },
         {
@@ -355,10 +349,7 @@
     "navigationBarTitleText": "uni-app",
     "navigationBarBackgroundColor": "#F8F8F8",
     "backgroundColor": "#F8F8F8",
-    "app-plus": {
-      "bounce": "none",
-      "scrollIndicator": "none" //重点是这行，其他的是我自己的需求，我这里选的是全局样式，如果要根据页面配置，则在相应的页面节点配置
-    }
+    "onReachBottomDistance": 100
   },
   "tabBar": {
     "color": "#7A7E83",
@@ -376,7 +367,7 @@
         "pagePath": "pages/case/all-case",
         "iconPath": "static/tabBar/workplace.png",
         "selectedIconPath": "static/tabBar/workplace-active.png",
-        "text": "案件"
+        "text": "工作室"
       },
       {
         "pagePath": "pages/index/message",

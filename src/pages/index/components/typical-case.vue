@@ -28,7 +28,7 @@
       navInfo() {
         const id = this.item.id
         uni.navigateTo({
-          url: `/pages/case/classiccase?id=${id}`
+          url: `/pages/index/article/detail?id=${id}`
         })
       }
     }
