@@ -39,7 +39,6 @@
 
 <script>
   import http from '@/common/api/interface.js'
-  import { mapState, mapMutations } from 'vuex'
   export default {
     data() {
       return {

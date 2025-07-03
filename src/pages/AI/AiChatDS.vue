@@ -235,7 +235,6 @@
 <script>
 import http from '@/common/api/interface.js'
 import MsgFeedback from './components/MsgFeedback.vue'
-import { mapState } from 'vuex'
 
 export default {
   components: {

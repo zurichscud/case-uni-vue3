@@ -29,10 +29,6 @@
 </template>
 
 <script>
-	import {
-		mapState,
-		mapMutations
-	} from "vuex"
 	import invitepersonal from "./components/invitepersonal.vue"
 	import teaminvite from "./components/teaminvite.vue"
 	export default {

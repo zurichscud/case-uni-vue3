@@ -78,7 +78,6 @@
 
 <script>
 import dayjs from 'dayjs'
-import { mapState, mapMutations } from 'vuex'
 export default {
   data() {
     return {

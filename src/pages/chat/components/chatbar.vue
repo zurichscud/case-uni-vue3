@@ -11,9 +11,9 @@
 						<view class="btnInut" @click="$refs.child1.open()" v-if="isSubmit==2">提交案件</view>
 					</view>
 					<view v-else class="answer" :style="{
-					
+
 						height:(flag?400:100) +'rpx',
-						position:(!flag||!blur_flay)?'fixed':'sticky', 
+						position:(!flag||!blur_flay)?'fixed':'sticky',
 						bottom:keyHeight+'px',
 					}">
 						<!-- 	inputIndex:0,//输入框当前索引
@@ -123,7 +123,7 @@
 						<view class="text_pay">
 							稍后有专家与你进一步沟通
 						</view>
-					
+
 						<view class="child_flex">
 							<view class="child_btnerr" @click="navTab">
 								返回首页
@@ -167,10 +167,6 @@
 </template>
 
 <script>
-	import {
-		mapState,
-		mapMutations
-	} from 'vuex'
 	import vFixed from "@/components/fixed/fixed"
 	import alert from "@/components/alert.vue"
 	let {
@@ -214,7 +210,7 @@
 				current: 2, //当前问题 ,初始化从1开始
 				lastMsg: '', //当前答案
 				// 1普通input 2填空 3 单选，4多选 5地址
-				typeIndex: 4, //当前问题类型 
+				typeIndex: 4, //当前问题类型
 				flay: false, //提交答案节流
 				flag: true, //多选其他填写
 				lastQ: [], //答案列表
@@ -268,7 +264,7 @@
 			navTab(){
 			uni.switchTab({
 				url: '/pages/index/index'
-			});	
+			});
 			},
 			// 获取问题及答案，将问题加入到聊天记录中
 			async getQuestionCurrent(questionId) {
@@ -306,7 +302,7 @@
 
 				this.lastQ = res.data.answerList
 			},
-			//多选合并msg 
+			//多选合并msg
 			addText() {
 				let arr = JSON.parse(JSON.stringify(this.nums))
 				let nums = this.nums.join()
@@ -391,7 +387,7 @@
 				// current:1,//当前问题
 				// lastMsg: '', //当前答案
 				// 2填空 3 单选，4多选 5地址
-				// typeIndex:3,//当前问题类型 
+				// typeIndex:3,//当前问题类型
 
 				if (!this.flay) {
 					this.flay = true
@@ -430,7 +426,7 @@
 					if (!!flagCheck) {
 						this.current++
 					}
-					return					
+					return
 				}
 
 			},
@@ -699,9 +695,9 @@
 				}else{
 					msg.caseType=8
 				}
-				
+
 				await this.$api.updateCase(Object.assign(msg, this.aniList))
-				
+
 				console.log(this.caseId, "当前id");
 				let params = Object.assign({}, {
 					caseId: this.caseId

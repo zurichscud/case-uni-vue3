@@ -40,9 +40,6 @@
 </template>
 
 <script>
-	import {
-		mapState
-	} from "vuex"
 	export default {
 		data() {
 			return {
@@ -87,10 +84,10 @@
 				if (this.refDataObj.active) return
 				// wx.requestSubscribeMessage({
 				//   tmplIds: ['fxqKcRbuMI-hBPa7jNb9inJefJJJpDsHmEJp6Dp4WQg'],
-				//   success (res) { 
+				//   success (res) {
 				// 	  console.log("调用成功",res);
 				//   }
-				// })	
+				// })
 				this.$emit('onLikeShow', this.dataObj)
 			},
 

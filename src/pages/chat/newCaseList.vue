@@ -44,7 +44,6 @@
 </template>
 
 <script>
-  import { mapState } from 'vuex'
   import alert from '@/components/alert.vue'
   import casecard from './components/casecard.vue'
 

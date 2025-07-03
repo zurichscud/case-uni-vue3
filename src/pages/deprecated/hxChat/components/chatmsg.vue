@@ -60,7 +60,6 @@
 </template>
 
 <script>
-  import { mapState, mapMutations } from 'vuex'
 
   // #ifdef H5
   import textButton from '@/components/fixed/textButton'

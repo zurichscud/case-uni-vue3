@@ -41,10 +41,6 @@
 </template>
 
 <script>
-	import {
-		mapState,
-		mapMutations
-	} from 'vuex'
 
 	export default {
 		components: {},
@@ -52,7 +48,6 @@
 		computed: {
 			...mapState(['user']),
 			...mapState('chat', ['chatMsg']),
-			// 映射 Vuex 状态到本地计算属性
 			chatInputH() {
 				return this.$store.state.chat.chatInputH;
 			},
@@ -98,7 +93,7 @@
 		},
 		methods: {
 			...mapMutations('chat', ['initChatMsg']),
-		
+
 			previewImage(url) {
 				const imgArr = ['https://app.y9net.cn/data/01/47/wKgBNmZVMTSAJdfvAAHyEYFTH8k979.jpg',
 					'https://app.y9net.cn/data/01/47/wKgBNmZVTgCAHxQ8AAJGY8sYbNQ37.jpeg'
@@ -109,7 +104,7 @@
 					current: url
 				})
 			},
-		
+
 			async navTo(item) {
 				if (item.chatType === 3) {
 					this.$emit("showModal",item)
@@ -527,6 +522,6 @@
 	}
 	.scroll_block{
 		height: 100vh;
-		
+
 	}
 </style>

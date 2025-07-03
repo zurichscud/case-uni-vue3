@@ -61,7 +61,6 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
 import alert from '@/components/alert.vue'
 const dictionary = [
   {

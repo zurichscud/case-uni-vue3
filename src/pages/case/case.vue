@@ -70,7 +70,6 @@
 </template>
 
 <script>
-  import { mapState, mapMutations } from 'vuex'
   import * as MessageAPI from '@/apis/message'
   import alert from '@/components/alert.vue'
   import casecard from '@/components/casecard.vue'

@@ -80,10 +80,7 @@
     "pinia-plugin-persistedstate": "^3.2.3",
     "vue": "^3.5.13",
     "vue-i18n": "^9.14.2",
-    "vuex": "^4.1.0",
-    "vuex-persistedstate": "^4.1.0",
-    "wot-design-uni": "^1.6.1",
-    "z-paging": "^2.8.5"
+    "wot-design-uni": "^1.6.1"
   },
   "devDependencies": {
     "@dcloudio/types": "^3.4.14",
@@ -106,6 +103,7 @@
     "autoprefixer": "^10.4.20",
     "eslint": "^8.57.1",
     "eslint-plugin-vue": "^9.32.0",
+    "husky": "^9.1.7",
     "lint-staged": "^13.3.0",
     "miniprogram-api-typings": "^3.12.3",
     "postcss": "^8.5.2",
@@ -113,10 +111,10 @@
     "postcss-scss": "^4.0.9",
     "prettier": "^2.8.8",
     "sass": "1.77.5",
-    "uni-mini-router": "^0.1.6",
     "tailwindcss": "^3.3.5",
     "tailwindcss-rem2px-preset": "^1.0.3",
     "typescript": "^5.7.3",
+    "uni-mini-router": "^0.1.6",
     "vite": "^5.2.8",
     "vue-tsc": "^1.8.27"
   }

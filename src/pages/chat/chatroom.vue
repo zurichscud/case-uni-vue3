@@ -132,7 +132,6 @@
   import http from '@/common/api/interface.js'
   import alert from '@/components/alert.vue'
   import dayjs from 'dayjs'
-  import { mapState } from 'vuex'
   const msgFixedUrl = [
     'https://app.y9net.cn/data/01/47/wKgBNmZVMTSAJdfvAAHyEYFTH8k979.jpg',
     'https://app.y9net.cn/data/01/47/wKgBNmZVTgCAHxQ8AAJGY8sYbNQ37.jpeg'

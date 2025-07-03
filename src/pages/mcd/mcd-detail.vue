@@ -62,7 +62,7 @@
 									</view>
 									<view v-if='objDetail.status===1' class="flex_between">
 										<view class="submit_style text_center" @click="editIsFocs">
-											{{!aditDisabled?'编辑':'重置'}} 
+											{{!aditDisabled?'编辑':'重置'}}
 										</view>
 										<view class="submit_style text_center" @click="viewpointBtn">
 											{{content.type===1?'提交观点':'修改观点'}}
@@ -99,7 +99,7 @@
 							</view>
 						</scroll-view>
 					</view>
-				
+
 				</view>
 			</view>
 			<view v-if='swiperIndex===2'>
@@ -133,7 +133,7 @@
 		<u-modal :show="likeShow" showCancelButton @confirm="likeConfirm" @cancel="likeCancel" title="提示"
 			content='每期活动用户只有一次点赞机会且不可修改,是否继续？'></u-modal>
 			<movable-area class="area_block_style">
-							<movable-view :x="x" :y="y" direction="all" 
+							<movable-view :x="x" :y="y" direction="all"
 							class="area_block_children_style"
 							>
 							<view class="pubilsh_style text_center br-20 fz_24 c-9" @click="ranking"
@@ -145,16 +145,13 @@
 							</view>
 							</movable-view>
 						</movable-area>
-					
+
 
 	</view>
 </template>
 
 <script>
 	import commentList from "./components/comment-list.vue"
-	import {
-		mapState
-	} from "vuex"
 	export default {
 		data() {
 			return {
@@ -249,7 +246,7 @@
 		},
 		methods: {
 			async ding() {
-				if(this.content.type!==1)return 
+				if(this.content.type!==1)return
 					let that = this
 				wx.requestSubscribeMessage({
 					tmplIds: ['fxqKcRbuMI-hBPa7jNb9ipqSrnfyMpG8gB0rlJhwu5g'],
@@ -318,7 +315,7 @@
 				uni.navigateTo({
 					url: '/pages/mcd/ranking?id=' + this.options.id
 				})
-				
+
 			},
 			// 选择身份按钮
 			selectIdentity() {
@@ -423,7 +420,7 @@
 					})
 					if (res.code == 200) {
 	                   this.ding()
-					   
+
 						this.content.type = 2
 						this.commentShow = false
 						await this.$toast("发表观点成功")
@@ -443,7 +440,7 @@
 				}
 				this.aditDisabled = false
 				this.viewpointShow = false
-				
+
 				this.fetchComment()
 			},
 			commentCancel() {
@@ -568,20 +565,20 @@
 				// margin: 0 auto;
 				// right: 10rpx;
 				border-radius: 50%;
-			
+
 				.r_image {
 					width: 100rpx;
 					height: 100rpx;
 					font-size: 0;
-				
+
 				}
-			
+
 				.r-font {
 					color: #000000;
 					// position: absolute;
 				}
 			}
-			
+
 
 		}
 
@@ -675,7 +672,7 @@
 		display: block;
 	}
 
-	
+
 	.slot-content {
 		width: 300rpx;
 

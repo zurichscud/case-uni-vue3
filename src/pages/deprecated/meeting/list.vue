@@ -38,10 +38,6 @@
 
 <script>
 	import dayjs from 'dayjs'
-		import {
-			mapState,
-			mapMutations
-		} from "vuex"
 	export default {
 		data(){
 		return{
@@ -49,7 +45,7 @@
 		}
 		},
 		filters:{
-			timeday(val){ 
+			timeday(val){
 				let datatime = dayjs(val).format('MM月DD日')
 			 return	datatime
 			},
@@ -72,17 +68,17 @@
 			}
 		},
 		computed:{
-		...mapState(['user'])	
+		...mapState(['user'])
 		},
 		onLoad(options){
-		
+
 		}
 		,
 		created() {
-	
+
 		},
 		onShow() {
-				this.fetchList()	
+				this.fetchList()
 		},
 		methods:{
 			navTo(id){
@@ -92,10 +88,10 @@
 			},
 		async	fetchList(){
 			let res =  await this.$api.getMeetingList({userId:this.user.id})
-		this.dataList = res.data	
+		this.dataList = res.data
 			}
 		}
-		
+
 	}
 </script>
 
@@ -126,7 +122,7 @@
 				margin: 7rpx 0;
 				.main_right_flex_case{
 					font-size: 36rpx;
-				
+
 				}
 				.main_right_flex_time{
 					font-size: 28rpx;
@@ -141,6 +137,6 @@
 				}
 			}
 	}
-}	
+}
 }
 </style>

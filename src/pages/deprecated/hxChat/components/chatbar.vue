@@ -175,7 +175,6 @@
 </template>
 
 <script>
-  import { mapState, mapMutations } from 'vuex'
   import vFixed from '@/components/fixed/fixed'
   import alert from '@/components/alert.vue'
   let { uploadFilesAll } = require('@/common/public')
@@ -746,7 +745,7 @@
 					}
 					this.lastMsg = ''
 					this.orderIndex++
-	
+
 } */
         }
       },

@@ -18,7 +18,6 @@
 </template>
 
 <script>
-  import { mapState } from 'vuex'
   import invitepersonal from './components/invitepersonal.vue'
   export default {
     data() {

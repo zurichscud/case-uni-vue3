@@ -56,7 +56,6 @@
 </template>
 
 <script>
-import { mapState, mapMutations } from 'vuex'
 import casecard from './components/casecard.vue'
 import * as MessageAPI from '@/apis/message'
 

@@ -14,7 +14,6 @@
 </template>
 
 <script>
-  import { mapState, mapMutations } from 'vuex'
   import alert from '@/components/alert.vue'
   import vChatmsg from './components/chatmsg.vue'
   import vChatbar from './components/chatbar.vue'

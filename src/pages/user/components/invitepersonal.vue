@@ -12,7 +12,7 @@
 						{{item.pidNickName?item.pidNickName:'本人'}}团队
 					</view>
 				</view>
-			
+
 			</view>
 			<view class="flex_all magHigt"  v-if="!!item.pidNickName">
 				<view class="lefttext">
@@ -30,7 +30,7 @@
 				{{item.registerTime}}
 				</view>
 			</view>
-			
+
 			<view class="flex_all magHigt" v-if="!!item.upgradeMemberTime&&item.remark>5">
 				<view class="lefttext">
 				晋升社员
@@ -51,14 +51,13 @@
 				<view class="lefttext textblue">
 				签约案件数量 {{item.signCaseNumber}}
 				</view>
-				
+
 			</view>
 		</view>
 	</view>
 </template>
 
 <script>
-	import {mapState} from 'vuex'
 	export default {
 		data() {
 			return {
@@ -66,7 +65,7 @@
 			}
 		},
 		computed:{
-		...mapState(['user'])	
+		...mapState(['user'])
 		},
 		filters: {
 			getremark(val) {
@@ -104,7 +103,7 @@
 		background: #FFFFFF;
 		box-shadow: 0px 3px 22px 0px rgba(0, 0, 0, 0.05);
 		border-radius: 30rpx;
-	
+
 		.righttext{
 			color: #999999;
 			font-size: 28rpx;
@@ -149,7 +148,7 @@
 		top: 4rpx;
 		text-align: center;
 		border-radius: 50rpx;
-		
+
 	}
 
 	.remackBck {
