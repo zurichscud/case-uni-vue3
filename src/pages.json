@@ -74,7 +74,6 @@
         "navigationBarTitleText": "登录"
       }
     },
-
     {
       "path": "pages/case/all-case",
       "style": {
@@ -140,30 +139,6 @@
           "path": "verResult",
           "style": {
             "navigationBarTitleText": "核销结果"
-          }
-        }
-      ]
-    },
-    {
-      "root": "pages/message",
-      "pages": [
-        {
-          "path": "caseSpeed",
-          "style": {
-            "navigationBarTitleText": "案件进度通知"
-          }
-        },
-        {
-          "path": "interaction",
-          "style": {
-            "navigationBarTitleText": "互动消息"
-          }
-        },
-        {
-          "path": "system",
-          "style": {
-            "navigationBarTitleText": "系统消息",
-            "onReachBottomDistance": 20
           }
         }
       ]

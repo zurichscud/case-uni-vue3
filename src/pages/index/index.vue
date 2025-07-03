@@ -83,16 +83,15 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref } from 'vue'
 import { onShow, onLoad } from '@dcloudio/uni-app'
 import * as ArticleAPI from '@/apis/article'
 import typicalCase from './components/typical-case.vue'
 import router from '@/utils/router'
-import { useUserStore } from '@/stores'
-import { REMARK } from '@/enums/remark'
 import img from '@/static/home/弈寻.png'
+import { useMessageStore } from '@/stores'
 
-const userStore = useUserStore()
+const { getUnReadNumData } = useMessageStore()
 const articleList = ref([])
 const query = {
   isAsc: 'desc',
@@ -100,12 +99,6 @@ const query = {
   pageSize: 3,
   pageNum: 1,
 }
-
-function handleSubmit() {
-    router.go('/pages/index/advanced')
-
-}
-
 
 function handleShare() {
   uni.showToast({
@@ -119,10 +112,12 @@ async function getArticleListData() {
   articleList.value = rows
 }
 
-onShow(() => {})
-
 onLoad(() => {
   getArticleListData()
+})
+
+onShow(() => {
+  getUnReadNumData()
 })
 
 </script>

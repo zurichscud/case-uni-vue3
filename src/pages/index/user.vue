@@ -52,9 +52,12 @@
 <script setup>
 import { ref, computed } from 'vue'
 import { useUserStore } from '@/stores'
+import { useMessageStore } from '@/stores'
 import router from '@/utils/router'
+import { onShow } from '@dcloudio/uni-app'
 
 const userStore = useUserStore()
+const { getUnReadNumData } = useMessageStore()
 const isLogin = computed(() => userStore.isLogin)
 const remarkText = computed(() => userStore.remarkText)
 
@@ -75,6 +78,10 @@ function redirect(url) {
 function toLogin() {
   router.go('/pages/login/login')
 }
+
+onShow(() => {
+  getUnReadNumData()
+})
 </script>
 
 <style lang="scss" scoped>
