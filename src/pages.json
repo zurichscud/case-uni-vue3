@@ -18,6 +18,12 @@
       }
     },
     {
+      "path": "pages/index/workplace",
+      "style": {
+        "navigationBarTitleText": "工作室"
+      }
+    },
+    {
       "path": "pages/case/case",
       "style": {
         "navigationBarTitleText": "案件列表(往期)",
@@ -339,7 +345,7 @@
         "text": "首页"
       },
       {
-        "pagePath": "pages/case/all-case",
+        "pagePath": "pages/index/workplace",
         "iconPath": "static/tabBar/workplace.png",
         "selectedIconPath": "static/tabBar/workplace-active.png",
         "text": "工作室"
