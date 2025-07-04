@@ -90,21 +90,17 @@ import typicalCase from './components/typical-case.vue'
 import router from '@/utils/router'
 import img from '@/static/home/弈寻.png'
 import { useMessageStore } from '@/stores'
+import { useShare } from '@/hooks/useShare'
+
 
 const { getUnReadNumData } = useMessageStore()
+useShare()
 const articleList = ref([])
 const query = {
   isAsc: 'desc',
   orderByColumn: 'updateTime',
   pageSize: 3,
   pageNum: 1,
-}
-
-function handleShare() {
-  uni.showToast({
-    title: '敬请期待!',
-    icon: 'none',
-  })
 }
 
 async function getArticleListData() {
@@ -118,6 +114,9 @@ onLoad(() => {
 
 onShow(() => {
   getUnReadNumData()
+  uni.showShareMenu({
+    title: 'hahahahha',
+  })
 })
 
 </script>

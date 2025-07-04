@@ -7,7 +7,7 @@
       refresher-enabled
       :refresher-triggered="refreshing"
       @refresherrefresh="onRefresh"
-      @refresherrestore="onRestore"
+      @scrolltolower="onScrollToLower"
     >
       <!-- 空状态 -->
       <view
@@ -32,18 +32,18 @@
         >
           <!-- 消息图标 -->
           <view class="message-icon">
-            <view class="icon-container" :class="getIconClass(item.type)">
-              <uni-icons :type="getIcon(item.type)" size="24" color="#ffffff"></uni-icons>
+            <view class="icon-container icon-default">
+              <uni-icons type="email" size="24" color="#ffffff"></uni-icons>
             </view>
           </view>
 
           <!-- 消息内容 -->
           <view class="message-content">
             <view class="message-header">
-              <text class="message-title" :class="{ unread: !item.isRead }">
-                {{ getMessageTitle(item) }}
+              <text class="message-title">
+                {{ item.title }}
               </text>
-              <view v-if="!item.isRead" class="unread-dot"></view>
+              <view v-if="!item.flag" class="unread-dot"></view>
             </view>
 
             <!-- 完整消息内容 -->
@@ -58,46 +58,54 @@
         </view>
       </view>
 
-      <!-- 加载状态 -->
-      <view v-if="loading" class="loading-state">
-        <text class="loading-text">加载中...</text>
-      </view>
+      <uni-load-more :status="moreStatus" />
     </scroll-view>
   </view>
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref } from 'vue'
 import { onShow, onLoad } from '@dcloudio/uni-app'
 import * as MessageAPI from '@/apis/message'
 import { useUserStore } from '@/stores'
+import dayjs from 'dayjs'
+import relativeTime from 'dayjs/plugin/relativeTime'
+
+// 初始化dayjs相对时间插件
+dayjs.extend(relativeTime)
+dayjs.locale('zh-cn')
 
 const msgList = ref([])
-const loading = ref(false)
 const refreshing = ref(false)
 const animatedCards = ref([])
 const showEmptyAnimation = ref(false)
-
+const isFirstLoad = ref(true) // 标记是否是首次加载
+const moreStatus = ref('more')
 const userStore = useUserStore()
+const isFinished = ref(false)
+const pageParams = ref({
+  userId: userStore.id,
+  category: 0,
+  pageNum: 1,
+  pageSize: 5,
+})
 
 // 获取消息列表
-async function getMessageListData() {
+async function getMessageListData(triggerAnimation = false) {
   try {
-    loading.value = true
-    // 重置动画状态
-    animatedCards.value = []
-    showEmptyAnimation.value = false
+    moreStatus.value = 'loading'
+    // 只有需要触发动画时才重置动画状态
+    if (triggerAnimation) {
+      animatedCards.value = []
+      showEmptyAnimation.value = false
+    }
+    const { rows, total } = await MessageAPI.getMessageList(pageParams.value)
+    
 
-    const res = await MessageAPI.getMessageList({
-      userId: userStore.id,
-      category: 0,
-      pageNum: 1,
-      pageSize: 20,
-    })
-    msgList.value = res.rows || []
-
-    // 触发进入动画
-    triggerEnterAnimation()
+    // 只有在需要触发动画时才调用动画函数
+    if (triggerAnimation) {
+      triggerEnterAnimation()
+    }
   } catch (error) {
     console.error('获取消息列表失败:', error)
     uni.showToast({
@@ -105,7 +113,6 @@ async function getMessageListData() {
       icon: 'none',
     })
   } finally {
-    loading.value = false
   }
 }
 
@@ -127,59 +134,17 @@ function triggerEnterAnimation() {
   }, 50)
 }
 
+function onScrollToLower() {
+  if (moreStatus.value === 'more') {
+    getMessageListData(false)
+  }
+}
+
 // 下拉刷新
 async function onRefresh() {
   refreshing.value = true
-  await getMessageListData()
-}
-
-function onRestore() {
+  await getMessageListData(false) // 下拉刷新时不触发动画
   refreshing.value = false
-}
-
-// 根据消息类型获取图标样式类
-function getIconClass(type) {
-  switch (type) {
-    case 'insurance':
-      return 'icon-insurance'
-    case 'system':
-      return 'icon-system'
-    case 'notification':
-      return 'icon-notification'
-    default:
-      return 'icon-default'
-  }
-}
-
-// 根据消息类型获取图标
-function getIcon(type) {
-  switch (type) {
-    case 'insurance':
-      return 'settings' // 设置图标
-    case 'system':
-      return 'gear' // 齿轮图标
-    case 'notification':
-      return 'chatbubble' // 聊天气泡图标
-    default:
-      return 'email' // 邮件图标
-  }
-}
-
-// 获取消息标题
-function getMessageTitle(item) {
-  // 可以根据消息类型或内容生成标题
-  if (item.title) {
-    return item.title
-  }
-
-  // 根据内容生成标题
-  if (item.content?.includes('理赔')) {
-    return '理赔进度通知'
-  } else if (item.content?.includes('系统')) {
-    return '系统通知'
-  } else {
-    return '消息通知'
-  }
 }
 
 // 格式化时间
@@ -187,37 +152,36 @@ function formatTime(timeStr) {
   if (!timeStr) {
     return ''
   }
+  const now = dayjs()
+  const msgTime = dayjs(timeStr)
+  const diffInMinutes = now.diff(msgTime, 'minute')
+  const diffInHours = now.diff(msgTime, 'hour')
+  const diffInDays = now.diff(msgTime, 'day')
 
-  const now = new Date()
-  const msgTime = new Date(timeStr)
-  const diff = now.getTime() - msgTime.getTime()
-
-  const minutes = Math.floor(diff / (1000 * 60))
-  const hours = Math.floor(diff / (1000 * 60 * 60))
-  const days = Math.floor(diff / (1000 * 60 * 60 * 24))
-
-  if (minutes < 1) {
+  if (diffInMinutes < 1) {
     return '刚刚'
-  } else if (minutes < 60) {
-    return `${minutes}分钟前`
-  } else if (hours < 24) {
-    return `${hours}小时前`
-  } else if (days < 7) {
-    return `${days}天前`
+  } else if (diffInMinutes < 60) {
+    return `${diffInMinutes}分钟前`
+  } else if (diffInHours < 24) {
+    return `${diffInHours}小时前`
+  } else if (diffInDays < 7) {
+    return `${diffInDays}天前`
   } else {
-    return msgTime.toLocaleDateString()
+    return msgTime.format('YYYY-MM-DD')
   }
 }
 
 onLoad(() => {
-  // 设置导航栏
-  uni.setNavigationBarTitle({
-    title: '消息中心',
-  })
+  // 页面首次加载时触发动画
+  getMessageListData(true)
+  isFirstLoad.value = false
 })
 
 onShow(() => {
-  getMessageListData()
+  // 只有非首次加载时才刷新数据（不触发动画）
+  if (!isFirstLoad.value) {
+    getMessageListData(false)
+  }
 })
 </script>
 
@@ -342,11 +306,6 @@ onShow(() => {
           color: #222;
           font-weight: 400;
           flex: 1;
-
-          &.unread {
-            font-weight: 600;
-            color: #111;
-          }
         }
 
         .unread-dot {
