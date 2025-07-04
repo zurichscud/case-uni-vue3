@@ -1,7 +1,9 @@
 <template>
   <view class="message-container">
+    <none v-if="!isLogin" name="请登录账号后查看～"></none>
     <!-- 消息列表容器 -->
     <scroll-view
+      v-else
       class="message-scroll"
       scroll-y
       refresher-enabled
@@ -15,9 +17,6 @@
         class="empty-state"
         :class="{ 'empty-enter': showEmptyAnimation }"
       >
-        <view class="empty-icon">
-          <text class="empty-icon-text">📫</text>
-        </view>
         <text class="empty-text">暂无消息</text>
         <text class="empty-desc">消息通知将在这里显示</text>
       </view>
@@ -58,18 +57,19 @@
         </view>
       </view>
 
-      <uni-load-more :status="moreStatus" />
+      <uni-load-more v-if="msgList?.length > 0" :status="moreStatus" />
     </scroll-view>
   </view>
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { onShow, onLoad } from '@dcloudio/uni-app'
 import * as MessageAPI from '@/apis/message'
 import { useUserStore } from '@/stores'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
+
 
 // 初始化dayjs相对时间插件
 dayjs.extend(relativeTime)
@@ -88,6 +88,7 @@ const pageParams = ref({
   pageNum: 1,
   pageSize: 5,
 })
+const isLogin = computed(() => userStore.isLogin)
 
 // 获取消息列表
 async function getMessageListData(triggerAnimation = false) {
@@ -107,6 +108,7 @@ async function getMessageListData(triggerAnimation = false) {
       // 加载更多，追加到现有数据
       msgList.value.push(...(rows || []))
     }
+    msgList.value = []
 
     if (msgList.value.length < total) {
       moreStatus.value = 'more'
@@ -187,6 +189,9 @@ function formatTime(timeStr) {
 }
 
 onLoad(() => {
+  if (!isLogin.value) {
+    return
+  }
   pageParams.value.pageNum = 1
   moreStatus.value = 'more'
   getMessageListData(true)
@@ -194,6 +199,9 @@ onLoad(() => {
 })
 
 onShow(() => {
+  if (!isLogin.value) {
+    return
+  }
   // 只有非首次加载时才刷新数据（不触发动画）
   if (!isFirstLoad.value) {
     pageParams.value.pageNum = 1

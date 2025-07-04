@@ -10,7 +10,6 @@
 </template>
 
 <script setup>
-import router from '@/utils/router'
 defineProps({
   name: String,
   btn: String,
@@ -22,6 +21,9 @@ defineProps({
 <style lang="scss" scoped>
 .none {
   padding-top: 412rpx;
+  background-color: #ffffff;
+  height: 100%;
+  width: 100%;
   text-align: center;
   .noneImg {
     width: 380rpx;
