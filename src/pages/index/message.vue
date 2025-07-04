@@ -82,7 +82,6 @@ const showEmptyAnimation = ref(false)
 const isFirstLoad = ref(true) // 标记是否是首次加载
 const moreStatus = ref('more')
 const userStore = useUserStore()
-const isFinished = ref(false)
 const pageParams = ref({
   userId: userStore.id,
   category: 0,
@@ -100,7 +99,21 @@ async function getMessageListData(triggerAnimation = false) {
       showEmptyAnimation.value = false
     }
     const { rows, total } = await MessageAPI.getMessageList(pageParams.value)
-    
+
+    // 如果是首次加载或刷新，重置消息列表
+    if (pageParams.value.pageNum === 1) {
+      msgList.value = rows || []
+    } else {
+      // 加载更多，追加到现有数据
+      msgList.value.push(...(rows || []))
+    }
+
+    if (msgList.value.length < total) {
+      moreStatus.value = 'more'
+      pageParams.value.pageNum++
+    } else {
+      moreStatus.value = 'noMore'
+    }
 
     // 只有在需要触发动画时才调用动画函数
     if (triggerAnimation) {
@@ -108,11 +121,11 @@ async function getMessageListData(triggerAnimation = false) {
     }
   } catch (error) {
     console.error('获取消息列表失败:', error)
+    moreStatus.value = 'more' // 错误时恢复可加载状态
     uni.showToast({
       title: '获取消息失败',
       icon: 'none',
     })
-  } finally {
   }
 }
 
@@ -143,6 +156,8 @@ function onScrollToLower() {
 // 下拉刷新
 async function onRefresh() {
   refreshing.value = true
+  pageParams.value.pageNum = 1
+  moreStatus.value = 'more'
   await getMessageListData(false) // 下拉刷新时不触发动画
   refreshing.value = false
 }
@@ -172,7 +187,8 @@ function formatTime(timeStr) {
 }
 
 onLoad(() => {
-  // 页面首次加载时触发动画
+  pageParams.value.pageNum = 1
+  moreStatus.value = 'more'
   getMessageListData(true)
   isFirstLoad.value = false
 })
@@ -180,6 +196,8 @@ onLoad(() => {
 onShow(() => {
   // 只有非首次加载时才刷新数据（不触发动画）
   if (!isFirstLoad.value) {
+    pageParams.value.pageNum = 1
+    moreStatus.value = 'more'
     getMessageListData(false)
   }
 })
