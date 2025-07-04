@@ -11,6 +11,7 @@ declare module 'vue' {
     Alert: typeof import('./src/components/alert.vue')['default']
     BulletChat: typeof import('./src/components/bullet-chat.vue')['default']
     Casecard: typeof import('./src/components/casecard.vue')['default']
+    Empty: typeof import('./src/components/empty.vue')['default']
     Fixed: typeof import('./src/components/fixed/fixed.vue')['default']
     Form: typeof import('./src/components/form.vue')['default']
     Kefu: typeof import('./src/components/kefu.vue')['default']

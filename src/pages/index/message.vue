@@ -12,14 +12,7 @@
       @scrolltolower="onScrollToLower"
     >
       <!-- 空状态 -->
-      <view
-        v-if="msgList?.length === 0 && !loading"
-        class="empty-state"
-        :class="{ 'empty-enter': showEmptyAnimation }"
-      >
-        <text class="empty-text">暂无消息</text>
-        <text class="empty-desc">消息通知将在这里显示</text>
-      </view>
+      <empty v-if="msgList.length === 0" text="暂无消息" src="/static/message-empty.png"></empty>
       <!-- 消息列表 -->
       <view v-else class="message-list">
         <view
@@ -70,7 +63,6 @@ import { useUserStore } from '@/stores'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 
-
 // 初始化dayjs相对时间插件
 dayjs.extend(relativeTime)
 dayjs.locale('zh-cn')
@@ -105,11 +97,9 @@ async function getMessageListData(triggerAnimation = false) {
     if (pageParams.value.pageNum === 1) {
       msgList.value = rows || []
     } else {
-      // 加载更多，追加到现有数据
       msgList.value.push(...(rows || []))
     }
-    msgList.value = []
-
+    //判断说否还有结束
     if (msgList.value.length < total) {
       moreStatus.value = 'more'
       pageParams.value.pageNum++

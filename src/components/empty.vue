@@ -2,24 +2,32 @@
   <view class="none">
     <image
       class="noneImg"
-      src="/src/static/暂无数据.png"
+      :src="src"
     ></image>
-    <view v-if="btn" class="btn">{{ btn }}</view>
-    <view v-else class="noneText">{{ name }}</view>
+    <view class="noneText">{{ text }}</view>
   </view>
 </template>
 
 <script setup>
+import defaultImg from '@/static/empty.png'
 defineProps({
-  name: String,
-  btn: String,
-  src: String,
+  src: {
+    type: String,
+    default: defaultImg,
+  },
+  text: {
+    type: String,
+    default:'空空如也'
+  },
 })
 </script>
 
 <style lang="scss" scoped>
 .none {
-  padding-top: 412rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   background-color: #ffffff;
   height: 100%;
   width: 100%;

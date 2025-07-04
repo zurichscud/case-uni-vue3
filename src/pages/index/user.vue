@@ -80,7 +80,9 @@ function toLogin() {
 }
 
 onShow(() => {
-  getUnReadNumData()
+  if (isLogin.value) {
+    getUnReadNumData()
+  }
 })
 </script>
 

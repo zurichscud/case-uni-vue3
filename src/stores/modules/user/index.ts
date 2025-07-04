@@ -49,14 +49,14 @@ export const useUserStore = defineStore('user', {
     },
     // 登录
     async login(loginForm: { source: number; mobile: string; registerType: number }) {
-      const { data } = await UserAPI.register(loginForm)
+      const { datas } = await UserAPI.register(loginForm)
       this.setUser({
-        id: data.id,
-        nickName: data.nickName,
-        mobile: data.mobile,
-        photo: data.photo,
-        remark: data.remark,
-        token: data.token,
+        id: datas.id,
+        nickName: datas.nickName,
+        mobile: datas.mobile,
+        photo: datas.photo,
+        remark: datas.remark,
+        token: datas.token,
       })
       if (this.remark) {
         uni.reLaunch({

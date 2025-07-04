@@ -83,18 +83,18 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref,computed } from 'vue'
 import { onShow, onLoad } from '@dcloudio/uni-app'
 import * as ArticleAPI from '@/apis/article'
 import typicalCase from './components/typical-case.vue'
 import router from '@/utils/router'
 import img from '@/static/home/弈寻.png'
-import { useMessageStore } from '@/stores'
+import { useMessageStore, useUserStore } from '@/stores'
 import { useShare } from '@/hooks/useShare'
-
 
 const { getUnReadNumData } = useMessageStore()
 useShare()
+const userStore = useUserStore()
 const articleList = ref([])
 const query = {
   isAsc: 'desc',
@@ -102,6 +102,7 @@ const query = {
   pageSize: 3,
   pageNum: 1,
 }
+const isLogin = computed(() => userStore.isLogin)
 
 async function getArticleListData() {
   const { rows } = await ArticleAPI.getArticleList(query, { isTop: 1 })
@@ -113,12 +114,10 @@ onLoad(() => {
 })
 
 onShow(() => {
-  getUnReadNumData()
-  uni.showShareMenu({
-    title: 'hahahahha',
-  })
+  if (isLogin.value) {
+    getUnReadNumData()
+  }
 })
-
 </script>
 
 <!-- 全局页面样式 -->
