@@ -8,7 +8,7 @@ alwaysApply: true
 # 项目技术栈
 
 
-基于vue3的uniapp项目,最终运行在微信小程序上。
+基于vue3的uniapp项目,最终运行在微信小程序上。请注意区分浏览器和微信小程序环境的API
 组件使用的顺序：
 wot-design-ui
 uniapp自带的组件

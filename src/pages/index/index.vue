@@ -84,7 +84,7 @@
 
 <script setup>
 import { ref,computed } from 'vue'
-import { onShow, onLoad } from '@dcloudio/uni-app'
+import { onShow, onLoad,onShareAppMessage} from '@dcloudio/uni-app'
 import * as ArticleAPI from '@/apis/article'
 import typicalCase from './components/typical-case.vue'
 import router from '@/utils/router'
@@ -93,7 +93,7 @@ import { useMessageStore, useUserStore } from '@/stores'
 import { useShare } from '@/hooks/useShare'
 
 const { getUnReadNumData } = useMessageStore()
-useShare()
+const { shareOptions } = useShare()
 const userStore = useUserStore()
 const articleList = ref([])
 const query = {
@@ -118,6 +118,11 @@ onShow(() => {
     getUnReadNumData()
   }
 })
+
+onShareAppMessage(() => {
+  return shareOptions
+})
+
 </script>
 
 <!-- 全局页面样式 -->
@@ -130,21 +135,6 @@ page {
 
 <!-- 组件样式 -->
 <style lang="scss" scoped>
-/* 按钮样式重置 */
-button[plain] {
-  border: none;
-  background-color: white;
-}
-
-uni-button:after {
-  border: none;
-  line-height: 0;
-}
-
-.uni-button {
-  line-height: 0 !important;
-}
-
 /* 标题区域样式 */
 .view_title {
   display: flex;

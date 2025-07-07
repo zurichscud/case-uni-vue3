@@ -25,22 +25,7 @@ export function useShare(options: ShareOptions = {}) {
   // 合并默认配置和用户配置
   const shareOptions = { ...defaultOptions, ...options }
 
-  // 注册分享消息事件
-  onShareAppMessage(() => {
-    return shareOptions
-  })
-
-  // 手动触发分享的方法
-  const handleShare = () => {
-    uni.showToast({
-      title: '点击右上角分享给好友',
-      icon: 'none',
-      duration: 2000,
-    })
-  }
-
   return {
     shareOptions,
-    handleShare,
   }
 }

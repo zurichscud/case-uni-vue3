@@ -150,7 +150,7 @@ async function onRefresh() {
   refreshing.value = true
   pageParams.value.pageNum = 1
   moreStatus.value = 'more'
-  await getMessageListData(false) // 下拉刷新时不触发动画
+  await getMessageListData(false)
   refreshing.value = false
 }
 
