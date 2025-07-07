@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import router from '@/utils/router'
+
 // 定义菜单项类型
 interface MenuItem {
   icon: string
@@ -72,7 +74,7 @@ const menus: Menus = {
       {
         text: '赔案快报',
         icon: 'icon-newspaper',
-        url: '/pages/article/all-article',
+        url: '/pages/public/webview?url=https://mp.weixin.qq.com/s/PMXUwjwkiwRKID-DA9eEIQ&title=赔案快报',
       },
     ],
   },
@@ -80,6 +82,7 @@ const menus: Menus = {
 
 function handleItemClick(url: string) {
   console.log(url)
+  router.go(url)
 }
 </script>
 

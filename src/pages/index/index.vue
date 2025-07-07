@@ -87,6 +87,20 @@
         </view>
       </view>
     </view>
+    <!-- 分享popup -->
+    <wd-popup
+      :safe-area-inset-bottom="true"
+      v-model="shareVisible"
+      position="bottom"
+      closable
+      custom-style="height: 200px;"
+      @close="handleClose"
+    >
+      <view>分享到</view>
+      <!-- 分享好友 -->
+       <!-- 生成海报 -->
+        <!-- 取消 -->
+    </wd-popup>
   </view>
 </template>
 
@@ -103,6 +117,7 @@ import appConfig from '@/config/app'
 
 const slogans = appConfig.slogans
 const sloganDuration = appConfig.sloganDuration
+const shareVisible = ref(false)
 const { getUnReadNumData } = useMessageStore()
 const { shareOptions } = useShare()
 const userStore = useUserStore()
@@ -120,21 +135,22 @@ let scrollTimer = null
 
 // 处理分享功能
 function handleShare() {
-  uni.share({
-    provider: 'weixin',
-    scene: 'WXSceneSession',
-    type: 0,
-    href: 'https://your-app-link.com',
-    title: '理赔公社',
-    summary: '专业理赔咨询服务平台',
-    imageUrl: 'https://your-app-icon.png',
-    success: function (res) {
-      console.log('分享成功:' + JSON.stringify(res))
-    },
-    fail: function (err) {
-      console.log('分享失败:' + JSON.stringify(err))
-    },
-  })
+  if (!isLogin.value) {
+    router.go('/pages/login/login')
+    return
+  }
+  // if (userStore.remark <= 5) {
+  //   uni.showToast({
+  //     title: '只有社员才能邀请',
+  //     icon: 'none',
+  //   })
+  //   return
+  // }
+  shareVisible.value = true
+}
+
+function handleClose() {
+  shareVisible.value = false
 }
 
 // 启动滚动文字
@@ -275,6 +291,52 @@ page {
     background: linear-gradient(135deg, #4285f4 0%, #1c35d0 50%, #0d1a6b 100%); /*1a31cc */
     padding: 0 40rpx 100rpx; /* 进一步增加底部间距，确保完全覆盖圆角区域 */
     position: relative;
+    overflow: hidden; /* 确保极光效果不会溢出 */
+
+    /* 极光动画效果 */
+    &::before {
+      content: '';
+      position: absolute;
+      top: -100%;
+      right: -100%;
+      width: 300%;
+      height: 300%;
+      background: linear-gradient(
+        45deg,
+        transparent 30%,
+        rgba(255, 255, 255, 0.1) 35%,
+        rgba(135, 206, 250, 0.15) 40%,
+        rgba(0, 191, 255, 0.2) 45%,
+        rgba(255, 255, 255, 0.25) 50%,
+        rgba(135, 206, 250, 0.15) 55%,
+        rgba(0, 191, 255, 0.1) 60%,
+        transparent 65%
+      );
+      animation: aurora-sweep 8s ease-in-out infinite;
+      transform-origin: top right;
+      pointer-events: none; /* 确保不会阻挡点击事件 */
+    }
+
+    /* 第二层极光效果，增加层次感 */
+    &::after {
+      content: '';
+      position: absolute;
+      top: -80%;
+      right: -80%;
+      width: 260%;
+      height: 260%;
+      background: linear-gradient(
+        45deg,
+        transparent 40%,
+        rgba(255, 255, 255, 0.05) 45%,
+        rgba(173, 216, 230, 0.1) 50%,
+        rgba(255, 255, 255, 0.08) 55%,
+        transparent 60%
+      );
+      animation: aurora-sweep-secondary 12s ease-in-out infinite reverse;
+      transform-origin: top right;
+      pointer-events: none;
+    }
 
     /* 标题栏样式 */
     .header-top {
@@ -380,6 +442,58 @@ page {
       width: 100%;
       height: 100%;
     }
+  }
+}
+
+/* 极光动画关键帧 - 45度倾斜扫过（镜像方向：右上到左下） */
+@keyframes aurora-sweep {
+  0% {
+    transform: translate(70%, -70%);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.3;
+  }
+  30% {
+    transform: translate(35%, -35%);
+    opacity: 0.8;
+  }
+  70% {
+    transform: translate(-35%, 35%);
+    opacity: 0.8;
+  }
+  90% {
+    opacity: 0.3;
+  }
+  100% {
+    transform: translate(-70%, 70%);
+    opacity: 0;
+  }
+}
+
+/* 第二层极光动画关键帧 - 45度倾斜扫过（镜像方向：右上到左下） */
+@keyframes aurora-sweep-secondary {
+  0% {
+    transform: translate(90%, -90%);
+    opacity: 0;
+  }
+  15% {
+    opacity: 0.2;
+  }
+  40% {
+    transform: translate(45%, -45%);
+    opacity: 0.6;
+  }
+  60% {
+    transform: translate(-45%, 45%);
+    opacity: 0.6;
+  }
+  85% {
+    opacity: 0.2;
+  }
+  100% {
+    transform: translate(-90%, 90%);
+    opacity: 0;
   }
 }
 </style>

@@ -93,6 +93,12 @@
       "root": "pages/public",
       "pages": [
         {
+          "path": "webview",
+          "style": {
+            "navigationBarTitleText": ""
+          }
+        },
+        {
           "path": "y9net",
           "style": {
             "navigationBarTitleText": ""
