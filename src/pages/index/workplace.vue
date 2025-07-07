@@ -32,8 +32,8 @@
 
 <style scoped>
 .section-title {
-  font-size: 32rpx;
-  font-weight: 600;
+  font-size: 36rpx;
+  font-weight: 700;
   color: #333;
   margin: 30rpx 0 20rpx 0;
   padding: 0 30rpx;
