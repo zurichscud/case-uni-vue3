@@ -108,9 +108,9 @@ function handleItemClick(url: string) {
 }
 
 .section-title {
-  font-family: '钉钉进步体 Regular';
   font-size: 36rpx;
-  font-weight: 700;
+  font-weight: bold;
+  font-family: '钉钉进步体 Regular';
   color: #333;
   margin: 30rpx 0 20rpx 0;
   padding: 0 30rpx;
