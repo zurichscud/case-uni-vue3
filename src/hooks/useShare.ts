@@ -1,4 +1,3 @@
-import { onShareAppMessage } from '@dcloudio/uni-app'
 import { useUserStore } from '@/stores'
 
 interface ShareOptions {

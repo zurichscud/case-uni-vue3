@@ -14,36 +14,32 @@
         手机号快捷登录
       </wd-button>
     </view>
-    <view class="btn_phone" @click="router.go('/pages/login/phoneLogin')">使用短信验证登录/注册</view>
+    <view class="btn_phone" @click="router.go('/pages/login/phoneLogin')">
+      使用短信验证登录/注册
+    </view>
   </view>
 </template>
 
 <script setup>
-import { onShow, onLoad } from '@dcloudio/uni-app'
 import { useUserStore } from '@/stores'
 import * as UserAPI from '@/apis/user'
 import router from '@/utils/router'
 import { SOURCE } from '@/enums/source'
 
-const {login}=useUserStore()
+const { login } = useUserStore()
 
 async function getPhoneNumber(e) {
-  const e2=await uni.login()
-  const { datas } = await UserAPI.getSessionKey({
-    code: e2.code,
-  })
-  const {datas:phoneData}=await UserAPI.getDecryptPhone({
-    sessionKey: datas.sessionKey,
+  const {code} = await uni.login()
+  const { data: phoneData } = await UserAPI.getDecryptPhone({
+    code,
     iv: e.iv,
-    encryptedData: e.encryptedData
+    encryptedData: e.encryptedData,
   })
   login({
-    source:SOURCE.WECHAT,
-    mobile:phoneData.phoneNumber,
+    source: SOURCE.WECHAT,
+    mobile: phoneData.phoneNumber,
   })
-
 }
-
 </script>
 
 <style lang="scss" scoped>

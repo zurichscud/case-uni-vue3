@@ -1,7 +1,7 @@
 import http from '@/utils/http'
 
 //登录
-export function register(data) {
+export function login(data) {
   return http({
     url: 'iclaim/login/register',
     method: 'POST',
