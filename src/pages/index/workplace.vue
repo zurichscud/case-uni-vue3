@@ -15,7 +15,7 @@ interface MenuSection {
 // 定义整个菜单的类型
 interface Menus {
   case: MenuSection
-  group: MenuSection
+  team: MenuSection
   policy: MenuSection
   article: MenuSection
 }
@@ -31,7 +31,7 @@ const menus: Menus = {
       },
     ],
   },
-  group: {
+  team: {
     title: '团队',
     list: [
       {
@@ -85,7 +85,9 @@ function handleItemClick(url: string) {
 
 <template>
   <view v-for="menu in menus" :key="menu.title">
+    <!-- 标题 -->
     <view class="section-title">{{ menu.title }}</view>
+    <!-- 菜单 -->
     <wd-grid clickable :column="4">
       <wd-grid-item
         v-for="item in menu.list"
@@ -103,6 +105,7 @@ function handleItemClick(url: string) {
 </template>
 
 <style scoped lang="scss">
+
 .iconfont {
   font-size: 50rpx;
 }
