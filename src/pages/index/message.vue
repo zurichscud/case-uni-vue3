@@ -57,7 +57,7 @@
 
 <script setup>
 import { ref, computed } from 'vue'
-import { onShow, onLoad } from '@dcloudio/uni-app'
+import { onShow } from '@dcloudio/uni-app'
 import * as MessageAPI from '@/apis/message'
 import { useUserStore } from '@/stores'
 import dayjs from 'dayjs'
@@ -99,7 +99,7 @@ async function getMessageListData(triggerAnimation = false) {
     } else {
       msgList.value.push(...(rows || []))
     }
-    //判断说否还有结束
+    //判断是否结束
     if (msgList.value.length < total) {
       moreStatus.value = 'more'
       pageParams.value.pageNum++
@@ -178,24 +178,18 @@ function formatTime(timeStr) {
   }
 }
 
-onLoad(() => {
-  if (!isLogin.value) {
-    return
-  }
-  pageParams.value.pageNum = 1
-  moreStatus.value = 'more'
-  getMessageListData(true)
-  isFirstLoad.value = false
-})
 
 onShow(() => {
   if (!isLogin.value) {
     return
   }
+  pageParams.value.pageNum = 1
+  moreStatus.value = 'more'
   // 只有非首次加载时才刷新数据（不触发动画）
-  if (!isFirstLoad.value) {
-    pageParams.value.pageNum = 1
-    moreStatus.value = 'more'
+  if (isFirstLoad.value) {
+    getMessageListData(true)
+    isFirstLoad.value = false
+  } else {
     getMessageListData(false)
   }
 })
