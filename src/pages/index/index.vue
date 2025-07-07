@@ -9,7 +9,15 @@
           <text class="title-main">理赔公社</text>
         </view>
         <view class="header-subtitle">
-          <text class="subtitle-text">专业理赔咨询服务平台</text>
+          <view class="subtitle-scroll-container">
+            <text
+              class="subtitle-text"
+              :class="{ 'fade-in': isTextVisible }"
+              :key="currentSubtitleIndex"
+            >
+              {{ slogans[currentSubtitleIndex] }}
+            </text>
+          </view>
         </view>
       </view>
 
@@ -83,15 +91,17 @@
 </template>
 
 <script setup>
-import { ref,computed } from 'vue'
-import { onShow, onLoad,onShareAppMessage} from '@dcloudio/uni-app'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { onShow, onLoad, onShareAppMessage } from '@dcloudio/uni-app'
 import * as ArticleAPI from '@/apis/article'
 import typicalCase from './components/typical-case.vue'
 import router from '@/utils/router'
 import img from '@/static/home/弈寻.png'
 import { useMessageStore, useUserStore } from '@/stores'
 import { useShare } from '@/hooks/useShare'
+import appConfig from '@/config/app'
 
+const slogans = appConfig.slogans
 const { getUnReadNumData } = useMessageStore()
 const { shareOptions } = useShare()
 const userStore = useUserStore()
@@ -103,6 +113,47 @@ const query = {
   pageNum: 1,
 }
 const isLogin = computed(() => userStore.isLogin)
+const currentSubtitleIndex = ref(0)
+const isTextVisible = ref(true)
+let scrollTimer = null
+
+// 处理分享功能
+function handleShare() {
+  uni.share({
+    provider: 'weixin',
+    scene: 'WXSceneSession',
+    type: 0,
+    href: 'https://your-app-link.com',
+    title: '理赔公社',
+    summary: '专业理赔咨询服务平台',
+    imageUrl: 'https://your-app-icon.png',
+    success: function (res) {
+      console.log('分享成功:' + JSON.stringify(res))
+    },
+    fail: function (err) {
+      console.log('分享失败:' + JSON.stringify(err))
+    },
+  })
+}
+
+// 启动滚动文字
+function startScrollText() {
+  scrollTimer = setInterval(() => {
+    isTextVisible.value = false
+    setTimeout(() => {
+      currentSubtitleIndex.value = (currentSubtitleIndex.value + 1) % slogans.length
+      isTextVisible.value = true
+    }, 300) // 淡出过渡时间
+  }, 3000) // 每3秒切换一次
+}
+
+// 停止滚动文字
+function stopScrollText() {
+  if (scrollTimer) {
+    clearInterval(scrollTimer)
+    scrollTimer = null
+  }
+}
 
 async function getArticleListData() {
   const { rows } = await ArticleAPI.getArticleList(query, { isTop: 1 })
@@ -117,12 +168,20 @@ onShow(() => {
   if (isLogin.value) {
     getUnReadNumData()
   }
+  startScrollText() // 页面显示时启动滚动
+})
+
+onMounted(() => {
+  startScrollText()
+})
+
+onUnmounted(() => {
+  stopScrollText()
 })
 
 onShareAppMessage(() => {
   return shareOptions
 })
-
 </script>
 
 <!-- 全局页面样式 -->
@@ -377,10 +436,24 @@ page {
       .header-subtitle {
         margin-top: 16rpx;
 
-        .subtitle-text {
-          font-size: 28rpx;
-          color: rgba(255, 255, 255, 0.8);
-          font-weight: 400;
+        .subtitle-scroll-container {
+          text-align: center;
+          height: 48rpx; /* 固定高度防止布局抖动 */
+          display: flex;
+          align-items: center;
+          justify-content: center;
+
+          .subtitle-text {
+            font-size: 28rpx;
+            color: rgba(255, 255, 255, 0.8);
+            font-weight: 400;
+            transition: opacity 0.3s ease-in-out;
+            opacity: 0;
+
+            &.fade-in {
+              opacity: 1;
+            }
+          }
         }
       }
     }
