@@ -21,7 +21,7 @@
         </view>
 
         <view class="icon-btn" @click="router.go('/pages/AI/AiChatDS')">
-          <text class="iconfont icon-rengongzhineng1 icon-white"></text>
+          <text class="iconfont icon-mind2-full icon-white"></text>
           <text class="btn-text">弈寻AI</text>
         </view>
 

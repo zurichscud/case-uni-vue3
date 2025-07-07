@@ -28,10 +28,10 @@ export const useMessageStore = defineStore('message', {
     },
     async getUnReadNumData() {
       const userStore = useUserStore()
-      const { datas } = await MessageAPI.getUnReadMessage({
+      const { data } = await MessageAPI.getUnReadMessage({
         userId: userStore.id,
       })
-      this.unreadNum = datas.count.caseStatusCount + datas.count.interactCount + datas.count.sysCount
+      this.unreadNum = data.count.caseStatusCount + data.count.interactCount + data.count.sysCount
       if (this.unreadNum > 0) {
         this.setRedDot()
       } else {

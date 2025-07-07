@@ -1,8 +1,8 @@
 @font-face {
   font-family: "iconfont"; /* Project id 4845203 */
-  src: url('//at.alicdn.com/t/c/font_4845203_a54q1q3kqt4.woff2?t=1751856713028') format('woff2'),
-       url('//at.alicdn.com/t/c/font_4845203_a54q1q3kqt4.woff?t=1751856713028') format('woff'),
-       url('//at.alicdn.com/t/c/font_4845203_a54q1q3kqt4.ttf?t=1751856713028') format('truetype');
+  src: url('//at.alicdn.com/t/c/font_4845203_4b9ef8hd87p.woff2?t=1751860490536') format('woff2'),
+       url('//at.alicdn.com/t/c/font_4845203_4b9ef8hd87p.woff?t=1751860490536') format('woff'),
+       url('//at.alicdn.com/t/c/font_4845203_4b9ef8hd87p.ttf?t=1751860490536') format('truetype');
 }
 
 .iconfont {
@@ -11,6 +11,26 @@
   font-style: normal;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-read:before {
+  content: "\e89e";
+}
+
+.icon-list-v3:before {
+  content: "\ea39";
+}
+
+.icon-paper:before {
+  content: "\ea0a";
+}
+
+.icon-note:before {
+  content: "\ea2d";
+}
+
+.icon-erweima:before {
+  content: "\e7dd";
 }
 
 .icon-mind2-full:before {
@@ -39,10 +59,6 @@
 
 .icon-team:before {
   content: "\e8f5";
-}
-
-.icon-qrcode-full:before {
-  content: "\e951";
 }
 
 .icon-history-full:before {
