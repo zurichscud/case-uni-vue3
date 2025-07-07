@@ -102,6 +102,7 @@ import { useShare } from '@/hooks/useShare'
 import appConfig from '@/config/app'
 
 const slogans = appConfig.slogans
+const sloganDuration = appConfig.sloganDuration
 const { getUnReadNumData } = useMessageStore()
 const { shareOptions } = useShare()
 const userStore = useUserStore()
@@ -144,7 +145,7 @@ function startScrollText() {
       currentSubtitleIndex.value = (currentSubtitleIndex.value + 1) % slogans.length
       isTextVisible.value = true
     }, 300) // 淡出过渡时间
-  }, 3000) // 每3秒切换一次
+  }, sloganDuration) // 每3秒切换一次
 }
 
 // 停止滚动文字

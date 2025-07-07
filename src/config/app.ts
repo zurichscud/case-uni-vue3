@@ -9,4 +9,5 @@ export default {
     '汇集行业保险理赔实战专家',
     '你的专业理赔服务平台',
   ],
+  sloganDuration: 3000,
 }
