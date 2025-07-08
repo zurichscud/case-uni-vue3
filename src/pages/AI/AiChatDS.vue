@@ -28,7 +28,7 @@
       <view style="height: 20rpx"></view>
 
       <!-- 初始介绍页面，当没有消息时显示 -->
-      <view class="introduction" v-show="!messages.length">
+      <view class="introduction" v-if="!messages.length">
         <view class="title">
           <image
             class="avatar"
@@ -73,7 +73,7 @@
                 </view>
               </view>
               <!-- 加载动画（生成中显示） -->
-              <view class="loader" v-if="index === lastIndex && isGenerating"></view>
+              <view class="loader" v-if="index === lastIndex && loading"></view>
               <!-- 操作按钮（复制、反馈） -->
               <view class="bottom_btns" v-else>
                 <view class="left"></view>
@@ -88,15 +88,14 @@
             </view>
           </view>
         </view>
-
         <!-- 用户消息（type: 1） -->
         <view class="user_message" v-else>
           <image
             class="avatar"
-            :src="user.photo || 'https://app.y9net.cn/data/00/03/photo/man.png'"
+            :src="userStore.photo"
           ></image>
           <view class="msg_content">
-            <view class="ai_name">{{ user.nickName || '用户' }}</view>
+            <view class="ai_name">{{ userStore.nickName }}</view>
             <view class="msg_bubble">
               <!-- 图片消息 -->
               <image
@@ -163,7 +162,7 @@
             <text class="iconfont icon-closeempty"></text>
           </view>
           <!-- 停止生成按钮（生成中显示） -->
-          <view class="btn-ra up" @click="stop" v-if="isGenerating">
+          <view class="btn-ra up" @click="stop" v-if="loading">
             <text class="iconfont icon-stop"></text>
           </view>
           <!-- 发送消息按钮 -->
@@ -191,7 +190,7 @@
     </view>
 
     <!-- 历史记录侧边栏 -->
-    <u-popup :show="show" mode="left" @close="close">
+    <u-popup v-if="false" :show="show" mode="left" @close="close">
       <view
         class="history-list"
         :style="{
@@ -208,7 +207,7 @@
         <scroll-view scroll-y class="list-scroll">
           <!-- 历史记录项 -->
           <view
-            v-for="item in chatHistory"
+            v-for="item in history"
             :key="item.sessionId"
             class="history-item"
             :class="{ active: item.sessionId === currentHistoryId }"
@@ -219,7 +218,7 @@
           </view>
 
           <!-- 空状态 -->
-          <view v-if="chatHistory.length === 0" class="empty">
+          <view v-if="history.length === 0" class="empty">
             <u-icon name="list" size="60" color="#ccc"></u-icon>
             <text class="empty-text">暂无历史对话</text>
           </view>
@@ -228,624 +227,336 @@
     </u-popup>
 
     <!-- 消息反馈组件 -->
-    <MsgFeedback ref="FeedbackRef"></MsgFeedback>
+    <MsgFeedback ref="FeedbackRef" v-if="false"></MsgFeedback>
   </view>
 </template>
 
-<script>
-import http from '@/common/api/interface.js'
+<script setup>
+import { onLoad, onShow } from '@dcloudio/uni-app'
 import MsgFeedback from './components/MsgFeedback.vue'
+import { nextTick, ref } from 'vue'
+import * as AIAPI from '@/apis/ai'
+import { useUserStore } from '@/stores'
 
-export default {
-  components: {
-    MsgFeedback,
-  },
-  data() {
-    return {
-      inputMsg: '', // 输入框内容
-      messages: [], // 消息列表数组
-      scrollTop: 0, // 滚动位置
-      lastIndex: 0, // 最后一条消息的索引
-      requestTask: null, // 当前请求任务
-      isGenerating: false, // 是否正在生成回复
-      session_id: '', // 会话ID
-      keyboardHeight: 0, // 键盘高度
-      safeAreaInsets: {}, // 安全区域信息
-      show: false, // 是否显示历史记录侧边栏
-      chatHistory: [], // 聊天历史记录
-      currentHistoryId: null, // 当前选中的历史记录ID
-      keyboardHeightChangeHandler: null, // 键盘高度变化监听器
-      textDecoder: null, // 文本解码器（暂未使用）
-      endText: `\n\n**重要提示**\n感谢您访问弈寻！本智能体提供的信息仅供一般参考，不构成正式法律意见。用户应自行判断信息的准确性、完整性或适用性，并承担因依赖此类信息而产生的风险。`, // AI回复结尾提示文本
-      checkReplyInterval: null, // 回复检查定时器ID
-      lastReplyLength: 0, // 上一次回复内容长度
-      replyCheckDuration: 5000, // 回复检查间隔时间（毫秒）
-      partialDataBuffer: '', // 数据流缓冲区，存储不完整数据
-      showPhoto: false, // 是否显示图片上传选项
-      images: [], // 待发送的图片列表
-    }
-  },
-  onShow() {
-    // 监听键盘高度变化
-    this.keyboardHeightChangeHandler = uni.onKeyboardHeightChange((res) => {
-      this.keyboardHeight = res.height
-      // console.log('高度变化', wx.getWindowInfo())
-      this.goBottom()
-    })
-    // 解决安全区失效问题
-    const getSafeAreaTop = () => {
-      const { safeArea } = wx.getWindowInfo()
-      return safeArea?.top || wx.getSystemInfoSync()?.statusBarHeight || 0
-    }
-    this.safeAreaInsets.top = getSafeAreaTop()
-  },
-  onLoad() {
-    // 页面加载时获取所有会话历史
-    this.getAllSession()
-  },
-  computed: {
-    ...mapState(['user']),
-  },
-  methods: {
-    /**
-     * 复制文本到剪贴板
-     * @param {string} text - 要复制的文本内容
-     */
-    copyText(text) {
-      uni.setClipboardData({
-        data: text,
-        success: () => {
-          uni.showToast({
-            title: '复制成功',
-            icon: 'none',
-          })
-        },
-        fail: () => {
-          uni.showToast({
-            title: '复制失败',
-            icon: 'none',
-          })
-        },
-      })
-    },
-
-    /**
-     * 打开消息反馈弹窗
-     * @param {Object} msg - 消息对象
-     */
-    openFeedback(msg) {
-      this.$refs.FeedbackRef.open(msg)
-    },
-
-    /**
-     * 获取所有会话历史记录
-     */
-    getAllSession() {
-      this.$api
-        .getAllSession({
-          userId: this.user.id,
-        })
-        .then((res) => {
-          // 处理会话历史数据，提取真实内容
-          this.chatHistory = res.data.map((item) => {
-            const strs = item.content.split('***')
-            return {
-              ...item,
-              content: strs.length > 1 ? strs[1] : strs[0],
-            }
-          })
-        })
-    },
-
-    /**
-     * 删除历史会话
-     * @param {string} sessionId - 会话ID
-     */
-    delHistory(sessionId) {
-      uni.showModal({
-        title: '确认要删除此会话吗？',
-        success: async (res) => {
-          if (res.confirm) {
-            await this.$api.deleteSession(sessionId)
-            this.getAllSession()
-            return
-          }
-          console.log('取消')
-        },
-      })
-    },
-
-    /**
-     * 将缓冲区数据转换为UTF-8文本
-     * @param {ArrayBuffer} buffer - 二进制数据缓冲区
-     * @returns {string} - 转换后的文本
-     */
-    bufferToUtf8(buffer) {
-      const bytes = buffer
-      let text = ''
-
-      let i = 0
-      while (i < bytes.length) {
-        const byte1 = bytes[i++]
-        if (byte1 < 0x80) {
-          // 单字节字符
-          text += String.fromCharCode(byte1)
-        } else if (byte1 >= 0xc0 && byte1 < 0xe0) {
-          // 双字节字符
-          const byte2 = bytes[i++] & 0x3f
-          text += String.fromCharCode(((byte1 & 0x1f) << 6) | byte2)
-        } else if (byte1 >= 0xe0) {
-          // 三字节字符
-          const byte2 = bytes[i++] & 0x3f
-          const byte3 = bytes[i++] & 0x3f
-          text += String.fromCharCode(((byte1 & 0x0f) << 12) | (byte2 << 6) | byte3)
-        }
-      }
-
-      return text
-    },
-
-    /**
-     * 滚动到底部
-     */
-    goBottom() {
-      // 使用时间戳确保每次值不同
-      const tempTop = Date.now()
-      this.scrollTop = tempTop - 1
-      this.$nextTick(() => {
-        this.scrollTop = tempTop
-      })
-    },
-
-    /**
-     * 停止AI回复生成
-     */
-    stop() {
-      if (this.requestTask) {
-        // 1. 停止接收数据流
-        this.requestTask.offChunkReceived(this.listenerFn)
-        //停止监听回答长度
-        this.stopReplyCheck()
-        // 2. 主动中止请求
-        this.requestTask.abort()
-
-        // 3. 标记当前消息为已完成
-        const lastMsg = this.messages[this.lastIndex]
-        if (lastMsg) {
-          this.$set(this.messages, this.lastIndex, {
-            ...lastMsg,
-            msg: {
-              ...lastMsg.msg,
-              reply: (lastMsg.msg.reply || '') + '\n\n[生成已停止]',
-            },
-          })
-        }
-
-        // 4. 清空请求任务引用
-        this.requestTask = null
-
-        // 5. 提示用户
-        uni.showToast({
-          title: '已停止生成',
-          icon: 'none',
-          duration: 2000,
-        })
-
-        this.isGenerating = false
-
-        // 6. 确保滚动到底部
-        this.$nextTick(() => {
-          this.scrollTop = Date.now()
-        })
-      }
-    },
-
-    /**
-     * 数据流监听函数，处理服务器返回的实时数据
-     * replay类型表示回答，thought类型表示思考，reference类型表示引用
-     * @param {Object} res - 响应数据
-     */
-    listenerFn(res) {
-      try {
-        let chunkData = res.data
-        let un8 = new Uint8Array(chunkData)
-        let str = this.bufferToUtf8(un8)
-        console.log('看看解析', str)
-        // 释放内存
-        chunkData = null
-        un8 = null
-
-        // 拼接缓冲区数据
-        const rawData = this.partialDataBuffer + str
-        // 使用更精确的正则匹配完整结构
-        const eventMatch = rawData.match(/event:(\w+)\s+data:(\{.*?\})(?=\s|$)/s)
-        if (eventMatch && eventMatch[2]) {
-          try {
-            // console.log('看看解析前的内容：', rawData)
-            const dataObj = JSON.parse(eventMatch[2])
-            console.log('[ dataObj ]-489', dataObj)
-
-            // 问题中包含敏感内容
-            if (dataObj.payload?.is_evil) {
-              this.$set(this.messages, this.lastIndex, {
-                type: 0,
-                msg: {
-                  reply: '涉及敏感内容，停止回答',
-                },
-              })
-              this.isGenerating = false
-              this.goBottom()
-              this.stopReplyCheck() //停止监听回答长度
-            }
-
-            // 过滤自己发送的消息
-            if (dataObj.payload?.is_from_self) {
-              // 清空缓冲区
-              this.partialDataBuffer = ''
-              return
-            }
-
-            const currentMessage = this.messages[this.lastIndex]
-            if (!currentMessage) {
-              // 清空缓冲区
-              this.partialDataBuffer = ''
-              return
-            }
-
-            // 构建更新的消息对象
-            const update = {
-              ...currentMessage,
-              msg: {
-                ...currentMessage.msg,
-              },
-            }
-
-            // 根据数据类型更新对应内容
-            if (dataObj.type === 'reply') {
-              // AI回复内容
-              this.session_id = dataObj.payload.session_id
-              update.msg.reply = dataObj.payload.is_final
-                ? `${dataObj.payload.content}${this.endText}`
-                : dataObj.payload.content
-            } else if (dataObj.type === 'thought') {
-              // AI思考过程
-              this.session_id = dataObj.payload.session_id
-              update.msg.thought = dataObj.payload?.procedures[0]?.debugging?.content || ''
-            } else if (dataObj.type === 'reference') {
-              // 引用文献
-              const refe = dataObj.payload?.references.filter((a) => a.name) || []
-              // 去重操作，依据name字段
-              const uniqueReferences =
-                refe.filter(
-                  (reference, index, self) =>
-                    index === self.findIndex((r) => r.name === reference.name),
-                ) || ''
-              update.msg.references = uniqueReferences
-            }
-
-            // 更新消息
-            this.$set(this.messages, this.lastIndex, update)
-
-            // 如果是最终回复，停止生成
-            if (dataObj.type === 'reply' && dataObj.payload.is_final) {
-              this.isGenerating = false
-              this.goBottom()
-              this.stopReplyCheck() //停止监听回答长度
-            }
-
-            // 解决完整字符串结尾出现event的情况
-            const strArr = str.split('\n\nevent')
-            if (strArr.length > 1) {
-              this.partialDataBuffer = 'event' + strArr[1]
-            } else {
-              // 清空缓冲区
-              this.partialDataBuffer = ''
-            }
-          } catch (e) {
-            // JSON解析失败时
-            console.error('JSON解析失败', e)
-            // 清空缓冲区
-            this.partialDataBuffer = ''
-          }
-        } else {
-          // 没有完整结构时缓存数据
-          this.partialDataBuffer = rawData
-          return
-        }
-        str = null
-
-        this.goBottom()
-      } catch (e) {
-        // ... 错误处理 ...
-        console.error('解析', e)
-        // 清空缓冲区
-        this.partialDataBuffer = ''
-      }
-    },
-
-    /**
-     * 过滤图片并生成Markdown格式
-     * @returns {string} - 图片的Markdown格式字符串
-     */
-    fliterImages() {
-      return this.images.map((item) => `![](${item})`).join('\n') + '***'
-    },
-
-    /**
-     * 开始回复长度检查（防止卡死）
-     */
-    startReplyCheck() {
-      // 清除之前的定时器
-      this.stopReplyCheck()
-
-      this.checkReplyInterval = setInterval(() => {
-        const lastMessage = this.messages[this.messages.length - 1]
-        if (lastMessage && lastMessage.msg) {
-          const currentReplyLength = lastMessage.msg.reply ? lastMessage.msg.reply.length : 0
-
-          // 检查长度是否变化
-          if (currentReplyLength === this.lastReplyLength && currentReplyLength !== 0) {
-            // 长度未变，调用stop
-            this.stop()
-          } else {
-            // 更新上一个长度
-            this.lastReplyLength = currentReplyLength
-          }
-        }
-        console.log('loading')
-      }, this.replyCheckDuration)
-    },
-
-    /**
-     * 停止回复长度检查
-     */
-    stopReplyCheck() {
-      if (this.checkReplyInterval) {
-        clearInterval(this.checkReplyInterval)
-        this.checkReplyInterval = null
-      }
-    },
-
-    /**
-     * 发送消息到服务器
-     */
-    async sendMessage() {
-      this._cleanupRequest() // 清理之前的请求
-      if (!this.inputMsg) {
-        return uni.showToast({
-          title: '请输入问题',
-          icon: 'none',
-          duration: 2000,
-        })
-      }
-
-      console.log(this.images)
-      // 先发送图片消息
-      if (this.images.length) {
-        this.images.forEach((item) => {
-          this.messages.push({
-            type: 1,
-            msg: item,
-            isImage: true,
-          })
-        })
-      }
-
-      // 添加用户消息
-      this.messages.push({
-        type: 1,
-        msg: this.inputMsg,
-        isImage: false,
-      })
-
-      // 添加初始AI响应消息
-      this.messages.push({
-        type: 0,
-        msg: {},
-      })
-      this.lastIndex = this.messages.length - 1
-      this.inputMsg = '' // 清空输入框
-
-      this.goBottom()
-      // 正在生成的标记
-      this.isGenerating = true
-      this.startReplyCheck() // 启动回复检查
-      const token = uni.getStorageSync('user')?.token
-      // 发起流式请求
-      this.requestTask = await uni.request({
-        url: http.config.baseUrl + 'chat-room/send',
-        method: 'POST',
-        enableChunked: true, // 启用分块传输
-        timeout: 10000 * 60 * 3, // 3分钟超时
-        header: {
-          'X-DashScope-SSE': 'enable',
-          Authorization: `Bearer ${token}`,
-        },
-        data: {
-          // userId: this.user.id,
-          question: this.images.length
-            ? this.fliterImages() + this.messages[this.lastIndex - 1].msg
-            : this.messages[this.lastIndex - 1].msg,
-          sessionId: this.session_id || '',
-        },
-        success: (res) => {
-          console.log('请求成功', res)
-        },
-        fail: (e) => {
-          console.log('出现错误了', e)
-        },
-      })
-      this.showPhoto = false
-      this.images = []
-      // 监听数据流：uniapp的requestTask对象，监听数据流
-      this.requestTask.onChunkReceived(this.listenerFn)
-    },
-
-    /**
-     * 清理当前请求
-     */
-    _cleanupRequest() {
-      if (this.requestTask) {
-        this.requestTask.abort() // 中止请求
-        this.requestTask = null // 清空引用
-      }
-    },
-
-    /**
-     * 返回上一页或主页
-     */
-    goBack() {
-      if (this.isGenerating) {
-        this.stop()
-      }
-      // 获取当前页面栈
-      const pages = getCurrentPages()
-
-      // 判断页面栈深度
-      if (pages.length === 1) {
-        // 返回小程序主页
-        uni.switchTab({
-          url: '/pages/index/index',
-        })
-      } else {
-        // 正常返回上一页
-        uni.navigateBack()
-      }
-    },
-
-    /**
-     * 关闭历史记录侧边栏
-     */
-    close() {
-      this.show = false
-    },
-
-    /**
-     * 加载指定的历史会话
-     * @param {Object} item - 历史会话项
-     */
-    async loadHistory(item) {
-      if (this.isGenerating) {
-        this.stop()
-      }
-      this.currentHistoryId = item.sessionId
-      // 加载对应历史记录的逻辑
-      this.session_id = item.sessionId
-      const res = await this.$api.getSessionMessages({
-        sessionId: this.session_id,
-      })
-
-      console.log(res.data)
-      this.messages = []
-      // 解析历史消息并重建消息列表
-      res.data.reverse().forEach((item) => {
-        // 机器人回答
-        if (item.type === 0) {
-          let references = []
-          // 处理参考文献
-          if (item.reference) {
-            references = JSON.parse(item.reference).map((item) => {
-              return JSON.parse(item)
-            })
-          }
-          this.messages.push({
-            type: 0,
-            msg: {
-              thought: item.thought,
-              reply: item.content + this.endText,
-              references: references,
-            },
-          })
-          // 用户提问
-        } else {
-          const strs = item.content?.split('***')
-          // 处理包含图片的消息
-          if (strs.length > 1) {
-            const regex = /!\[.*?\]\((.*?)\)/g
-            const urls = []
-            let match
-            // 提取图片URL
-            while ((match = regex.exec(strs[0])) !== null) {
-              urls.push(match[1])
-            }
-            // 添加图片消息
-            urls.forEach((img) => {
-              this.messages.push({
-                type: 1,
-                msg: img,
-                isImage: true,
-              })
-            })
-            // 添加文本消息
-            this.messages.push({
-              type: 1,
-              msg: strs[1],
-              isImage: false,
-            })
-          } else {
-            // 纯文本消息
-            this.messages.push({
-              type: 1,
-              msg: strs[0],
-              isImage: false,
-            })
-          }
-        }
-      })
-
-      this.close()
-      this.goBottom()
-    },
-
-    /**
-     * 上传图片
-     * @param {string} type - 图片来源类型：'camera'拍照 或 'album'相册
-     */
-    uploadImage(type) {
-      uni.chooseMedia({
-        sourceType: [type],
-        success: (res) => {
-          res.tempFiles.forEach((item) => {
-            uni.uploadFile({
-              url: http.config.baseUrl + 'iclaim/user/photoUpload2',
-              name: 'photo',
-              header: {
-                Authorization: `Bearer ${uni.getStorageSync('user')?.token}`,
-              },
-              filePath: item.tempFilePath,
-              success: (re) => {
-                const result = JSON.parse(re.data)
-                if (result.code === 200) {
-                  this.images.push(result.data)
-                } else {
-                  uni.showToast({
-                    title: '图片体积过大，上传失败！',
-                    icon: 'none',
-                  })
-                }
-              },
-            })
-          })
-        },
-      })
-    },
-
-    /**
-     * 删除待发送的图片
-     * @param {number} index - 图片在数组中的索引
-     */
-    delImage(index) {
-      this.images.splice(index, 1)
-    },
-  },
-  beforeDestroy() {
-    // 页面销毁前清理资源
-    // 解绑键盘高度变化监听
-    uni.offKeyboardHeightChange(this.keyboardHeightChangeHandler)
-    this._cleanupRequest() // 清理请求
-    this.stopReplyCheck() // 清理定时器
-  },
+const userStore = useUserStore()
+const keyboardHeight = ref(0)
+const scrollTop = ref(0)
+const history = ref([])
+const inputMsg = ref('') //输入框内容
+const images = ref([])
+const messages = ref([])
+const lastIndex = ref(0)
+const loading = ref(false)
+const checkReplyInterval = ref(null)
+const safeAreaInsets = ref({})
+const lastReplyLength = ref(0)
+const MSG_TYPE = {
+  AI: 0,
+  USER: 1,
 }
+const endText = `\n\n**重要提示**\n
+    感谢您访问弈寻！本智能体提供的信息仅供一般参考，不构成正式法律意见。
+    用户应自行判断信息的准确性、完整性或适用性，并承担因依赖此类信息而产生的风险。` // AI回复结尾提示文本
+
+let requestTask = null
+let session_id = ''
+const showPhoto = ref(false)
+let partialDataBuffer = ''
+
+async function sendMessage() {
+  if (!inputMsg.value) {
+    uni.showToast({
+      title: '请输入问题',
+      icon: 'none',
+    })
+    return
+  }
+  if (images.value.length) {
+    images.value.forEach((item) => {
+      messages.value.push({
+        type: MSG_TYPE.USER,
+        msg: item,
+        isImage: true,
+      })
+    })
+  }
+  messages.value.push({
+    type: MSG_TYPE.USER,
+    msg: inputMsg.value,
+    isImage: false,
+  })
+  //提前准备一个ai消息对象，用于接收回复
+  messages.value.push({
+    type: MSG_TYPE.AI,
+    msg: {},
+  })
+  lastIndex.value = messages.value.length - 1
+  inputMsg.value = ''
+  goBottom()
+  loading.value = true
+  startReplyCheck()
+
+  requestTask = uni.request({
+    url: import.meta.env.VITE_BASE_URL + '/chat-room/send',
+    method: 'POST',
+    enableChunked: true,
+    timeout: 1000 * 60 * 3,
+    header: {
+      'X-DashScope-SSE': 'enable',
+      Authorization: `Bearer ${userStore.token}`,
+    },
+    data: {
+      question: images.value.length
+        ? fliterImages() + messages[lastIndex.value - 1].msg
+        : messages.value[lastIndex.value - 1].msg,
+      sessionId: session_id,
+    },
+    success: (res) => {
+      //流式传输结束后触发
+      console.log('请求成功', res)
+    },
+    fail: (e) => {
+      console.log('出现错误了', e)
+    },
+  })
+
+  showPhoto.value = false
+  images.value = []
+  requestTask.onChunkReceived(listenerFn)
+}
+
+function cleanupRequest() {
+  if (requestTask) {
+    requestTask.abort()
+    requestTask = null
+  }
+}
+
+function listenerFn({ data }) {
+  try {
+    let un8 = new Uint8Array(data)
+    let jsonString = bufferToUtf8(un8)
+    console.log('*********jsonString*********', jsonString)
+    un8 = null
+    const rawData = partialDataBuffer + jsonString //JSON字符串
+    // console.log('*********parseSSEString*********', parseSSEString(rawData))
+    const eventMatch = rawData.match(/event:(\w+)\s+data:(\{.*?\})(?=\s|$)/s)
+    if (eventMatch && eventMatch[2]) {
+      const dataObj = JSON.parse(eventMatch[2])
+      console.log('[ dataObj ]-489', dataObj)
+      const { type, payload } = dataObj
+      if (payload.is_evil) {
+        messages.value = {
+          type: 0,
+          msg: {
+            reply: '涉及敏感内容，停止回答',
+          },
+        }
+        loading.value = false
+        stopReplyCheck()
+        goBottom()
+      }
+      if (payload.is_from_self) {
+        partialDataBuffer = ''
+        return
+      }
+      const currentMessage = messages.value[lastIndex.value]
+      //{type:0,msg:{reply:'',thought:'',references:[]}}
+      console.log('currentMessage', currentMessage)
+      const record = {
+        ...currentMessage,
+      }
+      console.log('record', record)
+      if (type === 'reply') {
+        session_id = payload.session_id
+        record.msg.reply = payload.content
+        if (payload.is_final) {
+          //如果结束需要附带免责声明
+          record.msg.reply += endText
+        }
+      } else if (type === 'thought') {
+        session_id = payload.session_id
+        record.msg.thought = payload?.procedures[0]?.debugging?.content || ''
+      } else if (type === 'reference') {
+        // 引用文献
+        const refe = payload?.references.filter((a) => a.name) || []
+        // 去重操作，依据name字段
+        const uniqueReferences =
+          refe.filter(
+            (reference, index, self) => index === self.findIndex((r) => r.name === reference.name),
+          ) || ''
+        record.msg.references = uniqueReferences
+      }
+      messages.value[lastIndex.value] = record
+      //消息队列，ai消息type为0。type=0时，msg为对象，包含reply、thought、references
+      //用户消息type为1。type=1时，msg为字符串，isImage是否为图片
+      console.log(messages.value)
+
+      // 如果是最终回复，停止生成
+      if (type === 'reply' && payload.is_final) {
+        loading.value = false
+        goBottom()
+        stopReplyCheck() //停止监听回答长度
+      }
+
+      // 解决完整字符串结尾出现event的情况
+      const strArr = jsonString.split('\n\nevent')
+      if (strArr.length > 1) {
+        partialDataBuffer = 'event' + strArr[1]
+      } else {
+        // 清空缓冲区
+        partialDataBuffer = ''
+      }
+    } else {
+      partialDataBuffer = rawData
+    }
+  } catch (e) {
+    console.log('error', e)
+  }
+  goBottom()
+}
+
+function parseSSEString(sseString) {
+  const lines = sseString.trim().split('\n')
+  let eventType = ''
+  let data = ''
+
+  for (const line of lines) {
+    if (line.startsWith('event:')) {
+      eventType = line.substring(6).trim()
+    } else if (line.startsWith('data:')) {
+      // 拼接多行数据（如果存在）
+      data += line.substring(5).trim() + '\n'
+    }
+  }
+
+  try {
+    const parsedData = JSON.parse(data.trim())
+    return { eventType, data: parsedData }
+  } catch (e) {
+    throw new Error('解析JSON失败，错误字符串: ' + sseString)
+  }
+}
+
+function fliterImages() {
+  return images.value.map((item) => `![](${item})`).join('\n') + '***'
+}
+
+function stopReplyCheck() {
+  if (checkReplyInterval.value) {
+    clearInterval(checkReplyInterval.value)
+    checkReplyInterval.value = null
+  }
+}
+
+//滚动到底部
+function goBottom() {
+  setTimeout(() => {
+    const tempTop = Date.now()
+    scrollTop.value = tempTop - 1
+    nextTick(() => {
+      scrollTop.value = tempTop
+    })
+  }, 100)
+}
+
+async function getChatHistoryData() {
+  const { data } = await AIAPI.getChatHistory({ userId: userStore.id })
+  history.value = data.map((item) => {
+    const strs = item.content.split('***')
+    return {
+      ...item,
+      content: strs.length > 1 ? strs[1] : strs[0],
+    }
+  })
+}
+
+function startReplyCheck() {
+  stopReplyCheck()
+  checkReplyInterval.value = setInterval(() => {
+    const lastMessage = messages.value[messages.value.length - 1]
+    if (lastMessage.value && lastMessage.value.msg) {
+      const currentReplyLength = lastMessage.value.msg.reply
+        ? lastMessage.value.msg.reply.length
+        : 0
+      if (currentReplyLength === lastReplyLength.value && currentReplyLength !== 0) {
+        stop()
+      } else {
+        lastReplyLength.value = currentReplyLength
+      }
+    }
+  }, 5000)
+}
+
+function bufferToUtf8(buffer) {
+  const bytes = buffer
+  let text = ''
+
+  let i = 0
+  while (i < bytes.length) {
+    const byte1 = bytes[i++]
+    if (byte1 < 0x80) {
+      // 单字节字符
+      text += String.fromCharCode(byte1)
+    } else if (byte1 >= 0xc0 && byte1 < 0xe0) {
+      // 双字节字符
+      const byte2 = bytes[i++] & 0x3f
+      text += String.fromCharCode(((byte1 & 0x1f) << 6) | byte2)
+    } else if (byte1 >= 0xe0) {
+      // 三字节字符
+      const byte2 = bytes[i++] & 0x3f
+      const byte3 = bytes[i++] & 0x3f
+      text += String.fromCharCode(((byte1 & 0x0f) << 12) | (byte2 << 6) | byte3)
+    }
+  }
+
+  return text
+}
+
+function stop() {}
+
+//复制文本
+function copyText(text) {
+  uni.setClipboardData({
+    data: text,
+    success: () => {
+      uni.showToast({
+        title: '复制成功',
+        icon: 'none',
+      })
+    },
+    fail: () => {
+      uni.showToast({
+        title: '复制失败',
+        icon: 'none',
+      })
+    },
+  })
+}
+
+function openFeedback(msg) {}
+
+function delHistory(sessionId) {}
+
+function loadHistory(item) {}
+
+onLoad(() => {
+  getChatHistoryData()
+})
+
+onShow(() => {
+  uni.onKeyboardHeightChange((res) => {
+    console.log(res)
+    keyboardHeight.value = res.height
+    goBottom()
+  })
+  // 解决安全区失效问题
+  const getSafeAreaTop = () => {
+    const { safeArea } = wx.getWindowInfo()
+    return safeArea?.top || wx.getSystemInfoSync()?.statusBarHeight || 0
+  }
+  safeAreaInsets.value.top = getSafeAreaTop()
+})
 </script>
 
 <style lang="scss" scoped>

@@ -31,7 +31,6 @@ declare module 'vue' {
     UniSteps: typeof import('./src/components/uni-steps/uni-steps.vue')['default']
     UniTransition: typeof import('./src/components/uni-transition/uni-transition.vue')['default']
     WdButton: typeof import('wot-design-uni/components/wd-button/wd-button.vue')['default']
-    WdDivider: typeof import('wot-design-uni/components/wd-divider/wd-divider.vue')['default']
     WdGrid: typeof import('wot-design-uni/components/wd-grid/wd-grid.vue')['default']
     WdGridItem: typeof import('wot-design-uni/components/wd-grid-item/wd-grid-item.vue')['default']
     WdMessageBox: typeof import('wot-design-uni/components/wd-message-box/wd-message-box.vue')['default']

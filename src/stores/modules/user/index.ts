@@ -2,7 +2,7 @@ import { defineStore } from 'pinia'
 import * as UserAPI from '@/apis/user'
 import type { UserState } from './types'
 import { getRemarkText } from '@/enums/remark'
-import defaultAvatar from '@/static/user.png'
+import appConfig from '@/config/app'
 
 // 使用命名导出取代默认导出
 export const useUserStore = defineStore('user', {
@@ -11,7 +11,7 @@ export const useUserStore = defineStore('user', {
     token: undefined,
     nickName: undefined,
     mobile: undefined,
-    photo: defaultAvatar,
+    photo: appConfig.defaultAvatar,
     remark: undefined,
     pid: undefined,
   }),
