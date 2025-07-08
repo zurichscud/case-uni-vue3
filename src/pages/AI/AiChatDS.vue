@@ -223,7 +223,7 @@
 </template>
 
 <script setup>
-import { onLoad, onShow } from '@dcloudio/uni-app'
+import { onLoad, onShow, onHide, onUnload } from '@dcloudio/uni-app'
 import MsgFeedback from './components/MsgFeedback.vue'
 import { nextTick, ref, computed } from 'vue'
 import * as AIAPI from '@/apis/ai'
@@ -250,10 +250,11 @@ const MSG_TYPE = {
 let requestTask = null
 let session_id = ''
 const showPhoto = ref(false)
-let partialDataBuffer = ''
+let partialDataBuffer = ''//当前缓冲区
 
+// 重新实现SSE消息发送功能
 async function sendMessage() {
-  if (!userInput.value) {
+  if (!userInput.value.trim()) {
     uni.showToast({
       title: '请输入问题',
       icon: 'none',
@@ -261,7 +262,10 @@ async function sendMessage() {
     return
   }
 
-  //处理图片
+  // 清理之前的请求
+  cleanupRequest()
+
+  // 处理图片消息
   if (images.value.length) {
     images.value.forEach((item) => {
       messages.value.push({
@@ -272,159 +276,319 @@ async function sendMessage() {
     })
   }
 
+  // 添加用户消息
+  const userMessage = userInput.value.trim()
   messages.value.push({
     type: MSG_TYPE.USER,
-    msg: userInput.value,
+    msg: userMessage,
     isImage: false,
   })
 
-  //提前准备一个ai消息对象，用于接收回复
+  // 准备AI回复消息对象
   messages.value.push({
     type: MSG_TYPE.AI,
-    msg: {},
+    msg: {
+      reply: '',
+      thought: '',
+      references: [],
+    },
   })
+
+  // 重置状态
+  const inputContent = userInput.value
   userInput.value = ''
+  showPhoto.value = false
   goBottom()
   loading.value = true
   startReplyCheck()
 
-  requestTask = uni.request({
-    url: import.meta.env.VITE_BASE_URL + '/chat-room/send',
-    method: 'POST',
-    enableChunked: true,
-    timeout: 1000 * 60 * 3,
-    header: {
-      'X-DashScope-SSE': 'enable',
-      Authorization: `Bearer ${userStore.token}`,
-    },
-    data: {
-      question: images.value.length
-        ? imgsToMarkdown(images.value) + messages[lastIndex.value - 1].msg
-        : messages.value[lastIndex.value - 1].msg,
+  // 清空缓冲区
+  partialDataBuffer = ''
+
+  try {
+    // 构建请求数据
+    const requestData = {
+      question: images.value.length ? imgsToMarkdown(images.value) + inputContent : inputContent,
       sessionId: session_id,
-    },
-    success: (res) => {
-      //流式传输结束后触发
-      console.log('请求成功', res)
-    },
-    fail: (e) => {
-      console.log('出现错误了', e)
+    }
+    console.log('发送SSE请求:', requestData)
+    requestTask = uni.request({
+      url: import.meta.env.VITE_BASE_URL + '/chat-room/send',
+      method: 'POST',
+      enableChunked: true,
+      timeout: 1000 * 60 * 3, // 3分钟超时
+      header: {
+        'X-DashScope-SSE': 'enable',
+        Authorization: `Bearer ${userStore.token}`,
+        'Content-Type': 'application/json',
+      },
+      data: requestData,
+      success: (res) => {
+        console.log('SSE请求成功完成:', res)
+        // 确保停止加载状态
+        if (loading.value) {
+          loading.value = false
+          stopReplyCheck()
+        }
+      },
+      fail: (error) => {
+        console.error('SSE请求失败:', error)
+        handleRequestError(error)
+      },
+    })
+
+    // 监听数据流
+    requestTask.onChunkReceived(handleSSEData)
+
+    // 清空已处理的图片
+    images.value = []
+  } catch (error) {
+    console.error('发送消息时出错:', error)
+    handleRequestError(error)
+  }
+}
+
+// 清理请求资源
+function cleanupRequest() {
+  if (requestTask) {
+    try {
+      requestTask.abort()
+    } catch (e) {
+      console.warn('清理请求时出错:', e)
+    }
+    requestTask = null
+  }
+  partialDataBuffer = ''
+}
+
+// 处理请求错误
+function handleRequestError(error) {
+  loading.value = false
+  stopReplyCheck()
+
+  // 移除最后添加的空AI消息
+  if (messages.value.length > 0 && messages.value[messages.value.length - 1].type === MSG_TYPE.AI) {
+    messages.value.pop()
+  }
+
+  // 添加错误消息
+  messages.value.push({
+    type: MSG_TYPE.AI,
+    msg: {
+      reply: '抱歉，网络连接出现问题，请稍后重试。',
+      thought: '',
+      references: [],
     },
   })
 
-  showPhoto.value = false
-  images.value = []
-  requestTask.onChunkReceived(listenerFn)
-}
+  uni.showToast({
+    title: error.errMsg || '网络错误，请重试',
+    icon: 'none',
+    duration: 2000,
+  })
 
-function cleanupRequest() {
-  if (requestTask) {
-    requestTask.abort()
-    requestTask = null
-  }
-}
-
-function listenerFn({ data }) {
-  try {
-    let un8 = new Uint8Array(data)
-    let jsonString = bufferToUtf8(un8)
-    console.log('*********jsonString*********', jsonString)
-    un8 = null
-    const rawData = partialDataBuffer + jsonString //JSON字符串
-    const eventMatch = rawData.match(/event:(\w+)\s+data:(\{.*?\})(?=\s|$)/s)//过滤
-    if (eventMatch && eventMatch[2]) {
-      const dataObj = JSON.parse(eventMatch[2])
-      console.log('[ dataObj ]-489', dataObj)
-      const { type, payload } = dataObj
-      if (payload.is_evil) {
-        messages.value = {
-          type: 0,
-          msg: {
-            reply: '涉及敏感内容，停止回答',
-          },
-        }
-        loading.value = false
-        stopReplyCheck()
-        goBottom()
-      }
-      if (payload.is_from_self) {
-        partialDataBuffer = ''
-        return
-      }
-      const currentMessage = messages.value[lastIndex.value]
-      //{type:0,msg:{reply:'',thought:'',references:[]}}
-      const record = {
-        ...currentMessage,
-      }
-      if (type === 'reply') {
-        session_id = payload.session_id
-        record.msg.reply = payload.content
-        if (payload.is_final) {
-          //如果结束需要附带免责声明
-          record.msg.reply += END_TEXT
-        }
-      } else if (type === 'thought') {
-        session_id = payload.session_id
-        record.msg.thought = payload?.procedures[0]?.debugging?.content || ''
-      } else if (type === 'reference') {
-        // 引用文献
-        const refe = payload?.references.filter((a) => a.name) || []
-        // 去重操作，依据name字段
-        const uniqueReferences =
-          refe.filter(
-            (reference, index, self) => index === self.findIndex((r) => r.name === reference.name),
-          ) || ''
-        record.msg.references = uniqueReferences
-      }
-      messages.value[lastIndex.value] = record
-      //消息队列，ai消息type为0。type=0时，msg为对象，包含reply、thought、references
-      //用户消息type为1。type=1时，msg为字符串，isImage是否为图片
-      // console.log(messages.value)
-
-      // 如果是最终回复，停止生成
-      if (type === 'reply' && payload.is_final) {
-        loading.value = false
-        goBottom()
-        stopReplyCheck() //停止监听回答长度
-      }
-
-      // 解决完整字符串结尾出现event的情况
-      const strArr = jsonString.split('\n\nevent')
-      if (strArr.length > 1) {
-        partialDataBuffer = 'event' + strArr[1]
-      } else {
-        // 清空缓冲区
-        partialDataBuffer = ''
-      }
-    } else {
-      partialDataBuffer = rawData
-    }
-  } catch (e) {
-    console.log('error', e)
-  }
   goBottom()
 }
 
-function parseSSEString(sseString) {
-  // 第一步：取出 JSON 部分
-const jsonLine = sseString.split('\n').find(line => line.startsWith('data:'));
-const jsonString = jsonLine?.slice(5); // 去掉前缀 "data:"
+function handleSSEData({ data }) {
+  try {
+    // 将接收到的数据转换为字符串
+    const uint8Array = new Uint8Array(data)
+    const newDataChunk = bufferToUtf8(uint8Array)
 
-// 第二步：解析 JSON
-const data = JSON.parse(jsonString);
+    // 数据可能不完整，需要缓冲区拼接
+    partialDataBuffer += newDataChunk
 
-// 第三步：提取需要的信息
-const procedure = data.payload.procedures[0];
-const debuggingContent = procedure.debugging.content;
-const elapsed = procedure.elapsed;
-const title = procedure.title;
-const icon = procedure.icon;
+    processSSEBuffer()
+  } catch (error) {
+    console.error('处理SSE数据时出错:', error)
+  }
+}
 
-// 打印结果
-console.log("标题：", title);
-console.log("耗时：", elapsed, "毫秒");
-console.log("思考内容：", debuggingContent);
-console.log("图标 URL：", icon);
+// 处理SSE缓冲区数据，缓冲区中的数据结构才是完整的
+function processSSEBuffer() {
+  try {
+    // 按双换行符分割事件
+    const events = partialDataBuffer.split('\n\n')
+
+    // 保留最后一个可能不完整的事件
+    partialDataBuffer = events.pop() || ''
+
+    // 处理完整的事件
+    events.forEach((eventData) => {
+      if (eventData.trim()) {
+        parseSSEEvent(eventData)
+      }
+    })
+  } catch (error) {
+    console.error('处理SSE缓冲区时出错:', error)
+  }
+}
+
+// 解析单个SSE事件
+function parseSSEEvent(eventData) {
+  try {
+    const lines = eventData.trim().split('\n')
+    let eventType = ''
+    let data = ''
+
+    // 解析SSE事件格式
+    lines.forEach((line) => {
+      if (line.startsWith('event:')) {
+        eventType = line.slice(6).trim()
+      } else if (line.startsWith('data:')) {
+        data = line.slice(5).trim()
+      }
+    })
+
+    if (!eventType || !data) {
+      console.log('跳过不完整的SSE事件:', eventData)
+      return
+    }
+
+    // console.log('解析SSE事件:', { eventType, data })
+
+    // 解析JSON数据
+    let parsedData
+    try {
+      parsedData = JSON.parse(data)
+    } catch (jsonError) {
+      console.error('JSON解析失败:', jsonError, 'data:', data)
+      return
+    }
+
+    // 处理解析后的数据
+    handleParsedSSEData(eventType, parsedData)
+  } catch (error) {
+    console.error('解析SSE事件时出错:', error)
+  }
+}
+
+// 处理解析后的SSE数据
+function handleParsedSSEData(eventType, parsedData) {
+  try {
+    const { type, payload } = parsedData
+
+    if (!payload) {
+      console.warn('SSE数据缺少payload:', parsedData)
+      return
+    }
+
+    // console.log('处理SSE数据:', { type, payload })
+
+    // 检查敏感内容
+    if (payload.is_evil) {
+      const currentMessage = messages.value[lastIndex.value]
+      if (currentMessage && currentMessage.type === MSG_TYPE.AI) {
+        currentMessage.msg = {
+          reply: '涉及敏感内容，停止回答',
+          thought: '',
+          references: [],
+        }
+        messages.value[lastIndex.value] = currentMessage
+      }
+      loading.value = false
+      stopReplyCheck()
+      goBottom()
+      return
+    }
+
+    // 跳过自己发送的消息
+    if (payload.is_from_self) {
+      return
+    }
+
+    // 更新session_id
+    if (payload.session_id) {
+      session_id = payload.session_id
+    }
+
+    // 获取当前AI消息
+    const currentMessage = messages.value[lastIndex.value]
+    if (!currentMessage || currentMessage.type !== MSG_TYPE.AI) {
+      console.warn('当前消息不是AI消息，跳过处理')
+      return
+    }
+
+    // 深拷贝当前消息以避免响应性问题
+    const updatedMessage = {
+      ...currentMessage,
+      msg: {
+        ...currentMessage.msg,
+      },
+    }
+
+    // 根据数据类型更新消息内容
+    switch (type) {
+      case 'reply':
+        handleReplyData(updatedMessage, payload)
+        break
+      case 'thought':
+        handleThoughtData(updatedMessage, payload)
+        break
+      case 'reference':
+        handleReferenceData(updatedMessage, payload)
+        break
+      default:
+        console.log('未知的SSE数据类型:', type)
+    }
+
+    // 更新消息数组
+    messages.value[lastIndex.value] = updatedMessage
+
+    // 自动滚动到底部
+    goBottom()
+  } catch (error) {
+    console.error('处理SSE数据时出错:', error)
+  }
+}
+
+// 处理回复数据
+function handleReplyData(message, payload) {
+  try {
+    let replyContent = payload.content || ''
+
+    // 如果是最终回复，添加免责声明
+    if (payload.is_final && replyContent) {
+      replyContent += END_TEXT
+
+      // 结束加载状态
+      loading.value = false
+      stopReplyCheck()
+    }
+
+    message.msg.reply = replyContent
+  } catch (error) {
+    console.error('处理回复数据时出错:', error)
+  }
+}
+
+// 处理思考过程数据
+function handleThoughtData(message, payload) {
+  try {
+    const thoughtContent = payload?.procedures?.[0]?.debugging?.content || ''
+    message.msg.thought = thoughtContent
+  } catch (error) {
+    console.error('处理思考数据时出错:', error)
+  }
+}
+
+// 处理引用文献数据
+function handleReferenceData(message, payload) {
+  try {
+    const references = payload?.references || []
+
+    // 过滤和去重引用文献
+    const validReferences = references
+      .filter((ref) => ref && ref.name) // 过滤有效引用
+      .filter(
+        (ref, index, self) => index === self.findIndex((r) => r.name === ref.name), // 去重
+      )
+
+    message.msg.references = validReferences
+  } catch (error) {
+    console.error('处理引用数据时出错:', error)
+  }
 }
 
 function imgsToMarkdown(imgs) {
@@ -465,9 +629,7 @@ function startReplyCheck() {
   checkReplyInterval = setInterval(() => {
     const lastMessage = messages.value[lastIndex.value]
     if (lastMessage && lastMessage.msg) {
-      const currentReplyLength = lastMessage.msg.reply
-        ? lastMessage.msg.reply.length
-        : 0
+      const currentReplyLength = lastMessage.msg.reply ? lastMessage.msg.reply.length : 0
       if (currentReplyLength === lastReplyLength.value && currentReplyLength !== 0) {
         stop()
       } else {
@@ -477,7 +639,54 @@ function startReplyCheck() {
   }, 5000)
 }
 
-function stop() {}
+function stop() {
+  try {
+    console.log('停止生成AI回复')
+
+    // 停止请求
+    cleanupRequest()
+
+    // 停止加载状态
+    loading.value = false
+    stopReplyCheck()
+
+    // 确保当前消息有完整结构
+    const currentMessage = messages.value[lastIndex.value]
+    if (currentMessage && currentMessage.type === MSG_TYPE.AI) {
+      // 如果当前消息没有回复内容，添加一个停止提示
+      if (!currentMessage.msg.reply || currentMessage.msg.reply.trim() === '') {
+        currentMessage.msg.reply = '已停止生成'
+      } else {
+        // 如果有内容，在末尾添加停止标记
+        currentMessage.msg.reply += '\n\n[已手动停止生成]'
+      }
+
+      // 确保消息结构完整
+      if (!currentMessage.msg.thought) {
+        currentMessage.msg.thought = ''
+      }
+      if (!currentMessage.msg.references) {
+        currentMessage.msg.references = []
+      }
+
+      // 更新消息
+      messages.value[lastIndex.value] = currentMessage
+    }
+
+    // 滚动到底部
+    goBottom()
+
+    uni.showToast({
+      title: '已停止生成',
+      icon: 'none',
+      duration: 1500,
+    })
+  } catch (error) {
+    console.error('停止生成时出错:', error)
+    loading.value = false
+    stopReplyCheck()
+  }
+}
 
 //复制文本
 function copyText(text) {
@@ -504,6 +713,56 @@ function delHistory(sessionId) {}
 
 function loadHistory(item) {}
 
+// 上传图片
+async function uploadImage(sourceType) {
+  try {
+    const res = await uni.chooseImage({
+      count: 1,
+      sourceType: [sourceType], // 'camera' 或 'album'
+      sizeType: ['compressed'], // 压缩图片
+    })
+
+    if (res.tempFilePaths && res.tempFilePaths.length > 0) {
+      const imagePath = res.tempFilePaths[0]
+
+      // 检查图片数量限制
+      if (images.value.length >= 3) {
+        uni.showToast({
+          title: '最多只能上传3张图片',
+          icon: 'none',
+        })
+        return
+      }
+
+      // 添加到图片数组
+      images.value.push(imagePath)
+
+      // 自动收起上传选项
+      showPhoto.value = false
+
+      console.log('图片上传成功:', imagePath)
+    }
+  } catch (error) {
+    console.error('图片上传失败:', error)
+    uni.showToast({
+      title: '图片上传失败',
+      icon: 'none',
+    })
+  }
+}
+
+// 删除图片
+function delImage(index) {
+  try {
+    if (index >= 0 && index < images.value.length) {
+      images.value.splice(index, 1)
+      console.log('删除图片，索引:', index)
+    }
+  } catch (error) {
+    console.error('删除图片时出错:', error)
+  }
+}
+
 onLoad(() => {
   getChatHistoryData()
 })
@@ -521,6 +780,42 @@ onShow(() => {
   }
   safeAreaInsets.value.top = getSafeAreaTop()
 })
+
+// 添加页面隐藏时的清理逻辑
+onHide(() => {
+  console.log('页面隐藏，清理资源')
+  cleanupRequest()
+  loading.value = false
+  stopReplyCheck()
+})
+
+// 添加页面卸载时的清理逻辑
+onUnload(() => {
+  console.log('页面卸载，清理所有资源')
+  cleanupRequest()
+  loading.value = false
+  stopReplyCheck()
+  // 清理其他状态
+  partialDataBuffer = ''
+  images.value = []
+  userInput.value = ''
+  showPhoto.value = false
+})
+
+// 页面返回按钮处理
+function goBack() {
+  // 如果正在生成中，先停止生成
+  if (loading.value) {
+    stop()
+  }
+  uni.navigateBack()
+}
+
+// 显示历史记录（已有占位符）
+const show = ref(false)
+function close() {
+  show.value = false
+}
 </script>
 
 <style lang="scss" scoped>
