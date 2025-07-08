@@ -30,14 +30,11 @@
       <!-- 初始介绍页面，当没有消息时显示 -->
       <view class="introduction" v-if="!messages.length">
         <view class="title">
-          <image
-            class="avatar"
-            src="https://iclaim.oss-cn-beijing.aliyuncs.com/2025/02/4223b31480c2421c9745be8c15563e4a.png"
-          ></image>
-          <text>你好，我是弈寻理赔智脑！</text>
+          <image class="avatar" :src="AI_AVATAR"></image>
+          <text>{{ AI_HELLO }}</text>
         </view>
         <view class="content">
-          我使用的模型为DeepSeek-R1-671B全尺寸满血版，搜索数据由弈寻知识库和联网知识库组成，请问我保单全生命周期与理赔相关的所有问题。在这里，我能同步解读最新的理赔政策和裁判规则，更精准提供复杂案件的解决方案，避免责任误判，发现最大合理边界。
+          {{ AI_INTRODUCTION }}
         </view>
       </view>
 
@@ -45,10 +42,7 @@
       <view class="item_message" v-for="(item, index) in messages" :key="index">
         <!-- AI消息（type: 0） -->
         <view class="ai_message" v-if="item.type === 0">
-          <image
-            class="avatar"
-            src="https://iclaim.oss-cn-beijing.aliyuncs.com/2025/02/4223b31480c2421c9745be8c15563e4a.png"
-          ></image>
+          <image class="avatar" :src="AI_AVATAR"></image>
           <view class="msg_content">
             <view class="ai_name">弈寻AI</view>
             <view class="msg_bubble">
@@ -90,10 +84,7 @@
         </view>
         <!-- 用户消息（type: 1） -->
         <view class="user_message" v-else>
-          <image
-            class="avatar"
-            :src="userStore.photo"
-          ></image>
+          <image class="avatar" :src="userStore.photo"></image>
           <view class="msg_content">
             <view class="ai_name">{{ userStore.nickName }}</view>
             <view class="msg_bubble">
@@ -134,7 +125,7 @@
         auto-height
         :maxlength="400"
         :adjust-position="false"
-        v-model="inputMsg"
+        v-model="userInput"
         placeholder="输入您的问题..."
       />
 
@@ -234,43 +225,43 @@
 <script setup>
 import { onLoad, onShow } from '@dcloudio/uni-app'
 import MsgFeedback from './components/MsgFeedback.vue'
-import { nextTick, ref } from 'vue'
+import { nextTick, ref, computed } from 'vue'
 import * as AIAPI from '@/apis/ai'
 import { useUserStore } from '@/stores'
+import { END_TEXT, AI_AVATAR, AI_INTRODUCTION, AI_HELLO } from './data'
+import { bufferToUtf8 } from './utils'
 
 const userStore = useUserStore()
 const keyboardHeight = ref(0)
 const scrollTop = ref(0)
 const history = ref([])
-const inputMsg = ref('') //输入框内容
+const userInput = ref('') //输入框内容
 const images = ref([])
 const messages = ref([])
-const lastIndex = ref(0)
+const lastIndex = computed(() => messages.value.length - 1)
 const loading = ref(false)
-const checkReplyInterval = ref(null)
+let checkReplyInterval = null //检查回复长度
 const safeAreaInsets = ref({})
 const lastReplyLength = ref(0)
 const MSG_TYPE = {
   AI: 0,
   USER: 1,
 }
-const endText = `\n\n**重要提示**\n
-    感谢您访问弈寻！本智能体提供的信息仅供一般参考，不构成正式法律意见。
-    用户应自行判断信息的准确性、完整性或适用性，并承担因依赖此类信息而产生的风险。` // AI回复结尾提示文本
-
 let requestTask = null
 let session_id = ''
 const showPhoto = ref(false)
 let partialDataBuffer = ''
 
 async function sendMessage() {
-  if (!inputMsg.value) {
+  if (!userInput.value) {
     uni.showToast({
       title: '请输入问题',
       icon: 'none',
     })
     return
   }
+
+  //处理图片
   if (images.value.length) {
     images.value.forEach((item) => {
       messages.value.push({
@@ -280,18 +271,19 @@ async function sendMessage() {
       })
     })
   }
+
   messages.value.push({
     type: MSG_TYPE.USER,
-    msg: inputMsg.value,
+    msg: userInput.value,
     isImage: false,
   })
+
   //提前准备一个ai消息对象，用于接收回复
   messages.value.push({
     type: MSG_TYPE.AI,
     msg: {},
   })
-  lastIndex.value = messages.value.length - 1
-  inputMsg.value = ''
+  userInput.value = ''
   goBottom()
   loading.value = true
   startReplyCheck()
@@ -307,7 +299,7 @@ async function sendMessage() {
     },
     data: {
       question: images.value.length
-        ? fliterImages() + messages[lastIndex.value - 1].msg
+        ? imgsToMarkdown(images.value) + messages[lastIndex.value - 1].msg
         : messages.value[lastIndex.value - 1].msg,
       sessionId: session_id,
     },
@@ -339,8 +331,7 @@ function listenerFn({ data }) {
     console.log('*********jsonString*********', jsonString)
     un8 = null
     const rawData = partialDataBuffer + jsonString //JSON字符串
-    // console.log('*********parseSSEString*********', parseSSEString(rawData))
-    const eventMatch = rawData.match(/event:(\w+)\s+data:(\{.*?\})(?=\s|$)/s)
+    const eventMatch = rawData.match(/event:(\w+)\s+data:(\{.*?\})(?=\s|$)/s)//过滤
     if (eventMatch && eventMatch[2]) {
       const dataObj = JSON.parse(eventMatch[2])
       console.log('[ dataObj ]-489', dataObj)
@@ -362,17 +353,15 @@ function listenerFn({ data }) {
       }
       const currentMessage = messages.value[lastIndex.value]
       //{type:0,msg:{reply:'',thought:'',references:[]}}
-      console.log('currentMessage', currentMessage)
       const record = {
         ...currentMessage,
       }
-      console.log('record', record)
       if (type === 'reply') {
         session_id = payload.session_id
         record.msg.reply = payload.content
         if (payload.is_final) {
           //如果结束需要附带免责声明
-          record.msg.reply += endText
+          record.msg.reply += END_TEXT
         }
       } else if (type === 'thought') {
         session_id = payload.session_id
@@ -390,7 +379,7 @@ function listenerFn({ data }) {
       messages.value[lastIndex.value] = record
       //消息队列，ai消息type为0。type=0时，msg为对象，包含reply、thought、references
       //用户消息type为1。type=1时，msg为字符串，isImage是否为图片
-      console.log(messages.value)
+      // console.log(messages.value)
 
       // 如果是最终回复，停止生成
       if (type === 'reply' && payload.is_final) {
@@ -417,35 +406,35 @@ function listenerFn({ data }) {
 }
 
 function parseSSEString(sseString) {
-  const lines = sseString.trim().split('\n')
-  let eventType = ''
-  let data = ''
+  // 第一步：取出 JSON 部分
+const jsonLine = sseString.split('\n').find(line => line.startsWith('data:'));
+const jsonString = jsonLine?.slice(5); // 去掉前缀 "data:"
 
-  for (const line of lines) {
-    if (line.startsWith('event:')) {
-      eventType = line.substring(6).trim()
-    } else if (line.startsWith('data:')) {
-      // 拼接多行数据（如果存在）
-      data += line.substring(5).trim() + '\n'
-    }
-  }
+// 第二步：解析 JSON
+const data = JSON.parse(jsonString);
 
-  try {
-    const parsedData = JSON.parse(data.trim())
-    return { eventType, data: parsedData }
-  } catch (e) {
-    throw new Error('解析JSON失败，错误字符串: ' + sseString)
-  }
+// 第三步：提取需要的信息
+const procedure = data.payload.procedures[0];
+const debuggingContent = procedure.debugging.content;
+const elapsed = procedure.elapsed;
+const title = procedure.title;
+const icon = procedure.icon;
+
+// 打印结果
+console.log("标题：", title);
+console.log("耗时：", elapsed, "毫秒");
+console.log("思考内容：", debuggingContent);
+console.log("图标 URL：", icon);
 }
 
-function fliterImages() {
-  return images.value.map((item) => `![](${item})`).join('\n') + '***'
+function imgsToMarkdown(imgs) {
+  return imgs.map((item) => `![](${item})`).join('\n') + '***'
 }
 
 function stopReplyCheck() {
-  if (checkReplyInterval.value) {
-    clearInterval(checkReplyInterval.value)
-    checkReplyInterval.value = null
+  if (checkReplyInterval) {
+    clearInterval(checkReplyInterval)
+    checkReplyInterval = null
   }
 }
 
@@ -473,11 +462,11 @@ async function getChatHistoryData() {
 
 function startReplyCheck() {
   stopReplyCheck()
-  checkReplyInterval.value = setInterval(() => {
-    const lastMessage = messages.value[messages.value.length - 1]
-    if (lastMessage.value && lastMessage.value.msg) {
-      const currentReplyLength = lastMessage.value.msg.reply
-        ? lastMessage.value.msg.reply.length
+  checkReplyInterval = setInterval(() => {
+    const lastMessage = messages.value[lastIndex.value]
+    if (lastMessage && lastMessage.msg) {
+      const currentReplyLength = lastMessage.msg.reply
+        ? lastMessage.msg.reply.length
         : 0
       if (currentReplyLength === lastReplyLength.value && currentReplyLength !== 0) {
         stop()
@@ -486,31 +475,6 @@ function startReplyCheck() {
       }
     }
   }, 5000)
-}
-
-function bufferToUtf8(buffer) {
-  const bytes = buffer
-  let text = ''
-
-  let i = 0
-  while (i < bytes.length) {
-    const byte1 = bytes[i++]
-    if (byte1 < 0x80) {
-      // 单字节字符
-      text += String.fromCharCode(byte1)
-    } else if (byte1 >= 0xc0 && byte1 < 0xe0) {
-      // 双字节字符
-      const byte2 = bytes[i++] & 0x3f
-      text += String.fromCharCode(((byte1 & 0x1f) << 6) | byte2)
-    } else if (byte1 >= 0xe0) {
-      // 三字节字符
-      const byte2 = bytes[i++] & 0x3f
-      const byte3 = bytes[i++] & 0x3f
-      text += String.fromCharCode(((byte1 & 0x0f) << 12) | (byte2 << 6) | byte3)
-    }
-  }
-
-  return text
 }
 
 function stop() {}
