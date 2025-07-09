@@ -157,7 +157,7 @@
             <text class="iconfont icon-stop"></text>
           </view>
           <!-- 发送消息按钮 -->
-          <view class="btn-ra up" @click="sendMessage" v-else>
+          <view class="btn-ra up" @click="handleSend" v-else>
             <text class="iconfont icon-up"></text>
           </view>
         </view>
@@ -229,7 +229,7 @@ import { nextTick, ref, computed } from 'vue'
 import * as AIAPI from '@/apis/ai'
 import { useUserStore } from '@/stores'
 import { END_TEXT, AI_AVATAR, AI_INTRODUCTION, AI_HELLO } from './data'
-import { bufferToUtf8 } from './utils'
+import { bufferToUtf8, parseSSEEvent } from './utils'
 
 const userStore = useUserStore()
 const keyboardHeight = ref(0)
@@ -252,8 +252,7 @@ let session_id = ''
 const showPhoto = ref(false)
 let partialDataBuffer = ''//当前缓冲区
 
-// 重新实现SSE消息发送功能
-async function sendMessage() {
+async function handleSend() {
   if (!userInput.value.trim()) {
     uni.showToast({
       title: '请输入问题',
@@ -295,7 +294,6 @@ async function sendMessage() {
   })
 
   // 重置状态
-  const inputContent = userInput.value
   userInput.value = ''
   showPhoto.value = false
   goBottom()
@@ -308,7 +306,7 @@ async function sendMessage() {
   try {
     // 构建请求数据
     const requestData = {
-      question: images.value.length ? imgsToMarkdown(images.value) + inputContent : inputContent,
+      question: images.value.length ? imgsToMarkdown(images.value) + userMessage : userMessage,
       sessionId: session_id,
     }
     console.log('发送SSE请求:', requestData)
@@ -362,7 +360,7 @@ function cleanupRequest() {
 }
 
 // 处理请求错误
-function handleRequestError(error) {
+function handleRequestError() {
   loading.value = false
   stopReplyCheck()
 
@@ -371,7 +369,7 @@ function handleRequestError(error) {
     messages.value.pop()
   }
 
-  // 添加错误消息
+  // 通过AI告诉用户出错
   messages.value.push({
     type: MSG_TYPE.AI,
     msg: {
@@ -379,12 +377,6 @@ function handleRequestError(error) {
       thought: '',
       references: [],
     },
-  })
-
-  uni.showToast({
-    title: error.errMsg || '网络错误，请重试',
-    icon: 'none',
-    duration: 2000,
   })
 
   goBottom()
@@ -411,13 +403,14 @@ function processSSEBuffer() {
     // 按双换行符分割事件
     const events = partialDataBuffer.split('\n\n')
 
-    // 保留最后一个可能不完整的事件
+    // 处理最后一个可能不完整的事件
     partialDataBuffer = events.pop() || ''
 
     // 处理完整的事件
     events.forEach((eventData) => {
       if (eventData.trim()) {
-        parseSSEEvent(eventData)
+        const [eventType, parsedData] = parseSSEEvent(eventData)
+        handleParsedSSEData(eventType, parsedData)
       }
     })
   } catch (error) {
@@ -425,44 +418,7 @@ function processSSEBuffer() {
   }
 }
 
-// 解析单个SSE事件
-function parseSSEEvent(eventData) {
-  try {
-    const lines = eventData.trim().split('\n')
-    let eventType = ''
-    let data = ''
 
-    // 解析SSE事件格式
-    lines.forEach((line) => {
-      if (line.startsWith('event:')) {
-        eventType = line.slice(6).trim()
-      } else if (line.startsWith('data:')) {
-        data = line.slice(5).trim()
-      }
-    })
-
-    if (!eventType || !data) {
-      console.log('跳过不完整的SSE事件:', eventData)
-      return
-    }
-
-    // console.log('解析SSE事件:', { eventType, data })
-
-    // 解析JSON数据
-    let parsedData
-    try {
-      parsedData = JSON.parse(data)
-    } catch (jsonError) {
-      console.error('JSON解析失败:', jsonError, 'data:', data)
-      return
-    }
-
-    // 处理解析后的数据
-    handleParsedSSEData(eventType, parsedData)
-  } catch (error) {
-    console.error('解析SSE事件时出错:', error)
-  }
-}
 
 // 处理解析后的SSE数据
 function handleParsedSSEData(eventType, parsedData) {
