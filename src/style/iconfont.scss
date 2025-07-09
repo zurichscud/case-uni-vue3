@@ -1,8 +1,8 @@
 @font-face {
   font-family: "iconfont"; /* Project id 4845203 */
-  src: url('//at.alicdn.com/t/c/font_4845203_i70irmtk1th.woff2?t=1752045508151') format('woff2'),
-       url('//at.alicdn.com/t/c/font_4845203_i70irmtk1th.woff?t=1752045508151') format('woff'),
-       url('//at.alicdn.com/t/c/font_4845203_i70irmtk1th.ttf?t=1752045508151') format('truetype');
+  src: url('//at.alicdn.com/t/c/font_4845203_5ofobkqr4ke.woff2?t=1752053729961') format('woff2'),
+       url('//at.alicdn.com/t/c/font_4845203_5ofobkqr4ke.woff?t=1752053729961') format('woff'),
+       url('//at.alicdn.com/t/c/font_4845203_5ofobkqr4ke.ttf?t=1752053729961') format('truetype');
 }
 
 .iconfont {
@@ -11,6 +11,30 @@
   font-style: normal;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-dianzan:before {
+  content: "\e702";
+}
+
+.icon-xinhuihua:before {
+  content: "\e84c";
+}
+
+.icon-caidan:before {
+  content: "\eaf1";
+}
+
+.icon-lishijilu:before {
+  content: "\eaf7";
+}
+
+.icon-liebiao:before {
+  content: "\eaf8";
+}
+
+.icon-jiantou_liebiaoxiangzuo:before {
+  content: "\eb06";
 }
 
 .icon-jiantou_liebiaoshouqi:before {

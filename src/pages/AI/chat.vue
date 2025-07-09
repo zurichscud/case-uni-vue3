@@ -6,9 +6,10 @@
     <view class="top_nav" :style="{ marginTop: safeAreaInsets.top + 'px' }">
       <view class="left">
         <!-- 返回按钮 -->
-        <u-icon name="arrow-left" @click="goBack" size="20"></u-icon>
+        <i class="iconfont icon-jiantou_liebiaoxiangzuo" @click="goBack" size="20"></i>
         <!-- 历史记录按钮 -->
-        <u-icon name="list" @click="show = true" size="20"></u-icon>
+        <i class="iconfont icon-liebiao" @click="showHistoryDrawer = true" size="20"></i>
+        <i class="iconfont icon-xinhuihua" @click="handleNewChat"></i>
       </view>
       <view class="title">弈寻</view>
       <view class="right"></view>
@@ -113,7 +114,7 @@
                   <text class="iconfont icon-fuzhi" @click="copyText(item.msg.reply)"></text>
                   <text
                     class="iconfont icon-cai"
-                    @click="openFeedback(messages[index - 1].msg)"
+                    @click="handleFeedback(messages[index].traceId)"
                   ></text>
                 </view>
               </view>
@@ -213,51 +214,24 @@
       </view>
     </view>
 
-    <!-- 历史记录侧边栏 -->
-    <u-popup v-if="false" :show="show" mode="left" @close="close">
-      <view
-        class="history-list"
-        :style="{
-          height: `calc(100vh - ${safeAreaInsets.top}px)`,
-          paddingTop: `${safeAreaInsets.top}px`,
-        }"
-      >
-        <!-- 历史记录标题 -->
-        <view class="list-header">
-          <text class="title">对话历史</text>
-          <!-- <u-icon name="clock" size="20" color="#666"></u-icon> -->
-        </view>
-
-        <scroll-view scroll-y class="list-scroll">
-          <!-- 历史记录项 -->
-          <view
-            v-for="item in history"
-            :key="item.sessionId"
-            class="history-item"
-            :class="{ active: item.sessionId === currentHistoryId }"
-            @click="loadHistory(item)"
-          >
-            <text class="item-preview">{{ item.content }}</text>
-            <text class="iconfont icon-shanchu" @click.stop="delHistory(item.sessionId)"></text>
-          </view>
-
-          <!-- 空状态 -->
-          <view v-if="history.length === 0" class="empty">
-            <u-icon name="list" size="60" color="#ccc"></u-icon>
-            <text class="empty-text">暂无历史对话</text>
-          </view>
-        </scroll-view>
-      </view>
-    </u-popup>
+    <!-- 历史记录抽屉组件 -->
+    <HistoryDrawer
+      v-model="showHistoryDrawer"
+      :current-session-id="session_id"
+      @select-history="handleSelectHistory"
+      @new-chat="handleNewChat"
+    />
 
     <!-- 消息反馈组件 -->
-    <MsgFeedback ref="FeedbackRef" v-if="false"></MsgFeedback>
+    <Feedback ref="FeedbackRef"></Feedback>
   </view>
 </template>
 
 <script setup>
 import { onLoad, onShow, onUnload } from '@dcloudio/uni-app'
-import MsgFeedback from './components/MsgFeedback.vue'
+import Feedback from './components/Feedback.vue'
+import HistoryDrawer from './components/HistoryDrawer.vue'
+import MarkdownRenderer from '@/components/MarkdownRenderer/MarkdownRenderer.vue'
 import { nextTick, ref, computed } from 'vue'
 import * as AIAPI from '@/apis/ai'
 import { useUserStore } from '@/stores'
@@ -278,6 +252,8 @@ let checkReplyInterval = null //检查回复长度
 const safeAreaInsets = ref({})
 const lastReplyLength = ref(0)
 const thinkText = ref('已深度思考')
+const FeedbackRef = ref()
+const showHistoryDrawer = ref(false) // 控制历史记录抽屉显示
 const MSG_TYPE = {
   AI: 0,
   USER: 1,
@@ -523,6 +499,7 @@ function buildReplyData(message, payload) {
     if (payload.is_final && replyContent) {
       // 结束加载状态
       loading.value = false
+      message.traceId = payload.trace_id
       stopReplyCheck()
     }
 
@@ -593,16 +570,7 @@ function goBottom() {
   }, 100)
 }
 
-async function getChatHistoryData() {
-  const { data } = await AIAPI.getChatHistory({ userId: userStore.id })
-  history.value = data.map((item) => {
-    const strs = item.content.split('***')
-    return {
-      ...item,
-      content: strs.length > 1 ? strs[1] : strs[0],
-    }
-  })
-}
+
 
 function startReplyCheck() {
   stopReplyCheck()
@@ -680,11 +648,39 @@ function copyText(text) {
   })
 }
 
-function openFeedback(msg) {}
+function handleFeedback(traceId) {
+  FeedbackRef.value.open(traceId)
+}
 
-function delHistory(sessionId) {}
+// 历史记录相关事件处理
+function handleSelectHistory(item) {
+  console.log('选择历史记录:', item)
+  // 加载历史对话
+  session_id = item.sessionId
+  // 这里可以添加加载历史消息的逻辑
+  // 例如：loadHistoryMessages(item.sessionId)
+}
 
-function loadHistory(item) {}
+function handleNewChat() {
+  console.log('新建对话')
+  if (session_id === '') {
+    uni.showToast({
+      title: '已在最新对话中',
+      icon: 'none',
+    })
+  }
+  // 重置当前会话
+  session_id = ''
+  messages.value = []
+  userInput.value = ''
+  images.value = []
+  uploadVisible.value = false
+  loading.value = false
+  stopReplyCheck()
+
+  // 滚动到顶部
+  scrollTop.value = 0
+}
 
 // 上传图片
 async function uploadImage(sourceType) {
@@ -723,8 +719,7 @@ onLoad(() => {
   // 初始化SSE处理器
   initSSEHandler()
 
-  // 获取聊天历史数据
-  getChatHistoryData()
+
 })
 
 onShow(() => {
@@ -756,11 +751,7 @@ onUnload(() => {
   stopReplyCheck()
 })
 
-// 显示历史记录（已有占位符）
-const show = ref(false)
-function close() {
-  show.value = false
-}
+// 历史记录组件已集成到HistoryDrawer组件中
 </script>
 
 <style lang="scss" scoped>
@@ -835,6 +826,10 @@ textarea {
     display: flex;
     align-items: center;
     gap: 20rpx; // 图标间距
+
+    .iconfont {
+      font-size: 40rpx;
+    }
   }
 
   .title {
@@ -1209,96 +1204,7 @@ page {
   }
 }
 
-.history-list {
-  width: 600rpx;
-  background: #f8f9fa;
-  display: flex;
-  flex-direction: column;
-
-  .list-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    border-bottom: 2rpx solid #eee;
-    padding: 40rpx 30rpx 20rpx 30rpx;
-
-    .title {
-      font-size: 34rpx;
-      font-weight: 600;
-      color: #2c3e50;
-    }
-  }
-
-  .list-scroll {
-    height: 0;
-    flex: 1;
-    padding: 30rpx;
-  }
-
-  .history-item {
-    background: #fff;
-    border-radius: 16rpx;
-    padding: 24rpx;
-    margin-bottom: 24rpx;
-    box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.05);
-    transition: all 0.2s ease;
-    display: flex;
-
-    &:active {
-      transform: scale(0.98);
-    }
-
-    &.active {
-      border-left: 8rpx solid #6190e8;
-      background: #f5f8ff;
-    }
-
-    .item-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 16rpx;
-    }
-
-    .item-title {
-      font-size: 30rpx;
-      color: #2c3e50;
-      font-weight: 500;
-      max-width: 70%;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-
-    .item-time {
-      font-size: 24rpx;
-      color: #95a5a6;
-    }
-
-    .item-preview {
-      font-size: 26rpx;
-      color: #7f8c8d;
-      line-height: 1.4;
-      flex: 1;
-      overflow: hidden;
-      white-space: nowrap;
-      text-overflow: ellipsis;
-    }
-  }
-
-  .empty {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 100rpx 0;
-
-    .empty-text {
-      font-size: 28rpx;
-      color: #bdc3c7;
-      margin-top: 20rpx;
-    }
-  }
-}
+/* 历史记录样式已迁移到HistoryDrawer组件中 */
 
 .reference {
   margin-top: 20rpx;
