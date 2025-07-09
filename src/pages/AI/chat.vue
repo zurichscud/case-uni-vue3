@@ -261,6 +261,7 @@ let requestTask = null
 let session_id = ''
 const uploadVisible = ref(false)
 let sseHandler = null //SSE处理器实例
+const {top,height}=uni.getMenuButtonBoundingClientRect()
 
 // 初始化SSE处理器
 function initSSEHandler() {

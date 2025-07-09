@@ -11,7 +11,7 @@
   >
     <view class="drawer-container">
       <!-- 简洁标题 -->
-      <view class="drawer-header">
+      <view class="drawer-header" :style="{ paddingTop: `${top}px` }">
         <text class="title">对话历史</text>
         <wd-button
           type="text"
@@ -23,7 +23,13 @@
       </view>
 
       <!-- 历史记录列表 -->
-      <scroll-view scroll-y class="history-scroll">
+      <scroll-view
+        scroll-y
+        class="history-scroll"
+        :enhanced="true"
+        :bounces="true"
+        :show-scrollbar="false"
+      >
         <view class="history-list">
           <!-- 历史记录项 -->
           <view
@@ -75,7 +81,8 @@ import { useUserStore } from '@/stores'
 const userStore = useUserStore()
 const historyList = ref([])
 const { safeArea } = uni.getWindowInfo()
-const top=safeArea.top
+
+const { top } = uni.getMenuButtonBoundingClientRect() //顶部安全区
 // Props
 const props = defineProps({
   modelValue: {
@@ -159,14 +166,19 @@ onLoad(() => {
   background: #fff;
   display: flex;
   flex-direction: column;
+  overflow: hidden; /* 防止整体滚动 */
 }
 
 .drawer-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 30rpx 30rpx 20rpx;
+  padding: 0 30rpx 20rpx;
   border-bottom: 1px solid #f0f0f0;
+  background: #fff;
+  position: relative;
+  z-index: 1;
+  flex-shrink: 0; /* 防止压缩 */
 
   .title {
     font-size: 32rpx;
@@ -177,10 +189,13 @@ onLoad(() => {
 
 .history-scroll {
   flex: 1;
-  padding: 20rpx 0;
+  height: 0; /* 强制计算高度 */
+  overflow-y: auto; /* 启用垂直滚动 */
 }
 
 .history-list {
+  padding: 20rpx 0; /* 移动到这里 */
+
   .history-item {
     padding: 20rpx 30rpx;
     border-bottom: 1px solid #f5f5f5;
@@ -248,5 +263,7 @@ onLoad(() => {
 .drawer-footer {
   padding: 20rpx 30rpx 30rpx;
   border-top: 1px solid #f0f0f0;
+  background: #fff;
+  flex-shrink: 0; /* 防止压缩 */
 }
 </style>
