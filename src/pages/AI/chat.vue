@@ -49,7 +49,12 @@
               <!-- 已深度思考 -->
               <view class="thought" v-if="item.msg.thought">
                 <view class="thought-header" @click="toggleThought(index)">
-                  <view class="title">{{ thinkText }}</view>
+                  <view class="title">
+                    {{ thinkText }}
+                    <text class="time-info" v-if="item.time">
+                      （用时 {{ Math.floor(item.time / 1000) }} 秒）
+                    </text>
+                  </view>
                   <i
                     class="iconfont icon-jiantou_liebiaozhankai"
                     :class="{ expanded: item.expand }"
@@ -335,6 +340,7 @@ async function handleSend() {
   messages.value.push({
     type: MSG_TYPE.AI,
     expand: true,
+    time: 0,
     msg: {
       reply: '',
       thought: '',
@@ -417,6 +423,7 @@ function handleRequestError() {
   messages.value[lastIndex.value] = {
     type: MSG_TYPE.AI,
     expand: true,
+    time: 0,
     msg: {
       reply: '抱歉，网络连接出现问题，请稍后重试。',
       thought: '',
@@ -442,6 +449,7 @@ function processSSEData(eventType, parsedData) {
           references: [],
         }
         currentMessage.expand = true
+        currentMessage.time = 0
         messages.value[lastIndex.value] = currentMessage
       }
       loading.value = false
@@ -556,6 +564,7 @@ function buildReferenceData(message, payload) {
 function processTokenStatData(message, payload) {
   console.log('耗时:', payload.elapsed)
   console.log('token', payload.token_count)
+  message.time = payload.elapsed
 }
 
 function processErrorData(message, payload) {
@@ -1162,6 +1171,13 @@ page {
       font-size: 26rpx;
       color: #007aff;
       font-weight: 500;
+
+      .time-info {
+        font-size: 22rpx;
+        color: #999;
+        font-weight: 400;
+        margin-left: 8rpx;
+      }
     }
 
     .iconfont {

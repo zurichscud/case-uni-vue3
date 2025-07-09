@@ -182,7 +182,7 @@
       "root": "pages/AI",
       "pages": [
         {
-          "path": "AiChatDS",
+          "path": "chat",
           "style": {
             "navigationBarTitleText": "弈寻",
             "enablePullDownRefresh": false,

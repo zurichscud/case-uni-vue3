@@ -28,7 +28,7 @@
           <text class="btn-text">提交案件</text>
         </view>
 
-        <view class="icon-btn" @click="router.go('/pages/AI/AiChatDS')">
+        <view class="icon-btn" @click="router.go('/pages/AI/chat')">
           <text class="iconfont icon-mind2-full icon-white"></text>
           <text class="btn-text">弈寻AI</text>
         </view>
@@ -48,7 +48,7 @@
             show-menu-by-longpress="true"
             lazy-load
             mode="aspectFit"
-            @click="router.go('/pages/AI/AiChatDS')"
+            @click="router.go('/pages/AI/chat')"
             :src="img"
           ></image>
         </swiper-item>
