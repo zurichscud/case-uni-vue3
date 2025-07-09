@@ -153,7 +153,7 @@
             <text class="iconfont icon-closeempty"></text>
           </view>
           <!-- 停止生成按钮（生成中显示） -->
-          <view class="btn-ra up" @click="stop" v-if="loading">
+          <view class="btn-ra up" @click="handleStop" v-if="loading">
             <text class="iconfont icon-stop"></text>
           </view>
           <!-- 发送消息按钮 -->
@@ -223,7 +223,7 @@
 </template>
 
 <script setup>
-import { onLoad, onShow, onHide, onUnload } from '@dcloudio/uni-app'
+import { onLoad, onShow, onUnload } from '@dcloudio/uni-app'
 import MsgFeedback from './components/MsgFeedback.vue'
 import { nextTick, ref, computed } from 'vue'
 import * as AIAPI from '@/apis/ai'
@@ -250,26 +250,23 @@ const MSG_TYPE = {
 let requestTask = null
 let session_id = ''
 const showPhoto = ref(false)
-
-// 创建SSE处理器实例
-let sseHandler = null
+let sseHandler = null//SSE处理器实例
 
 // 初始化SSE处理器
 function initSSEHandler() {
   sseHandler = new SSEHandler({
     onEvent: (eventType, parsedData) => {
-      parsedSSEData(eventType, parsedData)
+      processSSEData(eventType, parsedData)
     },
     onError: (error) => {
       console.error('SSE处理器错误:', error)
       handleRequestError()
     },
     onComplete: () => {
-      console.log('SSE处理完成')
       loading.value = false
       stopReplyCheck()
     },
-    debug: import.meta.env.MODE === 'development', // 开发模式下启用调试
+    debug: import.meta.env.MODE === 'development',
   })
 }
 
@@ -284,9 +281,6 @@ async function handleSend() {
 
   // 清理之前的请求
   cleanupRequest()
-  console.log(sseHandler)
-
-  // initSSEHandler()
 
   // 处理图片消息
   if (images.value.length) {
@@ -355,7 +349,7 @@ async function handleSend() {
       },
     })
 
-    // 监听数据流 - 现在使用SSE处理器
+    // 监听数据流
     requestTask.onChunkReceived((chunk) => {
       if (sseHandler) {
         sseHandler.handleData(chunk.data)
@@ -380,12 +374,6 @@ function cleanupRequest() {
     }
     requestTask = null
   }
-
-  // 清理SSE处理器
-  if (sseHandler) {
-    sseHandler.clear()
-    sseHandler = null
-  }
 }
 
 // 处理请求错误
@@ -393,13 +381,8 @@ function handleRequestError() {
   loading.value = false
   stopReplyCheck()
 
-  // 移除最后添加的空AI消息
-  if (messages.value.length > 0 && messages.value[messages.value.length - 1].type === MSG_TYPE.AI) {
-    messages.value.pop()
-  }
-
   // 通过AI告诉用户出错
-  messages.value.push({
+  messages.value[lastIndex.value] = {
     type: MSG_TYPE.AI,
     msg: {
       reply: '抱歉，网络连接出现问题，请稍后重试。',
@@ -412,11 +395,9 @@ function handleRequestError() {
 }
 
 // 处理解析后的SSE数据
-function parsedSSEData(eventType, parsedData) {
+function processSSEData(eventType, parsedData) {
   try {
     const { type, payload } = parsedData
-
-    // console.log('处理SSE数据:', { type, payload })
 
     // 检查敏感内容
     if (payload.is_evil) {
@@ -538,7 +519,7 @@ function handleReferenceData(message, payload) {
 
 // 处理本次会话的token统计数据
 function handleTokenStatData(message, payload) {
-  console.log('处理token统计数据:', payload)
+  console.log('token统计:', payload)
 }
 
 function imgsToMarkdown(imgs) {
@@ -581,7 +562,7 @@ function startReplyCheck() {
     if (lastMessage && lastMessage.msg) {
       const currentReplyLength = lastMessage.msg.reply ? lastMessage.msg.reply.length : 0
       if (currentReplyLength === lastReplyLength.value && currentReplyLength !== 0) {
-        stop()
+        handleStop()
       } else {
         lastReplyLength.value = currentReplyLength
       }
@@ -589,10 +570,9 @@ function startReplyCheck() {
   }, 5000)
 }
 
-function stop() {
+// 用户手动停止生成
+function handleStop() {
   try {
-    console.log('停止生成AI回复')
-
     // 停止请求和清理资源
     cleanupRequest()
 
@@ -625,12 +605,6 @@ function stop() {
 
     // 滚动到底部
     goBottom()
-
-    uni.showToast({
-      title: '已停止生成',
-      icon: 'none',
-      duration: 1500,
-    })
   } catch (error) {
     console.error('停止生成时出错:', error)
     loading.value = false
@@ -739,7 +713,7 @@ onShow(() => {
 function goBack() {
   // 如果正在生成中，先停止生成
   if (loading.value) {
-    stop()
+    handleStop()
   }
   uni.navigateBack()
 }
@@ -749,8 +723,6 @@ onUnload(() => {
   cleanupRequest()
   stopReplyCheck()
 })
-
-
 
 // 显示历史记录（已有占位符）
 const show = ref(false)

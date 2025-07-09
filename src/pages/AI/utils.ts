@@ -212,7 +212,7 @@ export class SSEHandler {
   }
 
   /**
-   * 标记处理完成
+   * 处理完成调用回调，并且清除缓存
    */
   complete(): void {
     this.options.onComplete?.()
