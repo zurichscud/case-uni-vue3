@@ -74,6 +74,8 @@ import { useUserStore } from '@/stores'
 
 const userStore = useUserStore()
 const historyList = ref([])
+const { safeArea } = uni.getWindowInfo()
+const top=safeArea.top
 // Props
 const props = defineProps({
   modelValue: {
@@ -115,6 +117,7 @@ const handleDeleteHistory = (sessionId) => {
           title: '删除成功',
           icon: 'none',
         })
+        getAllChatData()
 
         return
       }

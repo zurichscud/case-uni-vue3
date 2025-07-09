@@ -242,7 +242,6 @@ import { uploadFile } from '@/utils/http'
 const userStore = useUserStore()
 const keyboardHeight = ref(0)
 const scrollTop = ref(0)
-const history = ref([])
 const userInput = ref('') //输入框内容
 const images = ref([])
 const messages = ref([])
@@ -699,6 +698,7 @@ async function uploadImage(sourceType) {
 }
 
 // 删除图片
+//TODO
 function delImage(index) {
   try {
     if (index >= 0 && index < images.value.length) {
@@ -718,7 +718,6 @@ function toggleThought(messageIndex) {
 onLoad(() => {
   // 初始化SSE处理器
   initSSEHandler()
-
 
 })
 
