@@ -229,7 +229,7 @@ import { nextTick, ref, computed } from 'vue'
 import * as AIAPI from '@/apis/ai'
 import { useUserStore } from '@/stores'
 import { END_TEXT, AI_AVATAR, AI_INTRODUCTION, AI_HELLO } from './data'
-import { bufferToUtf8, parseSSEEvent } from './utils'
+import { SSEHandler } from './utils'
 
 const userStore = useUserStore()
 const keyboardHeight = ref(0)
@@ -250,7 +250,28 @@ const MSG_TYPE = {
 let requestTask = null
 let session_id = ''
 const showPhoto = ref(false)
-let partialDataBuffer = ''//当前缓冲区
+
+// 创建SSE处理器实例
+let sseHandler = null
+
+// 初始化SSE处理器
+function initSSEHandler() {
+  sseHandler = new SSEHandler({
+    onEvent: (eventType, parsedData) => {
+      parsedSSEData(eventType, parsedData)
+    },
+    onError: (error) => {
+      console.error('SSE处理器错误:', error)
+      handleRequestError()
+    },
+    onComplete: () => {
+      console.log('SSE处理完成')
+      loading.value = false
+      stopReplyCheck()
+    },
+    debug: import.meta.env.MODE === 'development', // 开发模式下启用调试
+  })
+}
 
 async function handleSend() {
   if (!userInput.value.trim()) {
@@ -263,6 +284,9 @@ async function handleSend() {
 
   // 清理之前的请求
   cleanupRequest()
+  console.log(sseHandler)
+
+  // initSSEHandler()
 
   // 处理图片消息
   if (images.value.length) {
@@ -300,16 +324,15 @@ async function handleSend() {
   loading.value = true
   startReplyCheck()
 
-  // 清空缓冲区
-  partialDataBuffer = ''
-
   try {
     // 构建请求数据
     const requestData = {
       question: images.value.length ? imgsToMarkdown(images.value) + userMessage : userMessage,
       sessionId: session_id,
     }
+
     console.log('发送SSE请求:', requestData)
+
     requestTask = uni.request({
       url: import.meta.env.VITE_BASE_URL + '/chat-room/send',
       method: 'POST',
@@ -322,27 +345,28 @@ async function handleSend() {
       },
       data: requestData,
       success: (res) => {
-        console.log('SSE请求成功完成:', res)
-        // 确保停止加载状态
-        if (loading.value) {
-          loading.value = false
-          stopReplyCheck()
-        }
+        console.log('SSE请求成功:', res)
+        // 通知SSE处理器完成
+        sseHandler?.complete()
       },
       fail: (error) => {
         console.error('SSE请求失败:', error)
-        handleRequestError(error)
+        handleRequestError()
       },
     })
 
-    // 监听数据流
-    requestTask.onChunkReceived(handleSSEData)
+    // 监听数据流 - 现在使用SSE处理器
+    requestTask.onChunkReceived((chunk) => {
+      if (sseHandler) {
+        sseHandler.handleData(chunk.data)
+      }
+    })
 
     // 清空已处理的图片
     images.value = []
   } catch (error) {
     console.error('发送消息时出错:', error)
-    handleRequestError(error)
+    handleRequestError()
   }
 }
 
@@ -356,7 +380,12 @@ function cleanupRequest() {
     }
     requestTask = null
   }
-  partialDataBuffer = ''
+
+  // 清理SSE处理器
+  if (sseHandler) {
+    sseHandler.clear()
+    sseHandler = null
+  }
 }
 
 // 处理请求错误
@@ -382,53 +411,10 @@ function handleRequestError() {
   goBottom()
 }
 
-function handleSSEData({ data }) {
-  try {
-    // 将接收到的数据转换为字符串
-    const uint8Array = new Uint8Array(data)
-    const newDataChunk = bufferToUtf8(uint8Array)
-
-    // 数据可能不完整，需要缓冲区拼接
-    partialDataBuffer += newDataChunk
-
-    processSSEBuffer()
-  } catch (error) {
-    console.error('处理SSE数据时出错:', error)
-  }
-}
-
-// 处理SSE缓冲区数据，缓冲区中的数据结构才是完整的
-function processSSEBuffer() {
-  try {
-    // 按双换行符分割事件
-    const events = partialDataBuffer.split('\n\n')
-
-    // 处理最后一个可能不完整的事件
-    partialDataBuffer = events.pop() || ''
-
-    // 处理完整的事件
-    events.forEach((eventData) => {
-      if (eventData.trim()) {
-        const [eventType, parsedData] = parseSSEEvent(eventData)
-        handleParsedSSEData(eventType, parsedData)
-      }
-    })
-  } catch (error) {
-    console.error('处理SSE缓冲区时出错:', error)
-  }
-}
-
-
-
 // 处理解析后的SSE数据
-function handleParsedSSEData(eventType, parsedData) {
+function parsedSSEData(eventType, parsedData) {
   try {
     const { type, payload } = parsedData
-
-    if (!payload) {
-      console.warn('SSE数据缺少payload:', parsedData)
-      return
-    }
 
     // console.log('处理SSE数据:', { type, payload })
 
@@ -484,6 +470,9 @@ function handleParsedSSEData(eventType, parsedData) {
         break
       case 'reference':
         handleReferenceData(updatedMessage, payload)
+        break
+      case 'token_stat':
+        handleTokenStatData(updatedMessage, payload)
         break
       default:
         console.log('未知的SSE数据类型:', type)
@@ -547,6 +536,11 @@ function handleReferenceData(message, payload) {
   }
 }
 
+// 处理本次会话的token统计数据
+function handleTokenStatData(message, payload) {
+  console.log('处理token统计数据:', payload)
+}
+
 function imgsToMarkdown(imgs) {
   return imgs.map((item) => `![](${item})`).join('\n') + '***'
 }
@@ -599,7 +593,7 @@ function stop() {
   try {
     console.log('停止生成AI回复')
 
-    // 停止请求
+    // 停止请求和清理资源
     cleanupRequest()
 
     // 停止加载状态
@@ -720,6 +714,10 @@ function delImage(index) {
 }
 
 onLoad(() => {
+  // 初始化SSE处理器
+  initSSEHandler()
+
+  // 获取聊天历史数据
   getChatHistoryData()
 })
 
@@ -737,27 +735,6 @@ onShow(() => {
   safeAreaInsets.value.top = getSafeAreaTop()
 })
 
-// 添加页面隐藏时的清理逻辑
-onHide(() => {
-  console.log('页面隐藏，清理资源')
-  cleanupRequest()
-  loading.value = false
-  stopReplyCheck()
-})
-
-// 添加页面卸载时的清理逻辑
-onUnload(() => {
-  console.log('页面卸载，清理所有资源')
-  cleanupRequest()
-  loading.value = false
-  stopReplyCheck()
-  // 清理其他状态
-  partialDataBuffer = ''
-  images.value = []
-  userInput.value = ''
-  showPhoto.value = false
-})
-
 // 页面返回按钮处理
 function goBack() {
   // 如果正在生成中，先停止生成
@@ -766,6 +743,14 @@ function goBack() {
   }
   uni.navigateBack()
 }
+
+// 添加页面卸载时的清理逻辑
+onUnload(() => {
+  cleanupRequest()
+  stopReplyCheck()
+})
+
+
 
 // 显示历史记录（已有占位符）
 const show = ref(false)
