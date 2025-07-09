@@ -49,11 +49,21 @@
               <!-- AI思考过程 -->
               <view class="thought" v-if="item.msg.thought">
                 <view class="title">{{ thinkText }}</view>
-                <text :user-select="true">{{ item.msg.thought }}</text>
+                <mp-html
+                  :content="markdownToHtml(item.msg.thought)"
+                  :selectable="true"
+                  :copy-link="false"
+                  container-style="font-size: 28rpx; color: #7d7d7d; line-height: 1.5;"
+                ></mp-html>
               </view>
               <!-- AI回复内容 -->
               <view class="reply" v-if="item.msg.reply">
-                <text :user-select="true">{{ item.msg.reply }}</text>
+                <mp-html
+                  :content="markdownToHtml(item.msg.reply)"
+                  :selectable="true"
+                  :copy-link="false"
+                  container-style="font-size: 28rpx; color: #333; line-height: 1.5;"
+                ></mp-html>
               </view>
               <!-- 引用文献 -->
               <view class="reference" v-if="item.msg.references && item.msg.references.length">
@@ -67,7 +77,7 @@
                 </view>
               </view>
               <!-- 加载动画（生成中显示） -->
-              <view class="loader" v-if="index === lastIndex && loading"></view>
+              <view class="loader" v-if="loading"></view>
               <!-- 操作按钮（复制、反馈） -->
               <view class="bottom_btns" v-else>
                 <view class="left"></view>
@@ -231,6 +241,7 @@ import { useUserStore } from '@/stores'
 import { END_TEXT, AI_AVATAR, AI_INTRODUCTION, AI_HELLO } from './data'
 import { SSEHandler } from './utils'
 import { uploadFile } from '@/utils/http'
+import { marked } from 'marked'
 
 const userStore = useUserStore()
 const keyboardHeight = ref(0)
@@ -253,6 +264,52 @@ let requestTask = null
 let session_id = ''
 const uploadVisible = ref(false)
 let sseHandler = null //SSE处理器实例
+
+// 配置 marked 选项
+marked.setOptions({
+  breaks: true, // 支持换行
+  gfm: true, // 支持 GitHub Flavored Markdown
+  headerIds: false, // 禁用标题ID
+  mangle: false, // 禁用标题混淆
+})
+
+// 将 markdown 转换为 HTML
+const markdownToHtml = (markdown) => {
+  if (!markdown) return ''
+  try {
+    let html = marked(markdown)
+
+    // 为代码块添加更好的样式
+    html = html.replace(
+      /<pre><code class="language-(\w+)">/g,
+      '<pre style="background-color: #f6f8fa; padding: 16rpx; border-radius: 12rpx; overflow-x: auto; margin: 16rpx 0;"><code class="language-$1" style="font-family: Consolas, Monaco, monospace; font-size: 26rpx;">',
+    )
+
+    // 为内联代码添加样式
+    html = html.replace(
+      /<code>/g,
+      '<code style="background-color: #f6f8fa; padding: 4rpx 8rpx; border-radius: 6rpx; font-family: Consolas, Monaco, monospace; font-size: 26rpx; color: #e83e8c;">',
+    )
+
+    // 为表格添加样式
+    html = html.replace(
+      /<table>/g,
+      '<table style="border-collapse: collapse; width: 100%; margin: 16rpx 0; border: 1px solid #d1d9e0;">',
+    )
+
+    html = html.replace(
+      /<th>/g,
+      '<th style="border: 1px solid #d1d9e0; padding: 12rpx; background-color: #f6f8fa; text-align: left;">',
+    )
+
+    html = html.replace(/<td>/g, '<td style="border: 1px solid #d1d9e0; padding: 12rpx;">')
+
+    return html
+  } catch (error) {
+    console.error('Markdown 解析错误:', error)
+    return markdown // 如果解析失败，返回原始文本
+  }
+}
 
 // 初始化SSE处理器
 function initSSEHandler() {
@@ -659,7 +716,6 @@ async function uploadImage(sourceType) {
     uploadVisible.value = false
     const { data } = await uploadFile(res.tempFilePaths[0])
     images.value.push(data)
-
   } catch (error) {
     console.error('图片上传失败:', error)
   }
