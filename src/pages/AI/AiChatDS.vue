@@ -79,7 +79,13 @@
                 </view>
               </view>
               <!-- 加载动画（生成中显示） -->
-              <view class="loader" v-if="index === lastIndex && loading"></view>
+              <view class="loader" v-if="index === lastIndex && loading">
+                <view class="thinking-dots">
+                  <view class="dot"></view>
+                  <view class="dot"></view>
+                  <view class="dot"></view>
+                </view>
+              </view>
               <!-- 操作按钮（复制、反馈） -->
               <view class="bottom_btns" v-else>
                 <view class="left"></view>
@@ -816,25 +822,50 @@ textarea {
 }
 
 .loader {
-  width: 60px;
-  aspect-ratio: 4;
-  --_g: no-repeat radial-gradient(circle closest-side, #b36e6e 90%, #0000);
-  background: var(--_g) 0% 50%, var(--_g) 50% 50%, var(--_g) 100% 50%;
-  background-size: calc(100% / 3) 100%;
-  animation: l7 1s infinite linear;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  height: 60rpx;
+  margin: 16rpx 0;
 }
 
-@keyframes l7 {
-  33% {
-    background-size: calc(100% / 3) 0%, calc(100% / 3) 100%, calc(100% / 3) 100%;
-  }
+/* 简约三点动画 */
+.thinking-dots {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+}
 
-  50% {
-    background-size: calc(100% / 3) 100%, calc(100% / 3) 0%, calc(100% / 3) 100%;
-  }
+.dot {
+  width: 8rpx;
+  height: 8rpx;
+  border-radius: 50%;
+  background: #6190e8;
+  animation: dot-pulse 1.4s ease-in-out infinite;
+}
 
-  66% {
-    background-size: calc(100% / 3) 100%, calc(100% / 3) 100%, calc(100% / 3) 0%;
+.dot:nth-child(1) {
+  animation-delay: 0s;
+}
+
+.dot:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.dot:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes dot-pulse {
+  0%,
+  60%,
+  100% {
+    opacity: 0.4;
+    transform: scale(0.8);
+  }
+  30% {
+    opacity: 1;
+    transform: scale(1);
   }
 }
 
