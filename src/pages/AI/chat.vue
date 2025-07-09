@@ -18,7 +18,7 @@
         <i class="iconfont icon-xinhuihua" @click="handleNewChat"></i>
       </view>
       <view class="title">弈寻</view>
-      <view class="right"></view>
+      <view :style="wxMenu"></view>
     </view>
 
     <!-- 聊天消息滚动区域 -->
@@ -267,11 +267,14 @@ let requestTask = null
 let session_id = ''
 const uploadVisible = ref(false)
 let sseHandler = null //SSE处理器实例
-const { top, height } = uni.getMenuButtonBoundingClientRect()
+const { top, height ,width} = uni.getMenuButtonBoundingClientRect()
 const menuButtonInfo = ref({
   top: top,
   height: height,
 })
+const wxMenu={
+  width:width+'px',
+}
 
 // 初始化SSE处理器
 function initSSEHandler() {
@@ -843,11 +846,6 @@ textarea {
     letter-spacing: 1rpx;
   }
 
-  .right {
-    // 保持对称布局，可放置其他图标
-    width: 80rpx;
-    height: 80rpx;
-  }
 }
 
 .loader {
