@@ -46,15 +46,24 @@
           <view class="msg_content">
             <view class="ai_name">弈寻AI</view>
             <view class="msg_bubble">
-              <!-- AI思考过程 -->
+              <!-- 已深度思考 -->
               <view class="thought" v-if="item.msg.thought">
-                <view class="title">{{ thinkText }}</view>
-                <MarkdownRenderer
-                  :content="item.msg.thought"
-                  font-size="26rpx"
-                  text-color="#7d7d7d"
-                  line-height="1.5"
-                ></MarkdownRenderer>
+                <view class="thought-header" @click="toggleThought(index)">
+                  <view class="title">{{ thinkText }}</view>
+                  <i
+                    class="iconfont icon-jiantou_liebiaozhankai"
+                    :class="{ expanded: thoughtExpandStates[index] }"
+                  ></i>
+                </view>
+                <!-- 思考过程内容 -->
+                <view class="thought-content" :class="{ show: thoughtExpandStates[index] }">
+                  <MarkdownRenderer
+                    :content="item.msg.thought"
+                    font-size="26rpx"
+                    text-color="#7d7d7d"
+                    line-height="1.5"
+                  ></MarkdownRenderer>
+                </view>
               </view>
               <!-- AI回复内容 -->
               <view class="reply" v-if="item.msg.reply">
@@ -256,6 +265,7 @@ let checkReplyInterval = null //检查回复长度
 const safeAreaInsets = ref({})
 const lastReplyLength = ref(0)
 const thinkText = ref('已深度思考')
+const thoughtExpandStates = ref({})
 const MSG_TYPE = {
   AI: 0,
   USER: 1,
@@ -511,6 +521,11 @@ function buildThoughtData(message, payload) {
   try {
     const thoughtContent = payload?.procedures?.[0]?.debugging?.content || ''
     message.msg.thought = thoughtContent
+
+    // 自动展开当前消息的思考过程
+    if (thoughtContent) {
+      thoughtExpandStates.value[lastIndex.value] = true
+    }
   } catch (error) {
     console.error('处理思考数据时出错:', error)
   }
@@ -687,6 +702,11 @@ function delImage(index) {
   }
 }
 
+// 切换思考过程的展开/折叠状态
+function toggleThought(messageIndex) {
+  thoughtExpandStates.value[messageIndex] = !thoughtExpandStates.value[messageIndex]
+}
+
 onLoad(() => {
   // 初始化SSE处理器
   initSSEHandler()
@@ -754,7 +774,7 @@ textarea {
       line-height: 180rpx;
 
       .iconfont {
-        font-size: 50rpx;
+        font-size: 40rpx;
       }
     }
 
@@ -772,7 +792,6 @@ textarea {
   line-height: 48rpx;
 
   .title {
-    // background-color: red;
     display: flex;
     align-items: center;
 
@@ -1130,16 +1149,45 @@ page {
 .thought {
   margin-bottom: 16rpx;
 
-  .title {
-    font-size: 26rpx;
-    color: #007aff;
-    font-weight: 500;
-    margin-bottom: 8rpx;
-  }
-}
+  .thought-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8rpx 12rpx;
 
-.reply {
-  /* 回复内容的容器样式，具体渲染样式由 MarkdownRenderer 组件处理 */
+    .title {
+      font-size: 26rpx;
+      color: #007aff;
+      font-weight: 500;
+    }
+
+    .iconfont {
+      font-size: 40rpx;
+      transition: transform 0.3s ease;
+      transform: rotate(0deg);
+
+      &.expanded {
+        transform: rotate(180deg);
+      }
+    }
+  }
+
+  .thought-content {
+    border-left: 6rpx solid #e6f2ff;
+    padding-left: 20rpx;
+    margin-top: 8rpx;
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: all 0.3s ease-in-out;
+
+    &.show {
+      max-height: 2000rpx;
+      opacity: 1;
+      padding-top: 12rpx;
+      padding-bottom: 8rpx;
+    }
+  }
 }
 
 .history-list {
