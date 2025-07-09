@@ -3,7 +3,13 @@
   <!-- AI聊天主页面 -->
   <view class="main">
     <!-- 顶部导航栏 -->
-    <view class="top_nav" :style="{ marginTop: safeAreaInsets.top + 'px' }">
+    <view
+      class="top_nav"
+      :style="{
+        top: menuButtonInfo.top + 'px',
+        height: menuButtonInfo.height + 'px',
+      }"
+    >
       <view class="left">
         <!-- 返回按钮 -->
         <i class="iconfont icon-jiantou_liebiaoxiangzuo" @click="goBack" size="20"></i>
@@ -23,7 +29,7 @@
       :scroll-with-animation="true"
       :style="{
         paddingBottom: `calc(${keyboardHeight}px + 204rpx)`,
-        paddingTop: `calc(${safeAreaInsets.top}px + 100rpx)`,
+        paddingTop: `calc(${menuButtonInfo.top + menuButtonInfo.height}px + 20rpx)`,
       }"
     >
       <view style="height: 20rpx"></view>
@@ -261,7 +267,11 @@ let requestTask = null
 let session_id = ''
 const uploadVisible = ref(false)
 let sseHandler = null //SSE处理器实例
-const {top,height}=uni.getMenuButtonBoundingClientRect()
+const { top, height } = uni.getMenuButtonBoundingClientRect()
+const menuButtonInfo = ref({
+  top: top,
+  height: height,
+})
 
 // 初始化SSE处理器
 function initSSEHandler() {
@@ -570,8 +580,6 @@ function goBottom() {
   }, 100)
 }
 
-
-
 function startReplyCheck() {
   stopReplyCheck()
   checkReplyInterval = setInterval(() => {
@@ -719,7 +727,6 @@ function toggleThought(messageIndex) {
 onLoad(() => {
   // 初始化SSE处理器
   initSSEHandler()
-
 })
 
 onShow(() => {
@@ -810,7 +817,6 @@ textarea {
 }
 
 .top_nav {
-  height: 100rpx;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -818,7 +824,6 @@ textarea {
   border-bottom: 2rpx solid #fafafa;
   background-color: #fefefe;
   position: fixed;
-  top: 0;
   left: 0;
   right: 0;
 
@@ -828,7 +833,7 @@ textarea {
     gap: 20rpx; // 图标间距
 
     .iconfont {
-      font-size: 40rpx;
+      font-size: 50rpx;
     }
   }
 
