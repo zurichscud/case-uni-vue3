@@ -52,11 +52,11 @@
                   <view class="title">{{ thinkText }}</view>
                   <i
                     class="iconfont icon-jiantou_liebiaozhankai"
-                    :class="{ expanded: thoughtExpandStates[index] }"
+                    :class="{ expanded: item.expand }"
                   ></i>
                 </view>
                 <!-- 思考过程内容 -->
-                <view class="thought-content" :class="{ show: thoughtExpandStates[index] }">
+                <view class="thought-content" :class="{ show: item.expand }">
                   <MarkdownRenderer
                     :content="item.msg.thought"
                     font-size="26rpx"
@@ -84,6 +84,14 @@
                     <text class="reference-name">{{ re.name }}</text>
                   </view>
                 </view>
+              </view>
+              <!-- 重要提示 -->
+              <view
+                class="important-notice"
+                v-if="item.msg.reply && !(index === lastIndex && loading)"
+              >
+                <view class="notice-title">重要提示</view>
+                <text class="notice-content">{{ END_TEXT }}</text>
               </view>
               <!-- 加载动画（生成中显示） -->
               <view class="loader" v-if="index === lastIndex && loading">
@@ -265,7 +273,6 @@ let checkReplyInterval = null //检查回复长度
 const safeAreaInsets = ref({})
 const lastReplyLength = ref(0)
 const thinkText = ref('已深度思考')
-const thoughtExpandStates = ref({})
 const MSG_TYPE = {
   AI: 0,
   USER: 1,
@@ -327,6 +334,7 @@ async function handleSend() {
   // 准备AI回复消息对象
   messages.value.push({
     type: MSG_TYPE.AI,
+    expand: true,
     msg: {
       reply: '',
       thought: '',
@@ -408,6 +416,7 @@ function handleRequestError() {
   // 通过AI告诉用户出错
   messages.value[lastIndex.value] = {
     type: MSG_TYPE.AI,
+    expand: true,
     msg: {
       reply: '抱歉，网络连接出现问题，请稍后重试。',
       thought: '',
@@ -432,6 +441,7 @@ function processSSEData(eventType, parsedData) {
           thought: '',
           references: [],
         }
+        currentMessage.expand = true
         messages.value[lastIndex.value] = currentMessage
       }
       loading.value = false
@@ -501,10 +511,8 @@ function buildReplyData(message, payload) {
   try {
     let replyContent = payload.content || ''
 
-    // 如果是最终回复，添加免责声明
+    // 如果是最终回复，结束加载状态
     if (payload.is_final && replyContent) {
-      replyContent += END_TEXT
-
       // 结束加载状态
       loading.value = false
       stopReplyCheck()
@@ -521,11 +529,6 @@ function buildThoughtData(message, payload) {
   try {
     const thoughtContent = payload?.procedures?.[0]?.debugging?.content || ''
     message.msg.thought = thoughtContent
-
-    // 自动展开当前消息的思考过程
-    if (thoughtContent) {
-      thoughtExpandStates.value[lastIndex.value] = true
-    }
   } catch (error) {
     console.error('处理思考数据时出错:', error)
   }
@@ -704,7 +707,7 @@ function delImage(index) {
 
 // 切换思考过程的展开/折叠状态
 function toggleThought(messageIndex) {
-  thoughtExpandStates.value[messageIndex] = !thoughtExpandStates.value[messageIndex]
+  messages.value[messageIndex].expand = !messages.value[messageIndex].expand
 }
 
 onLoad(() => {
@@ -1322,6 +1325,27 @@ page {
     word-break: break-all;
     line-height: 1.4;
     margin-left: 10rpx;
+  }
+}
+
+.important-notice {
+  margin-top: 20rpx;
+  background: #fff7e6;
+  border-radius: 12rpx;
+  padding: 16rpx 20rpx;
+  border: 1px solid #ffd591;
+
+  .notice-title {
+    font-size: 26rpx;
+    font-weight: 600;
+    color: #fa8c16;
+    margin-bottom: 8rpx;
+  }
+
+  .notice-content {
+    font-size: 24rpx;
+    color: #666;
+    line-height: 1.5;
   }
 }
 </style>

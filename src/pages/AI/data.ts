@@ -1,7 +1,5 @@
 // AI回复结尾提示文本
-export const END_TEXT = `\n\n**重要提示**\n
-    感谢您访问弈寻！本智能体提供的信息仅供一般参考，不构成正式法律意见。
-    用户应自行判断信息的准确性、完整性或适用性，并承担因依赖此类信息而产生的风险。`
+export const END_TEXT = `感谢您访问弈寻！本智能体提供的信息仅供一般参考，不构成正式法律意见。用户应自行判断信息的准确性、完整性或适用性，并承担因依赖此类信息而产生的风险。`
 // AI头像
 export const AI_AVATAR =
   'https://iclaim.oss-cn-beijing.aliyuncs.com/2025/02/4223b31480c2421c9745be8c15563e4a.png'
