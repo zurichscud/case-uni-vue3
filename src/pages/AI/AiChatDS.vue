@@ -48,7 +48,7 @@
             <view class="msg_bubble">
               <!-- AI思考过程 -->
               <view class="thought" v-if="item.msg.thought">
-                <view class="title">思考过程：</view>
+                <view class="title">{{ thinkText }}</view>
                 <text :user-select="true">{{ item.msg.thought }}</text>
               </view>
               <!-- AI回复内容 -->
@@ -147,8 +147,8 @@
           <!-- 图片上传按钮 -->
           <view
             class="btn-ra closeempty"
-            :style="{ transform: showPhoto ? 'rotate(0)' : 'rotate(45deg)' }"
-            @click="showPhoto = !showPhoto"
+            :style="{ transform: uploadVisible ? 'rotate(0)' : 'rotate(45deg)' }"
+            @click="uploadVisible = !uploadVisible"
           >
             <text class="iconfont icon-closeempty"></text>
           </view>
@@ -164,7 +164,7 @@
       </view>
 
       <!-- 图片上传选项（拍照/相册） -->
-      <view class="upload_btn" :style="{ height: showPhoto ? 260 + 'rpx' : 0 }">
+      <view class="upload_btn" :style="{ height: uploadVisible ? 260 + 'rpx' : 0 }">
         <view class="item photo" @click="uploadImage('camera')">
           <view class="btn">
             <text class="iconfont icon-paizhao"></text>
@@ -230,6 +230,7 @@ import * as AIAPI from '@/apis/ai'
 import { useUserStore } from '@/stores'
 import { END_TEXT, AI_AVATAR, AI_INTRODUCTION, AI_HELLO } from './data'
 import { SSEHandler } from './utils'
+import { uploadFile } from '@/utils/http'
 
 const userStore = useUserStore()
 const keyboardHeight = ref(0)
@@ -243,14 +244,15 @@ const loading = ref(false)
 let checkReplyInterval = null //检查回复长度
 const safeAreaInsets = ref({})
 const lastReplyLength = ref(0)
+const thinkText = ref('已深度思考')
 const MSG_TYPE = {
   AI: 0,
   USER: 1,
 }
 let requestTask = null
 let session_id = ''
-const showPhoto = ref(false)
-let sseHandler = null//SSE处理器实例
+const uploadVisible = ref(false)
+let sseHandler = null //SSE处理器实例
 
 // 初始化SSE处理器
 function initSSEHandler() {
@@ -313,7 +315,7 @@ async function handleSend() {
 
   // 重置状态
   userInput.value = ''
-  showPhoto.value = false
+  uploadVisible.value = false
   goBottom()
   loading.value = true
   startReplyCheck()
@@ -368,6 +370,7 @@ async function handleSend() {
 function cleanupRequest() {
   if (requestTask) {
     try {
+      requestTask.offChunkReceived()
       requestTask.abort()
     } catch (e) {
       console.warn('清理请求时出错:', e)
@@ -389,7 +392,7 @@ function handleRequestError() {
       thought: '',
       references: [],
     },
-  })
+  }
 
   goBottom()
 }
@@ -444,16 +447,19 @@ function processSSEData(eventType, parsedData) {
     // 根据数据类型更新消息内容
     switch (type) {
       case 'reply':
-        handleReplyData(updatedMessage, payload)
+        buildReplyData(updatedMessage, payload)
         break
       case 'thought':
-        handleThoughtData(updatedMessage, payload)
+        buildThoughtData(updatedMessage, payload)
         break
       case 'reference':
-        handleReferenceData(updatedMessage, payload)
+        buildReferenceData(updatedMessage, payload)
         break
       case 'token_stat':
-        handleTokenStatData(updatedMessage, payload)
+        processTokenStatData(updatedMessage, payload)
+        break
+      case 'error':
+        processErrorData(updatedMessage, payload)
         break
       default:
         console.log('未知的SSE数据类型:', type)
@@ -470,7 +476,7 @@ function processSSEData(eventType, parsedData) {
 }
 
 // 处理回复数据
-function handleReplyData(message, payload) {
+function buildReplyData(message, payload) {
   try {
     let replyContent = payload.content || ''
 
@@ -490,7 +496,7 @@ function handleReplyData(message, payload) {
 }
 
 // 处理思考过程数据
-function handleThoughtData(message, payload) {
+function buildThoughtData(message, payload) {
   try {
     const thoughtContent = payload?.procedures?.[0]?.debugging?.content || ''
     message.msg.thought = thoughtContent
@@ -500,7 +506,7 @@ function handleThoughtData(message, payload) {
 }
 
 // 处理引用文献数据
-function handleReferenceData(message, payload) {
+function buildReferenceData(message, payload) {
   try {
     const references = payload?.references || []
 
@@ -518,8 +524,13 @@ function handleReferenceData(message, payload) {
 }
 
 // 处理本次会话的token统计数据
-function handleTokenStatData(message, payload) {
-  console.log('token统计:', payload)
+function processTokenStatData(message, payload) {
+  console.log('耗时:', payload.elapsed)
+  console.log('token', payload.token_count)
+}
+
+function processErrorData(message, payload) {
+  console.log('错误:', payload.error.message)
 }
 
 function imgsToMarkdown(imgs) {
@@ -588,7 +599,7 @@ function handleStop() {
         currentMessage.msg.reply = '已停止生成'
       } else {
         // 如果有内容，在末尾添加停止标记
-        currentMessage.msg.reply += '\n\n[已手动停止生成]'
+        currentMessage.msg.reply += '\n\n已手动停止生成'
       }
 
       // 确保消息结构完整
@@ -645,33 +656,12 @@ async function uploadImage(sourceType) {
       sourceType: [sourceType], // 'camera' 或 'album'
       sizeType: ['compressed'], // 压缩图片
     })
+    uploadVisible.value = false
+    const { data } = await uploadFile(res.tempFilePaths[0])
+    images.value.push(data)
 
-    if (res.tempFilePaths && res.tempFilePaths.length > 0) {
-      const imagePath = res.tempFilePaths[0]
-
-      // 检查图片数量限制
-      if (images.value.length >= 3) {
-        uni.showToast({
-          title: '最多只能上传3张图片',
-          icon: 'none',
-        })
-        return
-      }
-
-      // 添加到图片数组
-      images.value.push(imagePath)
-
-      // 自动收起上传选项
-      showPhoto.value = false
-
-      console.log('图片上传成功:', imagePath)
-    }
   } catch (error) {
     console.error('图片上传失败:', error)
-    uni.showToast({
-      title: '图片上传失败',
-      icon: 'none',
-    })
   }
 }
 

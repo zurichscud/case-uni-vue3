@@ -186,7 +186,7 @@ export default (config) => {
 
 export async function uploadFile(path) {
   const userStore = useUserStore()
-  const res = await uni.uploadFile({
+  const {data} = await uni.uploadFile({
     url: import.meta.env.VITE_BASE_URL + 'iclaim/user/photoUpload2',
     filePath: path,
     header: {
@@ -194,4 +194,5 @@ export async function uploadFile(path) {
     },
     name: 'photo',
   })
+  return JSON.parse(data)
 }
