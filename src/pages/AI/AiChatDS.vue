@@ -79,7 +79,7 @@
                 </view>
               </view>
               <!-- 加载动画（生成中显示） -->
-              <view class="loader" v-if="loading"></view>
+              <view class="loader" v-if="index === lastIndex && loading"></view>
               <!-- 操作按钮（复制、反馈） -->
               <view class="bottom_btns" v-else>
                 <view class="left"></view>
@@ -144,11 +144,6 @@
       <!-- 功能按钮区域 -->
       <view class="btns">
         <view class="left">
-          <!-- 联网搜索按钮 -->
-          <view class="btn internet">
-            <text class="iconfont icon-hulianwang"></text>
-            <text>联网搜索</text>
-          </view>
           <!-- 深度思考按钮 -->
           <view class="btn deep">
             <text class="iconfont icon-shendusikao"></text>
