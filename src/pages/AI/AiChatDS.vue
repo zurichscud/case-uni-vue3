@@ -51,7 +51,6 @@
                 <view class="title">{{ thinkText }}</view>
                 <MarkdownRenderer
                   :content="item.msg.thought"
-                  theme="thought"
                   font-size="26rpx"
                   text-color="#7d7d7d"
                   line-height="1.5"
@@ -61,7 +60,6 @@
               <view class="reply" v-if="item.msg.reply">
                 <MarkdownRenderer
                   :content="item.msg.reply"
-                  theme="default"
                   font-size="28rpx"
                   text-color="#333"
                   line-height="1.6"

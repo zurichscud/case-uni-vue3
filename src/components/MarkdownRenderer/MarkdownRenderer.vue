@@ -49,12 +49,6 @@ const props = defineProps({
     type: String,
     default: '',
   },
-  // 主题类型
-  theme: {
-    type: String,
-    default: 'default', // default, thought, code
-    validator: (value) => ['default', 'thought', 'code'].includes(value),
-  },
   // 字体大小
   fontSize: {
     type: String,
@@ -82,32 +76,6 @@ marked.setOptions({
   headerIds: false, // 禁用标题ID
   mangle: false, // 禁用标题混淆
 })
-
-// 获取主题样式
-const getThemeStyles = (theme) => {
-  const themes = {
-    default: {
-      backgroundColor: 'transparent',
-      padding: '0',
-      border: 'none',
-    },
-    thought: {
-      backgroundColor: '#f0f8ff',
-      padding: '16rpx',
-      border: '2rpx solid #e3f2fd',
-      borderRadius: '12rpx',
-      borderLeft: '8rpx solid #007aff',
-    },
-    code: {
-      backgroundColor: '#f8f9fa',
-      padding: '20rpx',
-      border: '2rpx solid #e9ecef',
-      borderRadius: '12rpx',
-      fontFamily: 'Consolas, Monaco, monospace',
-    },
-  }
-  return themes[theme] || themes.default
-}
 
 // 将 markdown 转换为 HTML
 const convertMarkdownToHtml = (markdown) => {
@@ -202,22 +170,18 @@ const renderedHtml = computed(() => {
 
 // 计算最终样式
 const computedStyle = computed(() => {
-  const themeStyle = getThemeStyles(props.theme)
   const baseStyle = `
     font-size: ${props.fontSize};
     color: ${props.textColor};
     line-height: ${props.lineHeight};
     word-break: break-word;
     overflow-wrap: break-word;
+    background-color: transparent;
+    padding: 0;
+    border: none;
   `
 
-  let themeStyleString = ''
-  Object.entries(themeStyle).forEach(([key, value]) => {
-    const cssKey = key.replace(/([A-Z])/g, '-$1').toLowerCase()
-    themeStyleString += `${cssKey}: ${value}; `
-  })
-
-  return `${baseStyle} ${themeStyleString} ${props.customStyle}`
+  return `${baseStyle} ${props.customStyle}`
 })
 
 // 事件处理
