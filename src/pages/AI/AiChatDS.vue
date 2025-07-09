@@ -49,21 +49,23 @@
               <!-- AI思考过程 -->
               <view class="thought" v-if="item.msg.thought">
                 <view class="title">{{ thinkText }}</view>
-                <mp-html
-                  :content="markdownToHtml(item.msg.thought)"
-                  :selectable="true"
-                  :copy-link="false"
-                  container-style="font-size: 28rpx; color: #7d7d7d; line-height: 1.5;"
-                ></mp-html>
+                <MarkdownRenderer
+                  :content="item.msg.thought"
+                  theme="thought"
+                  font-size="26rpx"
+                  text-color="#7d7d7d"
+                  line-height="1.5"
+                ></MarkdownRenderer>
               </view>
               <!-- AI回复内容 -->
               <view class="reply" v-if="item.msg.reply">
-                <mp-html
-                  :content="markdownToHtml(item.msg.reply)"
-                  :selectable="true"
-                  :copy-link="false"
-                  container-style="font-size: 28rpx; color: #333; line-height: 1.5;"
-                ></mp-html>
+                <MarkdownRenderer
+                  :content="item.msg.reply"
+                  theme="default"
+                  font-size="28rpx"
+                  text-color="#333"
+                  line-height="1.6"
+                ></MarkdownRenderer>
               </view>
               <!-- 引用文献 -->
               <view class="reference" v-if="item.msg.references && item.msg.references.length">
@@ -241,7 +243,6 @@ import { useUserStore } from '@/stores'
 import { END_TEXT, AI_AVATAR, AI_INTRODUCTION, AI_HELLO } from './data'
 import { SSEHandler } from './utils'
 import { uploadFile } from '@/utils/http'
-import { marked } from 'marked'
 
 const userStore = useUserStore()
 const keyboardHeight = ref(0)
@@ -264,52 +265,6 @@ let requestTask = null
 let session_id = ''
 const uploadVisible = ref(false)
 let sseHandler = null //SSE处理器实例
-
-// 配置 marked 选项
-marked.setOptions({
-  breaks: true, // 支持换行
-  gfm: true, // 支持 GitHub Flavored Markdown
-  headerIds: false, // 禁用标题ID
-  mangle: false, // 禁用标题混淆
-})
-
-// 将 markdown 转换为 HTML
-const markdownToHtml = (markdown) => {
-  if (!markdown) return ''
-  try {
-    let html = marked(markdown)
-
-    // 为代码块添加更好的样式
-    html = html.replace(
-      /<pre><code class="language-(\w+)">/g,
-      '<pre style="background-color: #f6f8fa; padding: 16rpx; border-radius: 12rpx; overflow-x: auto; margin: 16rpx 0;"><code class="language-$1" style="font-family: Consolas, Monaco, monospace; font-size: 26rpx;">',
-    )
-
-    // 为内联代码添加样式
-    html = html.replace(
-      /<code>/g,
-      '<code style="background-color: #f6f8fa; padding: 4rpx 8rpx; border-radius: 6rpx; font-family: Consolas, Monaco, monospace; font-size: 26rpx; color: #e83e8c;">',
-    )
-
-    // 为表格添加样式
-    html = html.replace(
-      /<table>/g,
-      '<table style="border-collapse: collapse; width: 100%; margin: 16rpx 0; border: 1px solid #d1d9e0;">',
-    )
-
-    html = html.replace(
-      /<th>/g,
-      '<th style="border: 1px solid #d1d9e0; padding: 12rpx; background-color: #f6f8fa; text-align: left;">',
-    )
-
-    html = html.replace(/<td>/g, '<td style="border: 1px solid #d1d9e0; padding: 12rpx;">')
-
-    return html
-  } catch (error) {
-    console.error('Markdown 解析错误:', error)
-    return markdown // 如果解析失败，返回原始文本
-  }
-}
 
 // 初始化SSE处理器
 function initSSEHandler() {
@@ -1149,29 +1104,18 @@ page {
 }
 
 .thought {
-  background-color: #f0f8ff;
-  /* 浅蓝色背景 */
-  border-left: 5rpx solid #007aff;
-  /* 左侧蓝色边框 */
-  padding: 10rpx;
-  border-radius: 5rpx;
-  margin-bottom: 10rpx;
-  /* 与回复内容的间距 */
-  color: #7d7d7d;
-  /* 深色文字 */
-  font-size: 28rpx;
-  /* 字体大小 */
+  margin-bottom: 16rpx;
+
+  .title {
+    font-size: 26rpx;
+    color: #007aff;
+    font-weight: 500;
+    margin-bottom: 8rpx;
+  }
 }
 
 .reply {
-  // background-color: #e6ffe6; /* 浅绿色背景 */
-  // border-left: 5rpx solid #4caf50; /* 左侧绿色边框 */
-  padding: 10rpx;
-  border-radius: 5rpx;
-  color: #333;
-  /* 深色文字 */
-  font-size: 28rpx;
-  /* 字体大小 */
+  /* 回复内容的容器样式，具体渲染样式由 MarkdownRenderer 组件处理 */
 }
 
 .history-list {

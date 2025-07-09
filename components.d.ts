@@ -16,7 +16,7 @@ declare module 'vue' {
     Form: typeof import('./src/components/form.vue')['default']
     Kefu: typeof import('./src/components/kefu.vue')['default']
     ListCell: typeof import('./src/components/list-cell/list-cell.vue')['default']
-    MarkdownRenderer: typeof import('./src/components/MarkdownRenderer.vue')['default']
+    MarkdownRenderer: typeof import('./src/components/MarkdownRenderer/MarkdownRenderer.vue')['default']
     Modal: typeof import('./src/components/modal.vue')['default']
     MyLoading: typeof import('./src/components/my-loading/my-loading.vue')['default']
     NetworkError: typeof import('./src/components/network-error/network-error.vue')['default']
