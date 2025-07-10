@@ -451,3 +451,12 @@ button::after {
 }
 /* #endif */
 </style>
+
+<route lang="json">
+{
+  "name": "phoneLogin",
+  "style": {
+    "navigationBarTitleText": "登录"
+  }
+}
+</route>

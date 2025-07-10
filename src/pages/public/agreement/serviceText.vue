@@ -116,7 +116,7 @@
 
 <script>
 	export default {
-		
+
 	}
 </script>
 
@@ -160,3 +160,12 @@
 	font-weight: bold;
 }
 </style>
+
+<route lang="json">
+{
+  "name": "serviceText",
+  "style": {
+    "navigationBarTitleText": "服务协议"
+  }
+}
+</route>

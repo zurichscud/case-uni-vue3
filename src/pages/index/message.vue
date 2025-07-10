@@ -378,3 +378,13 @@ onShow(() => {
   background-color: #f5f6fa;
 }
 </style>
+
+<route lang="json">
+{
+  "name": "message",
+  "layout": "tabbar",
+  "style": {
+    "navigationBarTitleText": "消息"
+  }
+}
+</route>

@@ -2,6 +2,10 @@ import { defineStore } from 'pinia'
 import type { MessageState } from './types'
 import * as MessageAPI from '@/apis/message'
 import { useUserStore } from '@/stores'
+import { useTabbar } from '@/composables/useTabbar'
+
+const { setTabbarItem } = useTabbar()
+
 export const useMessageStore = defineStore('message', {
   state: (): MessageState => ({
     unreadNum: 0,
@@ -12,15 +16,10 @@ export const useMessageStore = defineStore('message', {
       this.$patch(info)
     },
     setRedDot() {
-      uni.setTabBarBadge({
-        index: 2,
-        text: String(this.unreadNum),
-      })
+      setTabbarItem('message', this.unreadNum)
     },
     removeRedDot() {
-      uni.removeTabBarBadge({
-        index: 2,
-      })
+      setTabbarItem('message', 0)
     },
     // 重置用户信息
     resetMessage() {

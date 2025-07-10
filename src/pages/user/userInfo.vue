@@ -46,6 +46,7 @@
 import { useUserStore } from '@/stores'
 import { useMessage } from 'wot-design-uni'
 import * as UserAPI from '@/apis/user'
+
 const message = useMessage()
 const userStore = useUserStore()
 const { logout, getUserInfo } = userStore
@@ -183,3 +184,12 @@ page {
   }
 }
 </style>
+
+<route lang="json">
+{
+  "name": "userInfo",
+  "style": {
+    "navigationBarTitleText": "个人信息"
+  }
+}
+</route>

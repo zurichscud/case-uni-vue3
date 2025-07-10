@@ -119,3 +119,10 @@ onLoad(() => {
   align-items: center;
 }
 </style>
+
+<route lang="json">{
+  "name": "more",
+  "style": {
+    "navigationBarTitleText": "更多案例"
+  }
+}</route>

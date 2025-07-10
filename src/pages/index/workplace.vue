@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import router from '@/utils/router'
+const router = useRouter()
 
 // 定义菜单项类型
 interface MenuItem {
@@ -82,7 +82,7 @@ const menus: Menus = {
 
 function handleItemClick(url: string) {
   console.log(url)
-  router.go(url)
+  router.push(url)
 }
 </script>
 
@@ -134,3 +134,13 @@ function handleItemClick(url: string) {
   border-radius: 2rpx;
 }
 </style>
+
+<route lang="json">
+{
+  "name": "workplace",
+  "layout": "tabbar",
+  "style": {
+    "navigationBarTitleText": "工作室"
+  }
+}
+</route>

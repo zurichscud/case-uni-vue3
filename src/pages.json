@@ -1,15 +1,10 @@
 {
-  "easycom": {
-    "autoscan": true,
-    "custom": {
-      "^uni-(.*)": "@dcloudio/uni-ui/lib/uni-$1/uni-$1.vue",
-      "^wd-(.*)": "wot-design-uni/components/wd-$1/wd-$1.vue"
-    }
-  },
   "pages": [
-    //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
     {
       "path": "pages/index/index",
+      "type": "home",
+      "name": "index",
+      "layout": "tabbar",
       "style": {
         "navigationBarTitleText": "理赔公社",
         "navigationStyle": "custom",
@@ -18,140 +13,141 @@
       }
     },
     {
-      "path": "pages/index/workplace",
+      "path": "pages/index/message",
+      "type": "page",
+      "name": "message",
+      "layout": "tabbar",
       "style": {
-        "navigationBarTitleText": "工作室"
-      }
-    },
-    {
-      "path": "pages/case/case",
-      "style": {
-        "navigationBarTitleText": "案件列表(往期)",
-        "backgroundColor": "#FFFFFF"
+        "navigationBarTitleText": "消息"
       }
     },
     {
       "path": "pages/index/user",
+      "type": "page",
+      "name": "user",
+      "layout": "tabbar",
       "style": {
         "navigationBarTitleText": "我的",
         "navigationStyle": "custom"
       }
     },
     {
-      "path": "pages/login/login",
+      "path": "pages/index/workplace",
+      "type": "page",
+      "name": "workplace",
+      "layout": "tabbar",
       "style": {
-        "navigationBarTitleText": "登录"
-      }
-    },
-    {
-      "path": "pages/index/message",
-      "style": {
-        "navigationBarTitleText": "消息"
-      }
-    },
-    {
-      "path": "pages/index/submit/poster",
-      "style": {
-        "navigationBarTitleText": "提交案件"
-      }
-    },
-    {
-      "path": "pages/case/caseList",
-      "style": {
-        "navigationBarTitleText": "我提交的案件(往期)"
+        "navigationBarTitleText": "工作室"
       }
     },
     {
       "path": "pages/index/article/detail",
+      "type": "page",
+      "name": "detail",
       "style": {
-        "navigationBarTitleText": "典型案例"
+        "navigationBarTitleText": "案例详情"
       }
     },
     {
       "path": "pages/index/article/more",
+      "type": "page",
+      "name": "more",
       "style": {
-        "navigationBarTitleText": "案例列表",
-        "onReachBottomDistance": 50
+        "navigationBarTitleText": "更多案例"
       }
     },
     {
-      "path": "pages/login/phoneLogin",
-      "style": {
-        "navigationBarTitleText": "登录"
-      }
+      "path": "pages/index/components/typical-case",
+      "type": "page"
     },
     {
-      "path": "pages/case/all-case",
+      "path": "pages/index/submit/poster",
+      "type": "page",
+      "name": "poster",
       "style": {
-        "navigationBarTitleText": "案件列表"
+        "navigationBarTitleText": "提交案件"
       }
     }
   ],
-
+  "globalStyle": {
+    "navigationBarBackgroundColor": "@navBgColor",
+    "navigationBarTextStyle": "@navTxtStyle",
+    "navigationBarTitleText": "Wot-Demo",
+    "backgroundColor": "@bgColor",
+    "backgroundTextStyle": "@bgTxtStyle",
+    "backgroundColorTop": "@bgColorTop",
+    "backgroundColorBottom": "@bgColorBottom",
+    "enablePullDownRefresh": false,
+    "onReachBottomDistance": 50,
+    "animationType": "pop-in",
+    "animationDuration": 300
+  },
+  "tabBar": {
+    "custom": true,
+    "customize": true,
+    "overlay": true,
+    "height": "0",
+    "color": "@tabColor",
+    "selectedColor": "@tabSelectedColor",
+    "backgroundColor": "@tabBgColor",
+    "borderStyle": "@tabBorderStyle",
+    "list": [
+      {
+        "pagePath": "pages/index/index"
+      },
+      {
+        "pagePath": "pages/index/workplace"
+      },
+      {
+        "pagePath": "pages/index/message"
+      },
+      {
+        "pagePath": "pages/index/user"
+      }
+    ]
+  },
   "subPackages": [
     {
-      "root": "pages/public",
+      "root": "pages/AI",
       "pages": [
         {
-          "path": "webview",
+          "path": "chat",
+          "type": "page",
+          "name": "chat",
           "style": {
-            "navigationBarTitleText": ""
+            "navigationBarTitleText": "弈寻",
+            "enablePullDownRefresh": false,
+            "navigationStyle": "custom"
           }
         },
         {
-          "path": "y9net",
-          "style": {
-            "navigationBarTitleText": ""
-          }
+          "path": "components/Feedback",
+          "type": "page"
         },
         {
-          "path": "agreement/serviceText",
-          "style": {}
-        },
-        {
-          "path": "agreement/privacyText",
-          "style": {}
+          "path": "components/HistoryDrawer",
+          "type": "page"
         }
       ]
     },
     {
-      "root": "pages/user",
+      "root": "pages/case",
       "pages": [
         {
-          "path": "userInfo",
-          "style": {
-            "navigationBarTitleText": "编辑个人信息"
-          }
+          "path": "all-case",
+          "type": "page"
         },
         {
-          "path": "workpoints",
-          "style": {
-            "navigationBarTitleText": "我的工分"
-          }
+          "path": "case",
+          "type": "page"
         },
         {
-          "path": "inviteList",
-          "style": {
-            "navigationBarTitleText": "我的邀请记录",
-            "enablePullDownRefresh": true
-          }
-        }
-      ]
-    },
-    {
-      "root": "pages/meeting",
-      "pages": [
-        {
-          "path": "verification",
-          "style": {
-            "navigationBarTitleText": "门票核销"
-          }
+          "path": "caseList",
+          "type": "page"
         },
         {
-          "path": "verResult",
-          "style": {
-            "navigationBarTitleText": "核销结果"
-          }
+          "path": "components/casecard",
+          "type": "page"
         }
       ]
     },
@@ -160,65 +156,39 @@
       "pages": [
         {
           "path": "chatroom",
-          "style": {
-            "navigationBarTitleText": "聊天"
-          }
+          "type": "page"
         },
         {
           "path": "files",
-          "style": {
-            "navigationBarTitleText": "查看附件/图片"
-          }
+          "type": "page"
         },
         {
           "path": "newCaseList",
-          "style": {
-            "navigationBarTitleText": "我提交的案件"
-          }
-        }
-      ]
-    },
-    {
-      "root": "pages/AI",
-      "pages": [
-        {
-          "path": "chat",
-          "style": {
-            "navigationBarTitleText": "弈寻",
-            "enablePullDownRefresh": false,
-            "navigationStyle": "custom"
-          }
-        }
-      ]
-    },
-    {
-      "root": "pages/lpgs",
-      "pages": [
-        {
-          "path": "reward",
-          "style": {
-            "navigationBarTitleText": "奖励政策"
-          }
+          "type": "page"
         },
         {
-          "path": "promotion",
-          "style": {
-            "navigationBarTitleText": "晋升大队长条件"
-          }
+          "path": "components/casecard",
+          "type": "page"
         },
         {
-          "path": "apply",
-          "style": {
-            "navigationBarTitleText": "上传证明",
-            "onReachBottomDistance": 20
-          }
+          "path": "components/chatbar",
+          "type": "page"
         },
         {
-          "path": "processing",
-          "style": {
-            "navigationBarTitleText": "上传证明",
-            "onReachBottomDistance": 20
-          }
+          "path": "components/chatmsg",
+          "type": "page"
+        },
+        {
+          "path": "components/invitepersonal",
+          "type": "page"
+        },
+        {
+          "path": "components/teaminvite",
+          "type": "page"
+        },
+        {
+          "path": "components/userTypes",
+          "type": "page"
         }
       ]
     },
@@ -227,64 +197,103 @@
       "pages": [
         {
           "path": "fuli",
-          "style": {
-            "navigationBarTitleText": "邀请好友享两大福利"
-          }
+          "type": "page"
         },
         {
           "path": "record",
-          "style": {
-            "navigationBarTitleText": "往期我的邀请记录",
-            "enablePullDownRefresh": true
-          }
+          "type": "page"
         },
         {
           "path": "team",
+          "type": "page"
+        },
+        {
+          "path": "components/invitepersonal",
+          "type": "page"
+        },
+        {
+          "path": "components/teaminvite",
+          "type": "page"
+        }
+      ]
+    },
+    {
+      "root": "pages/login",
+      "pages": [
+        {
+          "path": "login",
+          "type": "page",
+          "name": "login",
           "style": {
-            "navigationBarTitleText": "团队"
+            "navigationBarTitleText": "登录"
+          }
+        },
+        {
+          "path": "phoneLogin",
+          "type": "page",
+          "name": "phoneLogin",
+          "style": {
+            "navigationBarTitleText": "登录"
           }
         }
       ]
     },
     {
-      "root": "pages/deprecated",
+      "root": "pages/lpgs",
       "pages": [
         {
-          "path": "myOrder",
-          "style": {
-            "navigationBarTitleText": "我的订单"
-          }
+          "path": "apply",
+          "type": "page"
         },
         {
-          "path": "meeting/list",
-          "style": {
-            "navigationBarTitleText": "我的会议",
-            "onReachBottomDistance": 20
-          }
+          "path": "processing",
+          "type": "page"
         },
         {
-          "path": "meeting/detail",
-          "style": {
-            "navigationStyle": "custom"
-          }
+          "path": "promotion",
+          "type": "page"
         },
         {
-          "path": "myteam",
-          "style": {
-            "navigationBarTitleText": "团队成员"
-          }
+          "path": "reward",
+          "type": "page"
+        }
+      ]
+    },
+    {
+      "root": "pages/mcd",
+      "pages": [
+        {
+          "path": "mcd-detail",
+          "type": "page"
         },
         {
-          "path": "hxChat/chat",
-          "style": {
-            "navigationBarTitleText": "聊天"
-          }
+          "path": "mcd-list",
+          "type": "page"
         },
         {
-          "path": "chatroom",
-          "style": {
-            "navigationBarTitleText": "聊天"
-          }
+          "path": "ranking",
+          "type": "page"
+        },
+        {
+          "path": "components/activity-list",
+          "type": "page"
+        },
+        {
+          "path": "components/comment-list",
+          "type": "page"
+        }
+      ]
+    },
+    {
+      "root": "pages/meeting",
+      "pages": [
+        {
+          "path": "verResult",
+          "type": "page"
+        },
+        {
+          "path": "verification",
+          "type": "page"
         }
       ]
     },
@@ -293,81 +302,76 @@
       "pages": [
         {
           "path": "payPage",
-          "style": {
-            "navigationBarTitleText": "支付订单"
-          }
+          "type": "page"
         },
         {
           "path": "payResults",
+          "type": "page"
+        }
+      ]
+    },
+    {
+      "root": "pages/public",
+      "pages": [
+        {
+          "path": "webview",
+          "type": "page",
+          "name": "webview"
+        },
+        {
+          "path": "y9net",
+          "type": "page",
+          "name": "y9net",
           "style": {
-            "navigationBarTitleText": "支付结果"
+            "navigationBarTitleText": "官网"
+          }
+        },
+        {
+          "path": "agreement/privacyText",
+          "type": "page",
+          "name": "privacyText",
+          "style": {
+            "navigationBarTitleText": "隐私政策"
+          }
+        },
+        {
+          "path": "agreement/serviceText",
+          "type": "page",
+          "name": "serviceText",
+          "style": {
+            "navigationBarTitleText": "服务协议"
           }
         }
       ]
     },
     {
-      "root": "pages/mcd",
+      "root": "pages/user",
       "pages": [
         {
-          "path": "mcd-list",
+          "path": "inviteList",
+          "type": "page"
+        },
+        {
+          "path": "userInfo",
+          "type": "page",
+          "name": "userInfo",
           "style": {
-            "navigationBarTitleText": "兵棋推演"
+            "navigationBarTitleText": "个人信息"
           }
         },
         {
-          "path": "mcd-detail",
-          "style": {
-            "navigationBarTitleText": "活动详情",
-            "backgroundColor": "#FFFFFF"
-          }
+          "path": "workpoints",
+          "type": "page"
         },
         {
-          "path": "ranking",
-          "style": {
-            "navigationBarTitleText": "排行榜",
-            "backgroundColor": "#FFFFFF"
-          }
+          "path": "components/invitepersonal",
+          "type": "page"
+        },
+        {
+          "path": "components/teaminvite",
+          "type": "page"
         }
       ]
     }
-  ],
-  "globalStyle": {
-    "navigationBarTextStyle": "black",
-    "navigationBarTitleText": "uni-app",
-    "navigationBarBackgroundColor": "#F8F8F8",
-    "backgroundColor": "#F8F8F8",
-    "onReachBottomDistance": 100
-  },
-  "tabBar": {
-    "color": "#7A7E83",
-    "selectedColor": "#0091EA", //专家端 “#0091EA” 保护端‘#FF821D’
-    "borderStyle": "black",
-    "backgroundColor": "#ffffff",
-    "list": [
-      {
-        "pagePath": "pages/index/index",
-        "iconPath": "static/tabBar/home.png",
-        "selectedIconPath": "static/tabBar/home-active.png",
-        "text": "首页"
-      },
-      {
-        "pagePath": "pages/index/workplace",
-        "iconPath": "static/tabBar/workplace.png",
-        "selectedIconPath": "static/tabBar/workplace-active.png",
-        "text": "工作室"
-      },
-      {
-        "pagePath": "pages/index/message",
-        "iconPath": "static/tabBar/message.png",
-        "selectedIconPath": "static/tabBar/message-active.png",
-        "text": "消息"
-      },
-      {
-        "pagePath": "pages/index/user",
-        "iconPath": "static/tabBar/mine.png",
-        "selectedIconPath": "static/tabBar/mine-active.png",
-        "text": "我的"
-      }
-    ]
-  }
+  ]
 }

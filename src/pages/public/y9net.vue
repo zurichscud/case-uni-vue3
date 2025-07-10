@@ -17,3 +17,12 @@
 		width: 0;
 	}
 </style>
+
+<route lang="json">
+{
+  "name": "y9net",
+  "style": {
+    "navigationBarTitleText": "官网"
+  }
+}
+</route>

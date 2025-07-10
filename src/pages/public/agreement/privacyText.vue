@@ -139,3 +139,12 @@
     }
   }
 </style>
+
+<route lang="json">
+{
+  "name": "privacyText",
+  "style": {
+    "navigationBarTitleText": "隐私政策"
+  }
+}
+</route>

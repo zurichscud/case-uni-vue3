@@ -17,7 +17,8 @@ export function getArticleList(param: PageParam, data: any) {
 
 export function getArticle(data: { articleId: string }) {
   return http({
-    url: appendQueryParams('iclaim/lpgsArticle/getArticle', data),
-    method: 'POST',
+    url: 'iclaim/lpgsArticle/getArticle',
+    method: 'GET',
+    data,
   })
 }

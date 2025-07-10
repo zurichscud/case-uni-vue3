@@ -14,7 +14,7 @@
         手机号快捷登录
       </wd-button>
     </view>
-    <view class="btn_phone" @click="router.go('/pages/login/phoneLogin')">
+    <view class="btn_phone" @click="router.push('/pages/login/phoneLogin')">
       使用短信验证登录/注册
     </view>
   </view>
@@ -23,9 +23,9 @@
 <script setup>
 import { useUserStore } from '@/stores'
 import * as UserAPI from '@/apis/user'
-import router from '@/utils/router'
 import { SOURCE } from '@/enums/source'
 
+const router = useRouter()
 const { login } = useUserStore()
 
 async function getPhoneNumber(e) {
@@ -93,3 +93,12 @@ uni-app {
   border: 1px solid #f5f6f9;
 }
 </style>
+
+<route lang="json">
+{
+  "name": "login",
+  "style": {
+    "navigationBarTitleText": "登录"
+  }
+}
+</route>

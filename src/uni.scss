@@ -1,5 +1,3 @@
-
-
 /**
  * 这里是uni-app内置的常用样式变量 uni_case_next
  *
@@ -24,57 +22,57 @@
 
 /* 颜色变量 */
 //保户端
-$uni-text-color-inverse:#3F9CFF;//用户版 反色 橘黄色  高亮主题色
-$uni-text-color-inverse1:rgba(252, 188, 68, 1);//用户版 反色 渐变色
-$uni-bg-inverse:#FFDC90;//高亮背景色
-$uni-bg-inverse2:#FFDC90;//保户聊天
+$uni-text-color-inverse: #3F9CFF; //用户版 反色 橘黄色  高亮主题色
+$uni-text-color-inverse1: rgba(252, 188, 68, 1); //用户版 反色 渐变色
+$uni-bg-inverse: #FFDC90; //高亮背景色
+$uni-bg-inverse2: #FFDC90; //保户聊天
 
 
 /* 文字基本颜色 */
-$uni-text-color:#1C252A;//基本色 黑色
+$uni-text-color: #1C252A; //基本色 黑色
 
-$uni-text-color-red:#FD4848;//红色
-$uni-text-color-title:#222;//标题
-$uni-text-color-subTitle:#1C252A;//子标题
-$uni-text-color-grey:#55667B;//辅助灰色，如加载更多的提示信息
+$uni-text-color-red: #FD4848; //红色
+$uni-text-color-title: #222; //标题
+$uni-text-color-subTitle: #1C252A; //子标题
+$uni-text-color-grey: #55667B; //辅助灰色，如加载更多的提示信息
 $uni-text-color-placeholder: #808080;
-$uni-text-color-disable:#c0c0c0;
-$uni-text-color-tips:#B7C4CB;//如加载更多的提示信息
-$uni-text-color-grey1:#888;//状态未激活灰
-$uni-text-color-id1:#006FEA;//咨询师标签高亮
-$uni-text-color-c777:#777;//状态未激活灰
-$uni-text-color-c999:#999;//状态未激活灰
-$uni-text-color-c666:#666;
+$uni-text-color-disable: #c0c0c0;
+$uni-text-color-tips: #B7C4CB; //如加载更多的提示信息
+$uni-text-color-grey1: #888; //状态未激活灰
+$uni-text-color-id1: #006FEA; //咨询师标签高亮
+$uni-text-color-c777: #777; //状态未激活灰
+$uni-text-color-c999: #999; //状态未激活灰
+$uni-text-color-c666: #666;
 
 /* 背景颜色 */
-$uni-bg-color:#ffffff;//白色背景
+$uni-bg-color: #ffffff; //白色背景
 
-$uni-bg-inverse2:#FFDC90;//高亮背景色2，更淡
+$uni-bg-inverse2: #FFDC90; //高亮背景色2，更淡
 
 
 
-$uni-bg-color-grey:#F5F6F9;//灰色背景
-$uni-bg-color-hover:#f1f1f1;//点击状态颜色
-$uni-bg-color-mask:rgba(0, 0, 0, 0.4);//遮罩颜色
+$uni-bg-color-grey: #F5F6F9; //灰色背景
+$uni-bg-color-hover: #f1f1f1; //点击状态颜色
+$uni-bg-color-mask: rgba(0, 0, 0, 0.4); //遮罩颜色
 
 /* 边框颜色 */
 // $uni-border-color:#B7C4CB;
-$uni-border-color-lighter:#D4DCE1;
-$uni-border-top-color:1px solid rgba(212, 220, 225, 0.5);//上下边框颜色
-$uni-border-button-color:1px solid rgba(85,102,123,1);//button颜色未激活
-$uni-border-button-active-color:1px solid rgba(255,130,29,1);//button激活色
+$uni-border-color-lighter: #D4DCE1;
+$uni-border-top-color: 1px solid rgba(212, 220, 225, 0.5); //上下边框颜色
+$uni-border-button-color: 1px solid rgba(85, 102, 123, 1); //button颜色未激活
+$uni-border-button-active-color: 1px solid rgba(255, 130, 29, 1); //button激活色
 
 /* 尺寸变量 */
 
 /* 文字尺寸 */
-$uni-font-size-sm:24upx;
-$uni-font-size-base:28upx;
-$uni-font-size-lg:32upx;
+$uni-font-size-sm: 24upx;
+$uni-font-size-base: 28upx;
+$uni-font-size-lg: 32upx;
 
 /* 图片尺寸 */
-$uni-img-size-sm:40upx;
-$uni-img-size-base:52upx;
-$uni-img-size-lg:80upx;
+$uni-img-size-sm: 40upx;
+$uni-img-size-base: 52upx;
+$uni-img-size-lg: 80upx;
 
 /* Border Radius */
 $uni-border-radius-sm: 4upx;
@@ -97,11 +95,10 @@ $uni-opacity-disabled: 0.3; // 组件禁用态的透明度
 
 /* 文章场景相关 */
 $uni-color-title: #2C405A; // 文章标题颜色
-$uni-font-size-title:40upx;
+$uni-font-size-title: 40upx;
 $uni-color-subtitle: #555555; // 二级标题颜色
-$uni-font-size-subtitle:36upx;
+$uni-font-size-subtitle: 36upx;
 $uni-color-paragraph: #3F536E; // 文章段落颜色
-$uni-font-size-paragraph:30upx;
+$uni-font-size-paragraph: 30upx;
 
 
-@import '/src/style/index.scss';

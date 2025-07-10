@@ -132,3 +132,12 @@ function handleShare() {
     }
   }
 </style>
+
+<route lang="json">
+{
+  "name": "poster",
+  "style": {
+    "navigationBarTitleText": "提交案件"
+  }
+}
+</route>

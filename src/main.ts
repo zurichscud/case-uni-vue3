@@ -1,10 +1,20 @@
 import { createSSRApp } from 'vue'
-import pinia from './stores'
-import { persistPlugin } from './stores/persist'
 import App from './App.vue'
+import 'uno.css'
+import './api'
+import router from './router'
+import { persistPlugin } from './stores/persist'
+
+
+import './style/iconfont.css'
+import './style/font.scss'
+import './style/index.scss'
+
+const pinia = createPinia()
+pinia.use(persistPlugin)
 export function createApp() {
   const app = createSSRApp(App)
-  pinia.use(persistPlugin)
+  app.use(router)
   app.use(pinia)
   return {
     app,

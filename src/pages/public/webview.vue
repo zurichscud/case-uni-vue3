@@ -15,3 +15,9 @@ onLoad((query) => {
 </template>
 
 <style scoped></style>
+
+<route lang="json">
+{
+  "name": "webview"
+}
+</route>
