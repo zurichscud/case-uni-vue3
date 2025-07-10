@@ -1,32 +1,10 @@
-/* eslint-env node */
-require('@rushstack/eslint-patch/modern-module-resolution')
+import uni from '@uni-helper/eslint-config'
 
-module.exports = {
-  root: true,
-  extends: [
-    'plugin:vue/vue3-essential',
-    'eslint:recommended',
-    '@vue/eslint-config-typescript',
-    '@vue/eslint-config-prettier',
-  ],
-  // 小程序全局变量
-  globals: {
-    uni: true,
-    wx: true,
-    WechatMiniprogram: true,
-    getCurrentPages: true,
-    getApp: true,
-    UniApp: true,
-    UniHelper: true,
-    App: true,
-    Page: true,
-    Component: true,
-    AnyObject: true,
-  },
-  parserOptions: {
-    ecmaVersion: 'latest',
-  },
+export default uni({
+  unocss: true,
   rules: {
+    'no-console': 'off',
+    'eslint-comments/no-unlimited-disable': 'off',
     '@typescript-eslint/no-explicit-any': 'off', // any类型检查
     'vue/require-default-prop': 'off',
     'vue/multi-word-component-names': 'off',
@@ -51,5 +29,9 @@ module.exports = {
         multiline: 'ignore',
       },
     ],
+    'vue/html-self-closing': 'off',
+    'import/order': 'off',
+    'sort-imports': 'off',
+    'vue/prefer-template': 'off',
   },
-}
+})

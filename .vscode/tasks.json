@@ -2,10 +2,15 @@
   "version": "2.0.0",
   "tasks": [
     {
+      "label": "uni:h5",
       "type": "npm",
-      "script": "dev:mp-weixin",
-      "problemMatcher": [],
-      "label": "npm: dev:mp-weixin"
+      "script": "dev --devtools",
+      "isBackground": true,
+      "problemMatcher": "$vite",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
     }
   ]
 }

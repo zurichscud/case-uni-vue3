@@ -402,7 +402,7 @@
       // 构建请求数据
       const requestData = {
         question: currentImages.length ? imgsToMarkdown(currentImages) + userMessage : userMessage,
-        sessionId: sessionId,
+        sessionId,
       }
 
       console.log('发送SSE请求:', requestData)
