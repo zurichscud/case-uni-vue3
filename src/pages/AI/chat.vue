@@ -15,7 +15,7 @@
         <i class="iconfont icon-jiantou_liebiaoxiangzuo" @click="handleBack" size="20"></i>
         <!-- 历史记录按钮 -->
         <i class="iconfont icon-liebiao" @click="showHistoryDrawer = true" size="20"></i>
-        <i class="iconfont icon-xinhuihua" @click="handleNewChat"></i>
+        <i class="iconfont icon-a-kaiqixinhuihua-L1" @click="handleNewChat"></i>
       </view>
       <view class="title">弈寻</view>
       <view :style="wxMenu"></view>
@@ -164,15 +164,37 @@
         </view>
       </view>
 
-      <!-- 消息输入框 -->
-      <textarea
-        class="chat_input"
-        auto-height
-        :maxlength="400"
-        :adjust-position="false"
-        v-model="userInput"
-        placeholder="输入您的问题..."
-      />
+      <!-- 消息输入框容器 -->
+      <view class="input_container">
+        <!-- 输入框 -->
+        <input
+          class="chat_input"
+          :maxlength="maxLength"
+          :adjust-position="false"
+          v-model="userInput"
+          :placeholder="inputLength === 0 ? '输入您的问题...' : ''"
+          @focus="inputFocused = true"
+          @blur="handleInputBlur"
+          @confirm="handleSend"
+          :class="{
+            focused: inputFocused,
+            'has-counter': inputLength > 0 || inputFocused,
+          }"
+        />
+
+        <!-- 字符计数 -->
+        <view class="input_counter" v-if="inputLength > 0 || inputFocused">
+          <text
+            class="counter_text"
+            :class="{
+              warning: inputLength > maxLength * 0.8,
+              error: inputLength >= maxLength,
+            }"
+          >
+            {{ inputLength }}/{{ maxLength }}
+          </text>
+        </view>
+      </view>
 
       <!-- 功能按钮区域 -->
       <view class="btns">
@@ -197,7 +219,15 @@
             <text class="iconfont icon-stop"></text>
           </view>
           <!-- 发送消息按钮 -->
-          <view class="btn-ra up" @click="handleSend" v-else>
+          <view
+            class="btn-ra up"
+            @click="optimizedSend"
+            v-else
+            :class="{
+              disabled: !canSend,
+              active: canSend && inputFocused,
+            }"
+          >
             <text class="iconfont icon-up"></text>
           </view>
         </view>
@@ -253,6 +283,10 @@ const images = ref([])
 const messages = ref([])
 const lastIndex = computed(() => messages.value.length - 1)
 const loading = ref(false)
+const inputFocused = ref(false) // 输入框焦点状态
+const maxLength = 400 // 最大输入长度
+const inputLength = computed(() => userInput.value.length) // 当前输入长度
+const canSend = computed(() => userInput.value.trim().length > 0 && !loading.value) // 是否可以发送
 let checkReplyInterval = null //检查回复长度
 const lastReplyLength = ref(0)
 const thinkText = ref('已深度思考')
@@ -350,9 +384,28 @@ function handleFeedback(traceId) {
 }
 
 async function handleSend() {
+  // 验证输入内容
   if (!userInput.value.trim()) {
     uni.showToast({
       title: '请输入问题',
+      icon: 'none',
+    })
+    return
+  }
+
+  // 检查是否超过最大长度
+  if (userInput.value.length > maxLength) {
+    uni.showToast({
+      title: `输入内容不能超过${maxLength}个字符`,
+      icon: 'none',
+    })
+    return
+  }
+
+  // 防止重复发送
+  if (loading.value) {
+    uni.showToast({
+      title: '正在生成回复中...',
       icon: 'none',
     })
     return
@@ -394,6 +447,8 @@ async function handleSend() {
   // 重置状态
   userInput.value = ''
   uploadVisible.value = false
+  inputFocused.value = false // 重置焦点状态
+  clearDraft() // 清除草稿
   goBottom()
   loading.value = true
   startReplyCheck()
@@ -903,8 +958,58 @@ function toggleThought(messageIndex) {
   messages.value[messageIndex].expand = !messages.value[messageIndex].expand
 }
 
+// 保存输入草稿
+function saveDraft() {
+  if (userInput.value.trim()) {
+    uni.setStorageSync('chat_draft', userInput.value)
+  }
+}
+
+// 加载输入草稿
+function loadDraft() {
+  try {
+    const draft = uni.getStorageSync('chat_draft')
+    if (draft) {
+      userInput.value = draft
+    }
+  } catch (e) {
+    console.warn('加载草稿失败:', e)
+  }
+}
+
+// 清除草稿
+function clearDraft() {
+  uni.removeStorageSync('chat_draft')
+}
+
+// 输入框失去焦点时保存草稿
+function handleInputBlur() {
+  inputFocused.value = false
+  saveDraft()
+}
+
+// 提供触感反馈
+function hapticFeedback() {
+  try {
+    uni.vibrateShort({
+      type: 'light',
+    })
+  } catch (e) {
+    console.log('触感反馈不支持')
+  }
+}
+
+// 优化的发送处理
+async function optimizedSend() {
+  if (canSend.value) {
+    hapticFeedback()
+    await handleSend()
+  }
+}
+
 onLoad(() => {
   initSSEHandler()
+  loadDraft() // 加载草稿
 })
 
 onShow(() => {
@@ -930,10 +1035,22 @@ textarea {
 .upload_btn {
   display: flex;
   justify-content: space-between;
-  transition: all 0.3s;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
 
   .item {
     width: 48%;
+    opacity: 0;
+    transform: translateY(20rpx);
+    animation: slideUp 0.3s ease forwards;
+
+    &:nth-child(1) {
+      animation-delay: 0.1s;
+    }
+
+    &:nth-child(2) {
+      animation-delay: 0.2s;
+    }
 
     .btn {
       height: 180rpx;
@@ -941,9 +1058,20 @@ textarea {
       background-color: #f5f5f5;
       text-align: center;
       line-height: 180rpx;
+      transition: all 0.3s ease;
 
       .iconfont {
         font-size: 40rpx;
+        transition: all 0.3s ease;
+      }
+
+      &:active {
+        background-color: #e8e8e8;
+        transform: scale(0.95);
+
+        .iconfont {
+          transform: scale(1.1);
+        }
       }
     }
 
@@ -953,6 +1081,13 @@ textarea {
       font-size: 28rpx;
       color: #7f7f7f;
     }
+  }
+}
+
+@keyframes slideUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
@@ -1247,6 +1382,12 @@ page {
       .internet {
         background-color: #e3effd;
         color: #6090c7;
+        transition: all 0.3s ease;
+
+        &:active {
+          transform: scale(0.95);
+          background-color: #d1e7ff;
+        }
       }
 
       .new {
@@ -1277,11 +1418,34 @@ page {
           margin-right: 10rpx;
           transition: all 0.3s;
           transform: rotate(45deg);
+
+          &:active {
+            transform: rotate(45deg) scale(0.9);
+          }
         }
 
         .up {
           color: #fff;
           background-color: #3b84f5;
+          transition: all 0.3s ease;
+          position: relative;
+          overflow: hidden;
+
+          &.disabled {
+            background-color: #d9d9d9;
+            color: #999;
+            cursor: not-allowed;
+          }
+
+          &.active {
+            background-color: #1890ff;
+            transform: scale(1.05);
+            box-shadow: 0 4rpx 12rpx rgba(24, 144, 255, 0.3);
+          }
+
+          &:active:not(.disabled) {
+            transform: scale(0.95);
+          }
         }
       }
 
@@ -1290,14 +1454,61 @@ page {
       }
     }
 
+    .input_container {
+      position: relative;
+      margin-top: 17rpx;
+    }
+
     .chat_input {
       width: 100%;
+      height: 80rpx;
       background-color: #f8f8f8;
       border-radius: 40rpx;
-      padding: 30rpx 30rpx;
+      padding: 0 30rpx;
       font-size: 26rpx;
-      vertical-align: middle;
-      margin-top: 17rpx;
+      border: 2rpx solid transparent;
+      transition: all 0.3s ease;
+      line-height: 80rpx;
+      box-sizing: border-box;
+
+      &.focused {
+        background-color: #fff;
+        border-color: #6190e8;
+        box-shadow: 0 0 0 4rpx rgba(97, 144, 232, 0.1);
+      }
+
+      /* 当有计数器显示时，调整右边距 */
+      &.has-counter {
+        padding-right: 120rpx;
+      }
+
+      &::placeholder {
+        color: #999;
+      }
+    }
+
+    .input_counter {
+      position: absolute;
+      top: 50%;
+      right: 20rpx;
+      transform: translateY(-50%);
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: 20rpx;
+      padding: 4rpx 12rpx;
+      backdrop-filter: blur(4px);
+
+      .counter_text {
+        font-size: 22rpx;
+        color: #666;
+
+        &.warning {
+          color: #fa8c16;
+        }
+
+        &.error {
+          color: #f5222d;
+        }
+      }
     }
 
     .send_btn {
