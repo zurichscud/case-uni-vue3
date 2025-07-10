@@ -8,7 +8,7 @@ import { persistPlugin } from './stores/persist'
 
 import './style/iconfont.css'
 import './style/font.scss'
-import './style/index.scss'
+// import './style/index.scss'
 
 const pinia = createPinia()
 pinia.use(persistPlugin)
@@ -20,6 +20,7 @@ export function createApp() {
     app,
   }
 }
+// #ifdef MP-WEIXIN
 const updateManager = uni.getUpdateManager()
 
 updateManager.onCheckForUpdate(function (res) {
@@ -47,3 +48,4 @@ updateManager.onUpdateFailed(function (res) {
     icon: 'none',
   })
 })
+// #endif

@@ -30,7 +30,7 @@ export default defineUniPages({
     // 导航栏配置
     navigationBarBackgroundColor: '@navBgColor',
     navigationBarTextStyle: '@navTxtStyle',
-    navigationBarTitleText: 'Wot-Demo',
+    navigationBarTitleText: '理赔公社',
 
     // 页面背景配置
     backgroundColor: '@bgColor',
@@ -39,12 +39,12 @@ export default defineUniPages({
     backgroundColorBottom: '@bgColorBottom',
 
     // 下拉刷新配置
-    enablePullDownRefresh: false,
+    enablePullDownRefresh: true,
     onReachBottomDistance: 50,
 
     // 动画配置
-    animationType: 'pop-in',
-    animationDuration: 300,
+    // animationType: 'pop-in',
+    // animationDuration: 300,
   },
   tabBar: {
     custom: true,
