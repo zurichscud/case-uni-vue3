@@ -1,3 +1,151 @@
+<script setup>
+import { ref, computed } from 'vue'
+import { onShow } from '@dcloudio/uni-app'
+import * as MessageAPI from '@/apis/message'
+import { useUserStore } from '@/stores'
+import dayjs from 'dayjs'
+import relativeTime from 'dayjs/plugin/relativeTime'
+
+// 初始化dayjs相对时间插件
+dayjs.extend(relativeTime)
+dayjs.locale('zh-cn')
+
+const msgList = ref([])
+const refreshing = ref(false)
+const animatedCards = ref([])
+const showEmptyAnimation = ref(false)
+const isFirstLoad = ref(true) // 标记是否是首次加载
+const moreStatus = ref('more')
+const userStore = useUserStore()
+const pageParams = ref({
+  userId: userStore.id,
+  category: 0,
+  pageNum: 1,
+  pageSize: 5,
+})
+const isLogin = computed(() => userStore.isLogin)
+
+// 获取消息列表
+async function getMessageListData(triggerAnimation = false) {
+  try {
+    moreStatus.value = 'loading'
+    // 只有需要触发动画时才重置动画状态
+    if (triggerAnimation) {
+      animatedCards.value = []
+      showEmptyAnimation.value = false
+    }
+    const { rows, total } = await MessageAPI.getMessageList(pageParams.value)
+
+    // 如果是首次加载或刷新，重置消息列表
+    if (pageParams.value.pageNum === 1) {
+      msgList.value = rows || []
+    }
+    else {
+      msgList.value.push(...(rows || []))
+    }
+    // 判断是否结束
+    if (msgList.value.length < total) {
+      moreStatus.value = 'more'
+      pageParams.value.pageNum++
+    }
+    else {
+      moreStatus.value = 'noMore'
+    }
+
+    // 只有在需要触发动画时才调用动画函数
+    if (triggerAnimation) {
+      triggerEnterAnimation()
+    }
+  }
+  catch (error) {
+    console.error('获取消息列表失败:', error)
+    moreStatus.value = 'more' // 错误时恢复可加载状态
+    uni.showToast({
+      title: '获取消息失败',
+      icon: 'none',
+    })
+  }
+}
+
+// 触发进入动画
+function triggerEnterAnimation() {
+  // 延迟一帧确保DOM已更新
+  setTimeout(() => {
+    if (msgList.value.length === 0) {
+      // 空状态动画
+      showEmptyAnimation.value = true
+    }
+    else {
+      // 消息卡片依次进入动画
+      msgList.value.forEach((_, index) => {
+        setTimeout(() => {
+          animatedCards.value.push(index)
+        }, index * 100)
+      })
+    }
+  }, 50)
+}
+
+function onScrollToLower() {
+  if (moreStatus.value === 'more') {
+    getMessageListData(false)
+  }
+}
+
+// 下拉刷新
+async function onRefresh() {
+  refreshing.value = true
+  pageParams.value.pageNum = 1
+  moreStatus.value = 'more'
+  await getMessageListData(false)
+  refreshing.value = false
+}
+
+// 格式化时间
+function formatTime(timeStr) {
+  if (!timeStr) {
+    return ''
+  }
+  const now = dayjs()
+  const msgTime = dayjs(timeStr)
+  const diffInMinutes = now.diff(msgTime, 'minute')
+  const diffInHours = now.diff(msgTime, 'hour')
+  const diffInDays = now.diff(msgTime, 'day')
+
+  if (diffInMinutes < 1) {
+    return '刚刚'
+  }
+  else if (diffInMinutes < 60) {
+    return `${diffInMinutes}分钟前`
+  }
+  else if (diffInHours < 24) {
+    return `${diffInHours}小时前`
+  }
+  else if (diffInDays < 7) {
+    return `${diffInDays}天前`
+  }
+  else {
+    return msgTime.format('YYYY-MM-DD')
+  }
+}
+
+onShow(() => {
+  if (!isLogin.value) {
+    return
+  }
+  pageParams.value.pageNum = 1
+  moreStatus.value = 'more'
+  // 只有非首次加载时才刷新数据（不触发动画）
+  if (isFirstLoad.value) {
+    getMessageListData(true)
+    isFirstLoad.value = false
+  }
+  else {
+    getMessageListData(false)
+  }
+})
+</script>
+
 <template>
   <view class="message-container">
     <none v-if="!isLogin" name="请登录账号后查看～"></none>
@@ -40,11 +188,15 @@
 
             <!-- 完整消息内容 -->
             <view class="message-body">
-              <text class="message-text">{{ item.content }}</text>
+              <text class="message-text">
+                {{ item.content }}
+              </text>
             </view>
 
             <view class="message-footer">
-              <text class="message-time">{{ formatTime(item.gmtCreate) }}</text>
+              <text class="message-time">
+                {{ formatTime(item.gmtCreate) }}
+              </text>
             </view>
           </view>
         </view>
@@ -54,145 +206,6 @@
     </scroll-view>
   </view>
 </template>
-
-<script setup>
-import { ref, computed } from 'vue'
-import { onShow } from '@dcloudio/uni-app'
-import * as MessageAPI from '@/apis/message'
-import { useUserStore } from '@/stores'
-import dayjs from 'dayjs'
-import relativeTime from 'dayjs/plugin/relativeTime'
-
-// 初始化dayjs相对时间插件
-dayjs.extend(relativeTime)
-dayjs.locale('zh-cn')
-
-const msgList = ref([])
-const refreshing = ref(false)
-const animatedCards = ref([])
-const showEmptyAnimation = ref(false)
-const isFirstLoad = ref(true) // 标记是否是首次加载
-const moreStatus = ref('more')
-const userStore = useUserStore()
-const pageParams = ref({
-  userId: userStore.id,
-  category: 0,
-  pageNum: 1,
-  pageSize: 5,
-})
-const isLogin = computed(() => userStore.isLogin)
-
-// 获取消息列表
-async function getMessageListData(triggerAnimation = false) {
-  try {
-    moreStatus.value = 'loading'
-    // 只有需要触发动画时才重置动画状态
-    if (triggerAnimation) {
-      animatedCards.value = []
-      showEmptyAnimation.value = false
-    }
-    const { rows, total } = await MessageAPI.getMessageList(pageParams.value)
-
-    // 如果是首次加载或刷新，重置消息列表
-    if (pageParams.value.pageNum === 1) {
-      msgList.value = rows || []
-    } else {
-      msgList.value.push(...(rows || []))
-    }
-    //判断是否结束
-    if (msgList.value.length < total) {
-      moreStatus.value = 'more'
-      pageParams.value.pageNum++
-    } else {
-      moreStatus.value = 'noMore'
-    }
-
-    // 只有在需要触发动画时才调用动画函数
-    if (triggerAnimation) {
-      triggerEnterAnimation()
-    }
-  } catch (error) {
-    console.error('获取消息列表失败:', error)
-    moreStatus.value = 'more' // 错误时恢复可加载状态
-    uni.showToast({
-      title: '获取消息失败',
-      icon: 'none',
-    })
-  }
-}
-
-// 触发进入动画
-function triggerEnterAnimation() {
-  // 延迟一帧确保DOM已更新
-  setTimeout(() => {
-    if (msgList.value.length === 0) {
-      // 空状态动画
-      showEmptyAnimation.value = true
-    } else {
-      // 消息卡片依次进入动画
-      msgList.value.forEach((_, index) => {
-        setTimeout(() => {
-          animatedCards.value.push(index)
-        }, index * 100)
-      })
-    }
-  }, 50)
-}
-
-function onScrollToLower() {
-  if (moreStatus.value === 'more') {
-    getMessageListData(false)
-  }
-}
-
-// 下拉刷新
-async function onRefresh() {
-  refreshing.value = true
-  pageParams.value.pageNum = 1
-  moreStatus.value = 'more'
-  await getMessageListData(false)
-  refreshing.value = false
-}
-
-// 格式化时间
-function formatTime(timeStr) {
-  if (!timeStr) {
-    return ''
-  }
-  const now = dayjs()
-  const msgTime = dayjs(timeStr)
-  const diffInMinutes = now.diff(msgTime, 'minute')
-  const diffInHours = now.diff(msgTime, 'hour')
-  const diffInDays = now.diff(msgTime, 'day')
-
-  if (diffInMinutes < 1) {
-    return '刚刚'
-  } else if (diffInMinutes < 60) {
-    return `${diffInMinutes}分钟前`
-  } else if (diffInHours < 24) {
-    return `${diffInHours}小时前`
-  } else if (diffInDays < 7) {
-    return `${diffInDays}天前`
-  } else {
-    return msgTime.format('YYYY-MM-DD')
-  }
-}
-
-onShow(() => {
-  if (!isLogin.value) {
-    return
-  }
-  pageParams.value.pageNum = 1
-  moreStatus.value = 'more'
-  // 只有非首次加载时才刷新数据（不触发动画）
-  if (isFirstLoad.value) {
-    getMessageListData(true)
-    isFirstLoad.value = false
-  } else {
-    getMessageListData(false)
-  }
-})
-</script>
 
 <style scoped lang="scss">
 .message-container {

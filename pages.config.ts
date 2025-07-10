@@ -19,13 +19,13 @@ import { defineUniPages } from '@uni-helper/vite-plugin-uni-pages'
 
 export default defineUniPages({
   pages: [], // 通常为空，因为使用基于文件的路由系统
-  // easycom: {
-  //   autoscan: true,
-  //   custom: {
-  //     "^uni-(.*)": "@dcloudio/uni-ui/lib/uni-$1/uni-$1.vue",
-  //     "^wd-(.*)": "wot-design-uni/components/wd-$1/wd-$1.vue"
-  //   }
-  // },
+  easycom: {
+    autoscan: true,
+    custom: {
+      "^uni-(.*)": "@dcloudio/uni-ui/lib/uni-$1/uni-$1.vue",
+      "^wd-(.*)": "wot-design-uni/components/wd-$1/wd-$1.vue"
+    }
+  },
   globalStyle: {
     // 导航栏配置
     navigationBarBackgroundColor: '@navBgColor',

@@ -65,6 +65,9 @@ importers:
       '@dcloudio/uni-quickapp-webview':
         specifier: 3.0.0-4060620250520001
         version: 3.0.0-4060620250520001(@vueuse/core@11.0.3(vue@3.4.38(typescript@5.5.4)))(postcss@8.4.41)(rollup@4.21.1)(vue@3.4.38(typescript@5.5.4))
+      '@dcloudio/uni-ui':
+        specifier: ^1.5.7
+        version: 1.5.8
       '@vueuse/core':
         specifier: ^11.0.3
         version: 11.0.3(vue@3.4.38(typescript@5.5.4))
@@ -1169,6 +1172,9 @@ packages:
 
   '@dcloudio/uni-stat@3.0.0-4060620250520001':
     resolution: {integrity: sha512-l2XREt2On5uf33PVrAdarncMmGqBLkgZdLsafqag8R2Kdw2Gg/JQQ66RsrLlfBHN2m9eXpfFW6MITqF2vYOoeA==}
+
+  '@dcloudio/uni-ui@1.5.8':
+    resolution: {integrity: sha512-9gnNzr11iG06s97A3WBplqwcAOua7vG7j70hEoPlGoUgDA7at7wo84nkuyXycQaveAHSqNhbCGHVsUUtQcGkJQ==}
 
   '@dcloudio/uni-vue-devtools@3.0.0-4020420240722002':
     resolution: {integrity: sha512-clN+gS4k3wveRaVVQeo24O7UQW+x6czaz7/uQ6Mh8qSg8os1BOgbzfOYVdzV0ArdRbYTT6BzEkO/AjgPkXkXWA==}
@@ -8761,6 +8767,8 @@ snapshots:
       - supports-color
       - ts-node
       - vue
+
+  '@dcloudio/uni-ui@1.5.8': {}
 
   '@dcloudio/uni-vue-devtools@3.0.0-4020420240722002(@vueuse/core@11.0.3(vue@3.4.38(typescript@5.5.4)))(postcss@8.4.41)(rollup@4.21.1)(vue@3.4.38(typescript@5.5.4))':
     dependencies:
