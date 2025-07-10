@@ -60,7 +60,6 @@
       <view class="drawer-footer">
         <wd-button
           type="primary"
-          size="small"
           icon="add"
           @click="handleNewChat"
           custom-style="width: 100%;"
@@ -80,8 +79,6 @@ import { useUserStore } from '@/stores'
 
 const userStore = useUserStore()
 const historyList = ref([])
-const { safeArea } = uni.getWindowInfo()
-
 const { top } = uni.getMenuButtonBoundingClientRect() //顶部安全区
 // Props
 const props = defineProps({
@@ -140,7 +137,7 @@ const handleNewChat = () => {
 
 async function getAllChatData() {
   try {
-    const { data } = await AIAPI.getChatHistory({ userId: userStore.id })
+    const { data } = await AIAPI.getSessionList({ userId: userStore.id })
     // 确保数据结构包含必要字段
     historyList.value = (data || []).map((item) => ({
       sessionId: item.sessionId,

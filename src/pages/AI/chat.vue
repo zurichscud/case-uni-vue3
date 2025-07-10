@@ -12,7 +12,7 @@
     >
       <view class="left">
         <!-- 返回按钮 -->
-        <i class="iconfont icon-jiantou_liebiaoxiangzuo" @click="goBack" size="20"></i>
+        <i class="iconfont icon-jiantou_liebiaoxiangzuo" @click="handleBack" size="20"></i>
         <!-- 历史记录按钮 -->
         <i class="iconfont icon-liebiao" @click="showHistoryDrawer = true" size="20"></i>
         <i class="iconfont icon-xinhuihua" @click="handleNewChat"></i>
@@ -223,7 +223,7 @@
     <!-- 历史记录抽屉组件 -->
     <HistoryDrawer
       v-model="showHistoryDrawer"
-      :current-session-id="session_id"
+      :current-session-id="sessionId"
       @select-history="handleSelectHistory"
       @new-chat="handleNewChat"
     />
@@ -242,7 +242,7 @@ import { nextTick, ref, computed } from 'vue'
 import * as AIAPI from '@/apis/ai'
 import { useUserStore } from '@/stores'
 import { END_TEXT, AI_AVATAR, AI_INTRODUCTION, AI_HELLO } from './data'
-import { SSEHandler } from './utils'
+import { SSEHandler, imgsToMarkdown } from './utils'
 import { uploadFile } from '@/utils/http'
 
 const userStore = useUserStore()
@@ -254,7 +254,6 @@ const messages = ref([])
 const lastIndex = computed(() => messages.value.length - 1)
 const loading = ref(false)
 let checkReplyInterval = null //检查回复长度
-const safeAreaInsets = ref({})
 const lastReplyLength = ref(0)
 const thinkText = ref('已深度思考')
 const FeedbackRef = ref()
@@ -264,34 +263,90 @@ const MSG_TYPE = {
   USER: 1,
 }
 let requestTask = null
-let session_id = ''
+let sessionId = ''
 const uploadVisible = ref(false)
 let sseHandler = null //SSE处理器实例
-const { top, height ,width} = uni.getMenuButtonBoundingClientRect()
+const { top, height, width } = uni.getMenuButtonBoundingClientRect()
 const menuButtonInfo = ref({
   top: top,
   height: height,
 })
-const wxMenu={
-  width:width+'px',
+const wxMenu = {
+  width: width + 'px',
 }
 
-// 初始化SSE处理器
-function initSSEHandler() {
-  sseHandler = new SSEHandler({
-    onEvent: (eventType, parsedData) => {
-      processSSEData(eventType, parsedData)
+// 页面返回按钮处理
+function handleBack() {
+  // 如果正在生成中，先停止生成
+  if (loading.value) {
+    handleStop()
+  }
+  uni.navigateBack()
+}
+
+// 用户手动停止生成
+function handleStop() {
+  try {
+    // 停止请求和清理资源
+    cleanupRequest()
+
+    // 停止加载状态
+    loading.value = false
+    stopReplyCheck()
+
+    // 确保当前消息有完整结构
+    const currentMessage = messages.value[lastIndex.value]
+    if (currentMessage && currentMessage.type === MSG_TYPE.AI) {
+      // 如果当前消息没有回复内容，添加一个停止提示
+      if (!currentMessage.msg.reply || currentMessage.msg.reply.trim() === '') {
+        currentMessage.msg.reply = '已停止生成'
+      } else {
+        // 如果有内容，在末尾添加停止标记
+        currentMessage.msg.reply += '\n\n已手动停止生成'
+      }
+
+      // 确保消息结构完整
+      if (!currentMessage.msg.thought) {
+        currentMessage.msg.thought = ''
+      }
+      if (!currentMessage.msg.references) {
+        currentMessage.msg.references = []
+      }
+
+      // 更新消息
+      messages.value[lastIndex.value] = currentMessage
+    }
+
+    // 滚动到底部
+    goBottom()
+  } catch (error) {
+    console.error('停止生成时出错:', error)
+    loading.value = false
+    stopReplyCheck()
+  }
+}
+
+//复制文本
+function copyText(text) {
+  uni.setClipboardData({
+    data: text,
+    success: () => {
+      uni.showToast({
+        title: '复制成功',
+        icon: 'none',
+      })
     },
-    onError: (error) => {
-      console.error('SSE处理器错误:', error)
-      handleRequestError()
+    fail: () => {
+      uni.showToast({
+        title: '复制失败',
+        icon: 'none',
+      })
     },
-    onComplete: () => {
-      loading.value = false
-      stopReplyCheck()
-    },
-    debug: import.meta.env.MODE === 'development',
   })
+}
+
+function handleFeedback(traceId) {
+  FeedbackRef.value.open(traceId)
 }
 
 async function handleSend() {
@@ -303,7 +358,6 @@ async function handleSend() {
     return
   }
 
-  // 清理之前的请求
   cleanupRequest()
 
   // 处理图片消息
@@ -345,10 +399,13 @@ async function handleSend() {
   startReplyCheck()
 
   try {
+    // 保存当前的图片数组，用于构建请求数据
+    const currentImages = [...images.value]
+
     // 构建请求数据
     const requestData = {
-      question: images.value.length ? imgsToMarkdown(images.value) + userMessage : userMessage,
-      sessionId: session_id,
+      question: currentImages.length ? imgsToMarkdown(currentImages) + userMessage : userMessage,
+      sessionId: sessionId,
     }
 
     console.log('发送SSE请求:', requestData)
@@ -388,6 +445,24 @@ async function handleSend() {
     console.error('发送消息时出错:', error)
     handleRequestError()
   }
+}
+
+// 初始化SSE处理器
+function initSSEHandler() {
+  sseHandler = new SSEHandler({
+    onEvent: (eventType, parsedData) => {
+      processSSEData(eventType, parsedData)
+    },
+    onError: (error) => {
+      console.error('SSE处理器错误:', error)
+      handleRequestError()
+    },
+    onComplete: () => {
+      loading.value = false
+      stopReplyCheck()
+    },
+    debug: import.meta.env.MODE === 'development',
+  })
 }
 
 // 清理请求资源
@@ -452,9 +527,9 @@ function processSSEData(eventType, parsedData) {
       return
     }
 
-    // 更新session_id
+    // 更新sessionId
     if (payload.session_id) {
-      session_id = payload.session_id
+      sessionId = payload.session_id
     }
 
     // 获取当前AI消息
@@ -561,8 +636,135 @@ function processErrorData(message, payload) {
   console.log('错误:', payload.error.message)
 }
 
-function imgsToMarkdown(imgs) {
-  return imgs.map((item) => `![](${item})`).join('\n') + '***'
+// 从markdown中提取图片URL
+function extractImageUrls(markdown) {
+  if (!markdown || typeof markdown !== 'string') {
+    return []
+  }
+
+  // 匹配markdown图片格式 ![](url)
+  const imageRegex = /!\[.*?\]\((.*?)\)/g
+  const urls = []
+  let match
+
+  while ((match = imageRegex.exec(markdown)) !== null) {
+    const url = match[1]
+    if (url && url.trim()) {
+      urls.push(url.trim())
+    }
+  }
+
+  return urls
+}
+
+// 将历史记录转换为当前消息格式
+function convertHistoryToMessages(historyData) {
+  if (!historyData || !Array.isArray(historyData)) {
+    console.warn('历史记录数据格式不正确:', historyData)
+    return []
+  }
+
+  // 按时间排序（确保消息顺序正确）
+  const sortedHistory = historyData.reverse()
+
+  return sortedHistory.flatMap((item) => {
+    if (item.type === MSG_TYPE.USER) {
+      const userMessage = item.content.split('***')
+      //存在图片
+      if (userMessage.length > 1) {
+        const imgMarkdown = userMessage[0]
+        const text = userMessage[1]
+
+        const messages = []
+
+        // 解析图片markdown，提取图片URL
+        if (imgMarkdown && imgMarkdown.trim()) {
+          const imgUrls = extractImageUrls(imgMarkdown)
+          imgUrls.forEach((url) => {
+            messages.push({
+              type: MSG_TYPE.USER,
+              msg: url,
+              isImage: true,
+            })
+          })
+        }
+
+        // 添加文本消息（如果有文本内容）
+        if (text && text.trim()) {
+          messages.push({
+            type: MSG_TYPE.USER,
+            msg: text.trim(),
+            isImage: false,
+          })
+        }
+
+        return messages
+      } else {
+        //纯文本消息
+        return [
+          {
+            type: MSG_TYPE.USER,
+            msg: item.content || '',
+            isImage: false,
+          },
+        ]
+      }
+    } else {
+      // 处理引用文献数据
+      let references = []
+      if (item.reference) {
+        if (Array.isArray(item.reference)) {
+          // 直接是数组
+          references = item.reference
+        } else if (typeof item.reference === 'string') {
+          // 如果是字符串，尝试解析为JSON
+          try {
+            const parsed = JSON.parse(item.reference)
+            if (Array.isArray(parsed)) {
+              // 处理解析后的数组
+              references = parsed
+                .map((ref) => {
+                  // 检查每个元素的类型
+                  if (typeof ref === 'string') {
+                    // 如果是字符串，尝试再次解析
+                    try {
+                      return JSON.parse(ref)
+                    } catch (e) {
+                      console.warn('无法解析引用文献字符串:', ref)
+                      return null
+                    }
+                  } else if (typeof ref === 'object' && ref !== null) {
+                    // 如果已经是对象，直接使用
+                    return ref
+                  }
+                  return null
+                })
+                .filter((ref) => ref !== null && ref.name) // 过滤掉null和没有name字段的对象
+            } else {
+              references = []
+            }
+          } catch (e) {
+            console.warn('无法解析引用文献数据:', item.reference)
+            references = []
+          }
+        }
+      }
+
+      return [
+        {
+          type: MSG_TYPE.AI,
+          expand: true, // 默认展开思考过程
+          time: 0,
+          traceId: item.id, // 使用历史记录ID作为traceId
+          msg: {
+            reply: item.content || '',
+            thought: item.thought || '',
+            references: references,
+          },
+        },
+      ]
+    }
+  })
 }
 
 function stopReplyCheck() {
@@ -598,90 +800,54 @@ function startReplyCheck() {
   }, 5000)
 }
 
-// 用户手动停止生成
-function handleStop() {
-  try {
-    // 停止请求和清理资源
-    cleanupRequest()
+// 历史记录相关事件处理
+async function handleSelectHistory(item) {
+  console.log('选择历史记录:', item)
 
-    // 停止加载状态
+  try {
+    // 停止当前生成（如果有）
+    if (loading.value) {
+      handleStop()
+    }
+
+    // 加载历史对话
+    sessionId = item.sessionId
+    const { data } = await AIAPI.getChatHistory({ sessionId: item.sessionId })
+    console.log('历史记录:', data)
+
+    // 转换历史记录为当前消息格式
+    const convertedMessages = convertHistoryToMessages(data)
+
+    // 更新消息列表
+    messages.value = convertedMessages
+
+    // 重置输入状态
+    userInput.value = ''
+    images.value = []
+    uploadVisible.value = false
     loading.value = false
     stopReplyCheck()
 
-    // 确保当前消息有完整结构
-    const currentMessage = messages.value[lastIndex.value]
-    if (currentMessage && currentMessage.type === MSG_TYPE.AI) {
-      // 如果当前消息没有回复内容，添加一个停止提示
-      if (!currentMessage.msg.reply || currentMessage.msg.reply.trim() === '') {
-        currentMessage.msg.reply = '已停止生成'
-      } else {
-        // 如果有内容，在末尾添加停止标记
-        currentMessage.msg.reply += '\n\n已手动停止生成'
-      }
-
-      // 确保消息结构完整
-      if (!currentMessage.msg.thought) {
-        currentMessage.msg.thought = ''
-      }
-      if (!currentMessage.msg.references) {
-        currentMessage.msg.references = []
-      }
-
-      // 更新消息
-      messages.value[lastIndex.value] = currentMessage
-    }
+    // 关闭历史记录抽屉
+    showHistoryDrawer.value = false
 
     // 滚动到底部
     goBottom()
   } catch (error) {
-    console.error('停止生成时出错:', error)
-    loading.value = false
-    stopReplyCheck()
+    console.error('加载历史记录失败:', error)
   }
-}
-
-//复制文本
-function copyText(text) {
-  uni.setClipboardData({
-    data: text,
-    success: () => {
-      uni.showToast({
-        title: '复制成功',
-        icon: 'none',
-      })
-    },
-    fail: () => {
-      uni.showToast({
-        title: '复制失败',
-        icon: 'none',
-      })
-    },
-  })
-}
-
-function handleFeedback(traceId) {
-  FeedbackRef.value.open(traceId)
-}
-
-// 历史记录相关事件处理
-function handleSelectHistory(item) {
-  console.log('选择历史记录:', item)
-  // 加载历史对话
-  session_id = item.sessionId
-  // 这里可以添加加载历史消息的逻辑
-  // 例如：loadHistoryMessages(item.sessionId)
 }
 
 function handleNewChat() {
   console.log('新建对话')
-  if (session_id === '') {
+  if (sessionId === '') {
     uni.showToast({
       title: '已在最新对话中',
       icon: 'none',
     })
   }
   // 重置当前会话
-  session_id = ''
+  sessionId = ''
   messages.value = []
   userInput.value = ''
   images.value = []
@@ -710,15 +876,25 @@ async function uploadImage(sourceType) {
 }
 
 // 删除图片
-//TODO
 function delImage(index) {
   try {
     if (index >= 0 && index < images.value.length) {
       images.value.splice(index, 1)
       console.log('删除图片，索引:', index)
+
+      // 给用户反馈
+      uni.showToast({
+        title: '图片已删除',
+        icon: 'none',
+        duration: 1000,
+      })
     }
   } catch (error) {
     console.error('删除图片时出错:', error)
+    uni.showToast({
+      title: '删除图片失败',
+      icon: 'none',
+    })
   }
 }
 
@@ -728,40 +904,20 @@ function toggleThought(messageIndex) {
 }
 
 onLoad(() => {
-  // 初始化SSE处理器
   initSSEHandler()
 })
 
 onShow(() => {
   uni.onKeyboardHeightChange((res) => {
-    console.log(res)
     keyboardHeight.value = res.height
     goBottom()
   })
-  // 解决安全区失效问题
-  const getSafeAreaTop = () => {
-    const { safeArea } = wx.getWindowInfo()
-    return safeArea?.top || wx.getSystemInfoSync()?.statusBarHeight || 0
-  }
-  safeAreaInsets.value.top = getSafeAreaTop()
 })
 
-// 页面返回按钮处理
-function goBack() {
-  // 如果正在生成中，先停止生成
-  if (loading.value) {
-    handleStop()
-  }
-  uni.navigateBack()
-}
-
-// 添加页面卸载时的清理逻辑
 onUnload(() => {
   cleanupRequest()
   stopReplyCheck()
 })
-
-// 历史记录组件已集成到HistoryDrawer组件中
 </script>
 
 <style lang="scss" scoped>
@@ -845,7 +1001,6 @@ textarea {
     font-weight: 600;
     letter-spacing: 1rpx;
   }
-
 }
 
 .loader {

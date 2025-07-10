@@ -226,3 +226,7 @@ export class SSEHandler {
     this.options = { ...this.options, ...newOptions }
   }
 }
+
+export function imgsToMarkdown(imgs: string[]) {
+  return imgs.map((item) => `![](${item})`).join('\n') + '***'
+}

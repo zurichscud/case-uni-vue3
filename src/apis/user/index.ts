@@ -30,7 +30,7 @@ export function sendSms(data) {
   })
 }
 
-//获取用户信息
+//获取用户信息，后端会自动处理身份
 export function getUserInfo(data) {
   return http({
     url: 'CastList/caseUser/list',
