@@ -175,17 +175,14 @@
           :show-confirm-bar="false"
           v-model="userInput"
           :placeholder="inputLength === 0 ? '输入您的问题...' : ''"
-          @focus="inputFocused = true"
-          @blur="handleInputBlur"
           @confirm="handleSend"
           :class="{
-            focused: inputFocused,
-            'has-counter': inputLength > 0 || inputFocused,
+            'has-counter': inputLength > 0,
           }"
         />
 
         <!-- 字符计数 -->
-        <view class="input_counter" v-if="inputLength > 0 || inputFocused">
+        <view class="input_counter" v-if="inputLength > 0">
           <text
             class="counter_text"
             :class="{
@@ -227,7 +224,6 @@
             v-else
             :class="{
               disabled: !canSend,
-              active: canSend && inputFocused,
             }"
           >
             <text class="iconfont icon-up"></text>
@@ -285,7 +281,7 @@ const images = ref([])
 const messages = ref([])
 const lastIndex = computed(() => messages.value.length - 1)
 const loading = ref(false)
-const inputFocused = ref(false) // 输入框焦点状态
+
 const maxLength = 1000 // 最大输入长度
 const inputLength = computed(() => userInput.value.length) // 当前输入长度
 const canSend = computed(() => userInput.value.trim().length > 0 && !loading.value) // 是否可以发送
@@ -449,7 +445,6 @@ async function handleSend() {
   // 重置状态
   userInput.value = ''
   uploadVisible.value = false
-  inputFocused.value = false // 重置焦点状态
   goBottom()
   loading.value = true
   startReplyCheck()
@@ -959,11 +954,6 @@ function toggleThought(messageIndex) {
   messages.value[messageIndex].expand = !messages.value[messageIndex].expand
 }
 
-// 输入框失去焦点处理
-function handleInputBlur() {
-  inputFocused.value = false
-}
-
 // 提供触感反馈
 function hapticFeedback() {
   try {
@@ -1412,12 +1402,6 @@ page {
             cursor: not-allowed;
           }
 
-          &.active {
-            background-color: #1890ff;
-            transform: scale(1.05);
-            box-shadow: 0 4rpx 12rpx rgba(24, 144, 255, 0.3);
-          }
-
           &:active:not(.disabled) {
             transform: scale(0.95);
           }
@@ -1447,12 +1431,6 @@ page {
       box-sizing: border-box;
       resize: none;
       outline: none;
-
-      &.focused {
-        background-color: #fff;
-        border-color: #6190e8;
-        box-shadow: 0 0 0 4rpx rgba(97, 144, 232, 0.1);
-      }
 
       /* 当有计数器显示时，调整底部边距 */
       &.has-counter {
