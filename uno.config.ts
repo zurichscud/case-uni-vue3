@@ -1,6 +1,5 @@
 import {
   defineConfig,
-  presetIcons,
   transformerDirectives,
   transformerVariantGroup,
 } from 'unocss'

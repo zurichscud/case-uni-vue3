@@ -1,4 +1,6 @@
 {
+  // 指定默认的代码格式化工具为 Prettier
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.formatOnSave": false,
 
   // Auto fix

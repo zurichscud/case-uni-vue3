@@ -1,12 +1,3 @@
-/*
- * @Author: weisheng
- * @Date: 2024-11-01 11:44:38
- * @LastEditTime: 2025-06-27 10:40:04
- * @LastEditors: weisheng
- * @Description:
- * @FilePath: /wot-demo/vite.config.ts
- * 记得注释
- */
 import { defineConfig } from 'vite'
 import Uni from '@dcloudio/vite-plugin-uni'
 import UniHelperManifest from '@uni-helper/vite-plugin-uni-manifest'
