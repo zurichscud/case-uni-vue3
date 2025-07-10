@@ -37,6 +37,7 @@ declare module 'vue' {
     WdMessageBox: typeof import('wot-design-uni/components/wd-message-box/wd-message-box.vue')['default']
     WdPopup: typeof import('wot-design-uni/components/wd-popup/wd-popup.vue')['default']
     WdTag: typeof import('wot-design-uni/components/wd-tag/wd-tag.vue')['default']
+    WdTextarea: typeof import('wot-design-uni/components/wd-textarea/wd-textarea.vue')['default']
     Webview: typeof import('./src/components/webview.vue')['default']
     WxShare: typeof import('./src/components/fixed/wxShare.vue')['default']
   }

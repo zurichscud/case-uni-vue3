@@ -167,10 +167,12 @@
       <!-- 消息输入框容器 -->
       <view class="input_container">
         <!-- 输入框 -->
-        <input
+        <textarea
           class="chat_input"
+          auto-height
           :maxlength="maxLength"
           :adjust-position="false"
+          :show-confirm-bar="false"
           v-model="userInput"
           :placeholder="inputLength === 0 ? '输入您的问题...' : ''"
           @focus="inputFocused = true"
@@ -284,7 +286,7 @@ const messages = ref([])
 const lastIndex = computed(() => messages.value.length - 1)
 const loading = ref(false)
 const inputFocused = ref(false) // 输入框焦点状态
-const maxLength = 400 // 最大输入长度
+const maxLength = 1000 // 最大输入长度
 const inputLength = computed(() => userInput.value.length) // 当前输入长度
 const canSend = computed(() => userInput.value.trim().length > 0 && !loading.value) // 是否可以发送
 let checkReplyInterval = null //检查回复长度
@@ -448,7 +450,6 @@ async function handleSend() {
   userInput.value = ''
   uploadVisible.value = false
   inputFocused.value = false // 重置焦点状态
-  clearDraft() // 清除草稿
   goBottom()
   loading.value = true
   startReplyCheck()
@@ -958,34 +959,9 @@ function toggleThought(messageIndex) {
   messages.value[messageIndex].expand = !messages.value[messageIndex].expand
 }
 
-// 保存输入草稿
-function saveDraft() {
-  if (userInput.value.trim()) {
-    uni.setStorageSync('chat_draft', userInput.value)
-  }
-}
-
-// 加载输入草稿
-function loadDraft() {
-  try {
-    const draft = uni.getStorageSync('chat_draft')
-    if (draft) {
-      userInput.value = draft
-    }
-  } catch (e) {
-    console.warn('加载草稿失败:', e)
-  }
-}
-
-// 清除草稿
-function clearDraft() {
-  uni.removeStorageSync('chat_draft')
-}
-
-// 输入框失去焦点时保存草稿
+// 输入框失去焦点处理
 function handleInputBlur() {
   inputFocused.value = false
-  saveDraft()
 }
 
 // 提供触感反馈
@@ -1009,7 +985,6 @@ async function optimizedSend() {
 
 onLoad(() => {
   initSSEHandler()
-  loadDraft() // 加载草稿
 })
 
 onShow(() => {
@@ -1461,15 +1436,17 @@ page {
 
     .chat_input {
       width: 100%;
-      height: 80rpx;
+      min-height: 80rpx;
       background-color: #f8f8f8;
       border-radius: 40rpx;
-      padding: 0 30rpx;
+      padding: 20rpx 30rpx;
       font-size: 26rpx;
       border: 2rpx solid transparent;
       transition: all 0.3s ease;
-      line-height: 80rpx;
+      line-height: 1.5;
       box-sizing: border-box;
+      resize: none;
+      outline: none;
 
       &.focused {
         background-color: #fff;
@@ -1477,9 +1454,9 @@ page {
         box-shadow: 0 0 0 4rpx rgba(97, 144, 232, 0.1);
       }
 
-      /* 当有计数器显示时，调整右边距 */
+      /* 当有计数器显示时，调整底部边距 */
       &.has-counter {
-        padding-right: 120rpx;
+        padding-bottom: 50rpx;
       }
 
       &::placeholder {
@@ -1489,13 +1466,13 @@ page {
 
     .input_counter {
       position: absolute;
-      top: 50%;
+      bottom: 12rpx;
       right: 20rpx;
-      transform: translateY(-50%);
       background: rgba(255, 255, 255, 0.9);
       border-radius: 20rpx;
       padding: 4rpx 12rpx;
       backdrop-filter: blur(4px);
+      z-index: 10;
 
       .counter_text {
         font-size: 22rpx;
