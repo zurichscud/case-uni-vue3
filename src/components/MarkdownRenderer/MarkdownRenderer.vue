@@ -78,7 +78,7 @@ marked.setOptions({
 })
 
 // 将 markdown 转换为 HTML
-const convertMarkdownToHtml = (markdown) => {
+function convertMarkdownToHtml(markdown) {
   if (!markdown) {
     return ''
   }

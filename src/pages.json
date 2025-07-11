@@ -153,6 +153,15 @@
           "type": "page"
         },
         {
+          "path": "list",
+          "type": "page",
+          "name": "caseList",
+          "style": {
+            "navigationBarTitleText": "案件列表",
+            "navigationStyle": "custom"
+          }
+        },
+        {
           "path": "components/casecard",
           "type": "page"
         }

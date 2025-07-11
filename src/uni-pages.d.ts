@@ -18,6 +18,7 @@ interface NavigateToOptions {
        "/pages/case/all-case" |
        "/pages/case/case" |
        "/pages/case/caseList" |
+       "/pages/case/list" |
        "/pages/case/components/casecard" |
        "/pages/chat/chatroom" |
        "/pages/chat/files" |

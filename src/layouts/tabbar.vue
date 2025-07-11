@@ -1,5 +1,7 @@
 <script lang="ts" setup>
   import { useMessageStore, useUserStore } from '@/stores'
+  import { isProd } from '@/utils/env'
+  import { useShare } from '@/hooks/useShare'
 
   const router = useRouter()
   const route = useRoute()
@@ -7,13 +9,18 @@
   const { themeVars, theme } = useTheme()
   const { activeTabbar, getTabbarItemValue, setTabbarItemActive, tabbarList } = useTabbar()
   const { getUnReadNumData } = useMessageStore()
+  const { getUserInfo } = useUserStore()
   const isLogin = computed(() => userStore.isLogin)
+  const { shareOptions } = useShare()
 
   function handleTabbarChange({ value }: { value: string }) {
     setTabbarItemActive(value)
-    uni.vibrateShort()
+    if (isProd) {
+      uni.vibrateShort()
+    }
     if (isLogin.value) {
       getUnReadNumData()
+      getUserInfo()
     }
     router.pushTab({ name: value })
   }
@@ -28,6 +35,11 @@
       }
     })
   })
+
+  onShareAppMessage(() => {
+    return shareOptions
+  })
+
 </script>
 
 <script lang="ts">

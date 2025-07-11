@@ -1,285 +1,281 @@
 <!-- 首页组件 - 理赔公社应用主页面 -->
 <script setup>
-import { computed, nextTick, onMounted, onUnmounted, ref } from 'vue'
-import { onLoad, onShareAppMessage, onShow } from '@dcloudio/uni-app'
-import typicalCase from './components/typical-case.vue'
-import * as ArticleAPI from '@/apis/article'
-import img from '@/static/home/弈寻.png'
-import { useUserStore } from '@/stores'
-import { useShare } from '@/hooks/useShare'
-import appConfig from '@/config/app'
-import uQrcode from '@/uni_modules/Sansnn-uQRCode/components/u-qrcode/u-qrcode.vue'
+  import { computed, nextTick, onMounted, onUnmounted, ref } from 'vue'
+  import { onLoad, onShareAppMessage, onShow } from '@dcloudio/uni-app'
+  import typicalCase from './components/typical-case.vue'
+  import * as ArticleAPI from '@/apis/article'
+  import img from '@/static/home/弈寻.png'
+  import { useUserStore } from '@/stores'
+  import appConfig from '@/config/app'
+  import uQrcode from '@/uni_modules/Sansnn-uQRCode/components/u-qrcode/u-qrcode.vue'
 
-const router = useRouter()
-const slogans = appConfig.slogans
-const sloganDuration = appConfig.sloganDuration
-const shareVisible = ref(false)
-const posterVisible = ref(false)
-const { shareOptions } = useShare()
-const userStore = useUserStore()
-const articleList = ref([])
-const query = {
-  isAsc: 'desc',
-  orderByColumn: 'updateTime',
-  pageSize: 3,
-  pageNum: 1,
-}
-const isLogin = computed(() => userStore.isLogin)
-const currentSubtitleIndex = ref(0)
-const isTextVisible = ref(true)
-let scrollTimer = null
-
-// 海报相关数据
-const qrCodeUrl = computed(() => {
-  if (!isLogin.value) {
-    return appConfig.share.path
+  const router = useRouter()
+  const slogans = appConfig.slogans
+  const sloganDuration = appConfig.sloganDuration
+  const shareVisible = ref(false)
+  const posterVisible = ref(false)
+  const userStore = useUserStore()
+  const articleList = ref([])
+  const query = {
+    isAsc: 'desc',
+    orderByColumn: 'updateTime',
+    pageSize: 3,
+    pageNum: 1,
   }
-  return `${appConfig.share.path}?pid=${userStore.id}`
-})
-const qrcode = ref(null)
+  const isLogin = computed(() => userStore.isLogin)
+  const currentSubtitleIndex = ref(0)
+  const isTextVisible = ref(true)
+  let scrollTimer = null
 
-// 处理分享功能
-function handleShare() {
-  if (!isLogin.value) {
-    router.push('/pages/login/login')
-    return
-  }
-  // if (userStore.remark <= 5) {
-  //   uni.showToast({
-  //     title: '只有社员才能邀请',
-  //     icon: 'none',
-  //   })
-  //   return
-  // }
-  shareVisible.value = true
-}
-
-function handleClose() {
-  shareVisible.value = false
-}
-
-// 处理分享给好友
-function handleShareToFriend() {
-  shareVisible.value = false
-  // 微信小程序会自动触发onShareAppMessage
-}
-
-// 处理生成海报
-async function handleGeneratePoster() {
-  if (!isLogin.value) {
-    router.push('/pages/login/login')
-    return
-  }
-
-  shareVisible.value = false
-  posterVisible.value = true
-
-  // 等待DOM更新后生成二维码
-  await nextTick()
-  await generateQRCode()
-}
-
-// 生成二维码
-function generateQRCode() {
-  return new Promise((resolve) => {
-    if (qrcode.value) {
-      qrcode.value.make({
-        success: () => {
-          console.log('二维码生成成功')
-          resolve()
-        },
-        fail: (err) => {
-          console.error('二维码生成失败', err)
-          resolve()
-        },
-      })
+  // 海报相关数据
+  const qrCodeUrl = computed(() => {
+    if (!isLogin.value) {
+      return appConfig.share.path
     }
-    else {
-      resolve()
-    }
+    return `${appConfig.share.path}?pid=${userStore.id}`
   })
-}
+  const qrcode = ref(null)
 
-// 二维码生成完成回调
-function onQRCodeComplete() {
-  console.log('二维码组件完成')
-}
-
-// 关闭海报预览
-function handleClosePoster() {
-  posterVisible.value = false
-}
-
-// 保存海报到相册
-async function savePosterToAlbum() {
-  try {
-    uni.showLoading({
-      title: '生成中...',
-    })
-
-    // 生成海报图片
-    const posterImage = await generatePosterImage()
-
-    if (posterImage) {
-      // 保存到相册
-      uni.saveImageToPhotosAlbum({
-        filePath: posterImage,
-        success: () => {
-          uni.hideLoading()
-          uni.showToast({
-            title: '保存成功',
-            icon: 'success',
-          })
-          posterVisible.value = false
-        },
-        fail: (err) => {
-          uni.hideLoading()
-          console.error('保存失败', err)
-          uni.showToast({
-            title: '保存失败',
-            icon: 'none',
-          })
-        },
-      })
+  // 处理分享功能
+  function handleShare() {
+    if (!isLogin.value) {
+      router.push('/pages/login/login')
+      return
     }
+    // if (userStore.remark <= 5) {
+    //   uni.showToast({
+    //     title: '只有社员才能邀请',
+    //     icon: 'none',
+    //   })
+    //   return
+    // }
+    shareVisible.value = true
   }
-  catch (error) {
-    uni.hideLoading()
-    console.error('生成海报失败', error)
-    uni.showToast({
-      title: '生成失败',
-      icon: 'none',
+
+  function handleClose() {
+    shareVisible.value = false
+  }
+
+  // 处理分享给好友
+  function handleShareToFriend() {
+    shareVisible.value = false
+    // 微信小程序会自动触发onShareAppMessage
+  }
+
+  // 处理生成海报
+  async function handleGeneratePoster() {
+    if (!isLogin.value) {
+      router.push('/pages/login/login')
+      return
+    }
+
+    shareVisible.value = false
+    posterVisible.value = true
+
+    // 等待DOM更新后生成二维码
+    await nextTick()
+    await generateQRCode()
+  }
+
+  // 生成二维码
+  function generateQRCode() {
+    return new Promise((resolve) => {
+      if (qrcode.value) {
+        qrcode.value.make({
+          success: () => {
+            console.log('二维码生成成功')
+            resolve()
+          },
+          fail: (err) => {
+            console.error('二维码生成失败', err)
+            resolve()
+          },
+        })
+      }
+      else {
+        resolve()
+      }
     })
   }
-}
 
-// 生成海报图片
-function generatePosterImage() {
-  return new Promise((resolve) => {
-    // 获取二维码图片
-    if (qrcode.value) {
-      qrcode.value.toTempFilePath({
-        success: (qrRes) => {
-          // 绘制海报
-          drawPoster(qrRes.tempFilePath, resolve)
-        },
-        fail: (err) => {
-          console.error('获取二维码图片失败', err)
-          resolve(null)
-        },
-      })
-    }
-    else {
-      resolve(null)
-    }
-  })
-}
-
-// 绘制海报
-function drawPoster(qrImagePath, callback) {
-  const ctx = uni.createCanvasContext('poster-canvas')
-  const canvasWidth = 600
-  const canvasHeight = 800
-
-  // 设置背景色
-  ctx.setFillStyle('#4285f4')
-  ctx.fillRect(0, 0, canvasWidth, canvasHeight)
-
-  // 绘制渐变背景
-  const gradient = ctx.createLinearGradient(0, 0, 0, canvasHeight)
-  gradient.addColorStop(0, '#4285f4')
-  gradient.addColorStop(0.5, '#1c35d0')
-  gradient.addColorStop(1, '#0d1a6b')
-  ctx.setFillStyle(gradient)
-  ctx.fillRect(0, 0, canvasWidth, canvasHeight)
-
-  // 绘制标题
-  ctx.setFillStyle('#ffffff')
-  ctx.setFontSize(48)
-  ctx.setTextAlign('center')
-  ctx.fillText('理赔公社', canvasWidth / 2, 120)
-
-  ctx.setFontSize(24)
-  ctx.fillText('专业理赔服务平台', canvasWidth / 2, 160)
-
-  // 绘制邀请文案
-  ctx.setFontSize(32)
-  ctx.fillText('邀请您加入理赔公社', canvasWidth / 2, 250)
-
-  ctx.setFontSize(24)
-  ctx.fillText('汇集行业保险理赔实战专家', canvasWidth / 2, 290)
-  ctx.fillText('专业团队为您提供理赔咨询服务', canvasWidth / 2, 320)
-
-  // 绘制二维码背景
-  ctx.setFillStyle('#ffffff')
-  ctx.fillRect((canvasWidth - 240) / 2, 380, 240, 240)
-
-  // 绘制二维码
-  ctx.drawImage(qrImagePath, (canvasWidth - 200) / 2, 400, 200, 200)
-
-  // 绘制二维码提示文字
-  ctx.setFillStyle('#ffffff')
-  ctx.setFontSize(20)
-  ctx.fillText('长按识别二维码加入我们', canvasWidth / 2, 680)
-
-  ctx.draw(false, () => {
-    setTimeout(() => {
-      uni.canvasToTempFilePath({
-        canvasId: 'poster-canvas',
-        success: (res) => {
-          callback(res.tempFilePath)
-        },
-        fail: (err) => {
-          console.error('生成海报图片失败', err)
-          callback(null)
-        },
-      })
-    }, 500)
-  })
-}
-
-// 启动滚动文字
-function startScrollText() {
-  scrollTimer = setInterval(() => {
-    isTextVisible.value = false
-    setTimeout(() => {
-      currentSubtitleIndex.value = (currentSubtitleIndex.value + 1) % slogans.length
-      isTextVisible.value = true
-    }, 300) // 淡出过渡时间
-  }, sloganDuration) // 每3秒切换一次
-}
-
-// 停止滚动文字
-function stopScrollText() {
-  if (scrollTimer) {
-    clearInterval(scrollTimer)
-    scrollTimer = null
+  // 二维码生成完成回调
+  function onQRCodeComplete() {
+    console.log('二维码组件完成')
   }
-}
 
-async function getArticleListData() {
-  const { rows } = await ArticleAPI.getArticleList(query, { isTop: 1 })
-  articleList.value = rows
-}
+  // 关闭海报预览
+  function handleClosePoster() {
+    posterVisible.value = false
+  }
 
-onLoad(() => {
-  getArticleListData()
-})
+  // 保存海报到相册
+  async function savePosterToAlbum() {
+    try {
+      uni.showLoading({
+        title: '生成中...',
+      })
 
-onShow(() => {
-})
+      // 生成海报图片
+      const posterImage = await generatePosterImage()
 
-onMounted(() => {
-  startScrollText()
-})
+      if (posterImage) {
+        // 保存到相册
+        uni.saveImageToPhotosAlbum({
+          filePath: posterImage,
+          success: () => {
+            uni.hideLoading()
+            uni.showToast({
+              title: '保存成功',
+              icon: 'success',
+            })
+            posterVisible.value = false
+          },
+          fail: (err) => {
+            uni.hideLoading()
+            console.error('保存失败', err)
+            uni.showToast({
+              title: '保存失败',
+              icon: 'none',
+            })
+          },
+        })
+      }
+    }
+    catch (error) {
+      uni.hideLoading()
+      console.error('生成海报失败', error)
+      uni.showToast({
+        title: '生成失败',
+        icon: 'none',
+      })
+    }
+  }
 
-onUnmounted(() => {
-  stopScrollText()
-})
+  // 生成海报图片
+  function generatePosterImage() {
+    return new Promise((resolve) => {
+      // 获取二维码图片
+      if (qrcode.value) {
+        qrcode.value.toTempFilePath({
+          success: (qrRes) => {
+            // 绘制海报
+            drawPoster(qrRes.tempFilePath, resolve)
+          },
+          fail: (err) => {
+            console.error('获取二维码图片失败', err)
+            resolve(null)
+          },
+        })
+      }
+      else {
+        resolve(null)
+      }
+    })
+  }
 
-onShareAppMessage(() => {
-  return shareOptions
-})
+  // 绘制海报
+  function drawPoster(qrImagePath, callback) {
+    const ctx = uni.createCanvasContext('poster-canvas')
+    const canvasWidth = 600
+    const canvasHeight = 800
+
+    // 设置背景色
+    ctx.setFillStyle('#4285f4')
+    ctx.fillRect(0, 0, canvasWidth, canvasHeight)
+
+    // 绘制渐变背景
+    const gradient = ctx.createLinearGradient(0, 0, 0, canvasHeight)
+    gradient.addColorStop(0, '#4285f4')
+    gradient.addColorStop(0.5, '#1c35d0')
+    gradient.addColorStop(1, '#0d1a6b')
+    ctx.setFillStyle(gradient)
+    ctx.fillRect(0, 0, canvasWidth, canvasHeight)
+
+    // 绘制标题
+    ctx.setFillStyle('#ffffff')
+    ctx.setFontSize(48)
+    ctx.setTextAlign('center')
+    ctx.fillText('理赔公社', canvasWidth / 2, 120)
+
+    ctx.setFontSize(24)
+    ctx.fillText('专业理赔服务平台', canvasWidth / 2, 160)
+
+    // 绘制邀请文案
+    ctx.setFontSize(32)
+    ctx.fillText('邀请您加入理赔公社', canvasWidth / 2, 250)
+
+    ctx.setFontSize(24)
+    ctx.fillText('汇集行业保险理赔实战专家', canvasWidth / 2, 290)
+    ctx.fillText('专业团队为您提供理赔咨询服务', canvasWidth / 2, 320)
+
+    // 绘制二维码背景
+    ctx.setFillStyle('#ffffff')
+    ctx.fillRect((canvasWidth - 240) / 2, 380, 240, 240)
+
+    // 绘制二维码
+    ctx.drawImage(qrImagePath, (canvasWidth - 200) / 2, 400, 200, 200)
+
+    // 绘制二维码提示文字
+    ctx.setFillStyle('#ffffff')
+    ctx.setFontSize(20)
+    ctx.fillText('长按识别二维码加入我们', canvasWidth / 2, 680)
+
+    ctx.draw(false, () => {
+      setTimeout(() => {
+        uni.canvasToTempFilePath({
+          canvasId: 'poster-canvas',
+          success: (res) => {
+            callback(res.tempFilePath)
+          },
+          fail: (err) => {
+            console.error('生成海报图片失败', err)
+            callback(null)
+          },
+        })
+      }, 500)
+    })
+  }
+
+  // 启动滚动文字
+  function startScrollText() {
+    scrollTimer = setInterval(() => {
+      isTextVisible.value = false
+      setTimeout(() => {
+        currentSubtitleIndex.value = (currentSubtitleIndex.value + 1) % slogans.length
+        isTextVisible.value = true
+      }, 300) // 淡出过渡时间
+    }, sloganDuration) // 每3秒切换一次
+  }
+
+  // 停止滚动文字
+  function stopScrollText() {
+    if (scrollTimer) {
+      clearInterval(scrollTimer)
+      scrollTimer = null
+    }
+  }
+
+  async function getArticleListData() {
+    const { rows } = await ArticleAPI.getArticleList(query, { isTop: 1 })
+    articleList.value = rows
+  }
+
+  onLoad(() => {
+    getArticleListData()
+  })
+
+  onShow(() => {
+  })
+
+  onMounted(() => {
+    startScrollText()
+  })
+
+  onUnmounted(() => {
+    stopScrollText()
+  })
+
+
 </script>
 
 <template>
@@ -332,8 +328,7 @@ onShareAppMessage(() => {
       <swiper class="swiper" autoplay="true" circular="true" current="idindex">
         <swiper-item>
           <image show-menu-by-longpress="true" lazy-load mode="aspectFit" @click="router.push('/pages/AI/chat')"
-                 :src="img"
-          />
+            :src="img" />
         </swiper-item>
       </swiper>
 
@@ -374,8 +369,7 @@ onShareAppMessage(() => {
     </view>
     <!-- 分享popup -->
     <wd-popup :safe-area-inset-bottom="true" v-model="shareVisible" position="bottom" closable
-              custom-style="border-radius: 30rpx 30rpx 0 0;" @close="handleClose"
-    >
+      custom-style="border-radius: 30rpx 30rpx 0 0;" @close="handleClose" z-index="600">
       <view class="share-popup">
         <!-- 标题 -->
         <view class="share-title">
@@ -409,8 +403,7 @@ onShareAppMessage(() => {
 
     <!-- 海报预览弹窗 -->
     <wd-popup v-model="posterVisible" position="center" closable
-              custom-style="border-radius: 20rpx; background: transparent;" @close="handleClosePoster"
-    >
+      custom-style="border-radius: 20rpx; background: transparent;" @close="handleClosePoster">
       <view class="poster-preview">
         <view class="poster-container">
           <!-- 海报内容 -->
@@ -446,11 +439,9 @@ onShareAppMessage(() => {
               <view class="poster-qr-section">
                 <view class="qr-container">
                   <uQrcode ref="qrcode" canvas-id="qrcode-canvas" :value="qrCodeUrl" :size="200" :auto="false"
-                           :hide="true" @complete="onQRCodeComplete"
-                  />
+                    :hide="true" @complete="onQRCodeComplete" />
                   <canvas canvas-id="poster-canvas" id="poster-canvas" :style="{ width: '600rpx', height: '800rpx' }"
-                          v-show="false"
-                  />
+                    v-show="false" />
                 </view>
                 <text class="qr-tip">
                   长按识别二维码加入我们
@@ -482,7 +473,8 @@ onShareAppMessage(() => {
 
 <!-- 组件样式 -->
 <style lang="scss" scoped>
-/* 标题区域样式 */
+
+  /* 标题区域样式 */
   .view_title {
     display: flex;
     justify-content: space-between;
@@ -982,8 +974,7 @@ onShareAppMessage(() => {
   }
 </style>
 
-<route lang="json">
-{
+<route lang="json">{
   "name": "index",
   "layout": "tabbar",
   "style": {
@@ -992,5 +983,4 @@ onShareAppMessage(() => {
     "navigationBarTextStyle": "white",
     "backgroundColor": "#FFFFFF"
   }
-}
-</route>
+}</route>

@@ -5,7 +5,6 @@ import { onShow } from '@dcloudio/uni-app'
 
 const router = useRouter()
 const userStore = useUserStore()
-const { getUserInfo } = userStore
 const isLogin = computed(() => userStore.isLogin)
 const remarkText = computed(() => userStore.remarkText)
 
@@ -27,11 +26,6 @@ function toLogin() {
   router.push('/pages/login/login')
 }
 
-onShow(() => {
-  if (isLogin.value) {
-    getUserInfo()
-  }
-})
 </script>
 
 <template>

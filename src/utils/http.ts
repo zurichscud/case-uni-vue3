@@ -2,7 +2,24 @@ import Request from 'luch-request'
 import { useUserStore } from '@/stores'
 import { useRouter } from 'uni-mini-router'
 
-const options = {
+// 定义图标类型
+type ToastIcon = 'success' | 'loading' | 'error' | 'none' | 'fail' | 'exception'
+
+// 定义错误码类型
+type ErrorCode = 400 | 401 | 403 | 404 | 408 | 429 | 500 | 501 | 502 | 503 | 504 | 505
+
+// 定义请求配置类型
+interface RequestConfig {
+  showSuccess?: boolean
+  successMsg?: string
+  showError?: boolean
+  errorMsg?: string
+  showLoading?: boolean
+  loadingMsg?: string
+  auth?: boolean
+}
+
+const options: RequestConfig = {
   // 显示操作成功消息 默认不显示
   showSuccess: false,
   // 成功提醒 默认使用后端返回值
@@ -23,11 +40,12 @@ const options = {
 const LoadingInstance = {
   count: 0,
 }
+
 /**
  * 显示loading
  * @param {string} msg - loading提示文字
  */
-function showLoading(msg) {
+function showLoading(msg: string): void {
   LoadingInstance.count++
   if (LoadingInstance.count === 1) {
     uni.showLoading({
@@ -43,7 +61,7 @@ function showLoading(msg) {
 /**
  * 关闭loading
  */
-function closeLoading() {
+function closeLoading(): void {
   if (LoadingInstance.count > 0) {
     LoadingInstance.count--
   }
@@ -55,9 +73,9 @@ function closeLoading() {
 /**
  * 显示错误提示
  * @param {string} message - 错误信息
- * @param {string} icon - 图标类型
+ * @param {ToastIcon} icon - 图标类型
  */
-function showErrorToast(message, icon = 'none') {
+function showErrorToast(message: string, icon: ToastIcon = 'none'): void {
   uni.showToast({
     title: message,
     icon,
@@ -66,7 +84,7 @@ function showErrorToast(message, icon = 'none') {
 }
 
 // 错误码映射表
-const ERROR_CODE_MAP = {
+const ERROR_CODE_MAP: Record<ErrorCode, string> = {
   400: '请求错误',
   401: '登录已过期',
   403: '拒绝访问',
@@ -149,8 +167,8 @@ http.interceptors.response.use(
   (error) => {
     let errorMessage = '网络不给力哦，请稍后再试'
     if (error !== undefined) {
-      if (error.statusCode && ERROR_CODE_MAP[error.statusCode]) {
-        errorMessage = ERROR_CODE_MAP[error.statusCode]
+      if (error.statusCode && ERROR_CODE_MAP[error.statusCode as ErrorCode]) {
+        errorMessage = ERROR_CODE_MAP[error.statusCode as ErrorCode]
         // 特殊处理401错误
         if (error.statusCode === 401) {
           handle401Error()
@@ -166,6 +184,7 @@ http.interceptors.response.use(
     if (error && error.config) {
       // 显示错误提示
       if (error.config.custom?.showError) {
+        showErrorToast(errorMessage, 'none')
       }
 
       // 关闭loading
@@ -177,7 +196,7 @@ http.interceptors.response.use(
   },
 )
 
-function handle401Error() {
+function handle401Error(): void {
   const router = useRouter()
   const userStore = useUserStore()
   userStore.resetInfo()
@@ -188,11 +207,11 @@ function handle401Error() {
   router.push('/pages/login/login')
 }
 
-export default (config) => {
+export default (config: any) => {
   return http.middleware(config)
 }
 
-export async function uploadFile(path) {
+export async function uploadFile(path: string) {
   const userStore = useUserStore()
   const { data } = await uni.uploadFile({
     url: `${import.meta.env.VITE_BASE_URL}iclaim/user/photoUpload2`,
