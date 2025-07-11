@@ -369,7 +369,7 @@
     </view>
     <!-- 分享popup -->
     <wd-popup :safe-area-inset-bottom="true" v-model="shareVisible" position="bottom" closable
-      custom-style="border-radius: 30rpx 30rpx 0 0;" @close="handleClose" z-index="600">
+      custom-style="border-radius: 30rpx 30rpx 0 0;" @close="handleClose" :z-index="600">
       <view class="share-popup">
         <!-- 标题 -->
         <view class="share-title">

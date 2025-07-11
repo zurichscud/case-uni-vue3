@@ -72,8 +72,7 @@
   "easycom": {
     "autoscan": true,
     "custom": {
-      "^uni-(.*)": "@dcloudio/uni-ui/lib/uni-$1/uni-$1.vue",
-      "^wd-(.*)": "wot-design-uni/components/wd-$1/wd-$1.vue"
+      "^uni-(.*)": "@dcloudio/uni-ui/lib/uni-$1/uni-$1.vue"
     }
   },
   "globalStyle": {
@@ -141,28 +140,16 @@
       "root": "pages/case",
       "pages": [
         {
-          "path": "all-case",
-          "type": "page"
-        },
-        {
-          "path": "case",
-          "type": "page"
-        },
-        {
-          "path": "caseList",
-          "type": "page"
-        },
-        {
           "path": "list",
           "type": "page",
           "name": "caseList",
+          "layout": "default",
           "style": {
-            "navigationBarTitleText": "案件列表",
-            "navigationStyle": "custom"
+            "navigationBarTitleText": "案件列表"
           }
         },
         {
-          "path": "components/casecard",
+          "path": "components/StepsPopup",
           "type": "page"
         }
       ]

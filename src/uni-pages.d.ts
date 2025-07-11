@@ -15,11 +15,8 @@ interface NavigateToOptions {
        "/pages/AI/chat" |
        "/pages/AI/components/Feedback" |
        "/pages/AI/components/HistoryDrawer" |
-       "/pages/case/all-case" |
-       "/pages/case/case" |
-       "/pages/case/caseList" |
        "/pages/case/list" |
-       "/pages/case/components/casecard" |
+       "/pages/case/components/StepsPopup" |
        "/pages/chat/chatroom" |
        "/pages/chat/files" |
        "/pages/chat/newCaseList" |

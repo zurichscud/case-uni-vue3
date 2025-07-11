@@ -29,7 +29,7 @@ const menus: Menus = {
       {
         icon: 'icon-read',
         text: '全部案件',
-        url: '/pages/case/all-case',
+        url: '/pages/case/list',
       },
     ],
   },
@@ -81,7 +81,6 @@ const menus: Menus = {
 }
 
 function handleItemClick(url: string) {
-  console.log(url)
   router.push(url)
 }
 </script>
