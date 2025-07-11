@@ -189,6 +189,11 @@ function handleWatchProgress(caseItem) {
     >
       <view class="case-list">
         <view v-for="(item, index) in caseList" :key="item.caseId || index" class="case-card">
+          <!-- 序号 -->
+          <view class="case-index">
+            {{ index + 1 }}
+          </view>
+
           <!-- 案件卡片头部 -->
           <view class="case-header">
             <view class="case-number">
@@ -290,17 +295,49 @@ function handleWatchProgress(caseItem) {
     position: absolute;
     top: 0;
     right: 0;
-    width: 120rpx;
-    height: 120rpx;
-    background: linear-gradient(135deg, rgba(63, 156, 255, 0.1) 0%, rgba(82, 196, 26, 0.1) 100%);
-    border-radius: 0 16rpx 0 120rpx;
+    width: 140rpx;
+    height: 140rpx;
+    background: linear-gradient(135deg,
+      rgba(63, 156, 255, 0.15) 0%,
+      rgba(82, 196, 26, 0.12) 30%,
+      rgba(255, 193, 7, 0.1) 60%,
+      rgba(220, 53, 69, 0.08) 100%);
+    border-radius: 0 16rpx 0 140rpx;
     z-index: 1;
+    box-shadow: inset 0 0 20rpx rgba(255, 255, 255, 0.3);
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 8rpx;
+    right: 8rpx;
+    width: 60rpx;
+    height: 60rpx;
+    background: radial-gradient(circle,
+      rgba(255, 255, 255, 0.8) 0%,
+      rgba(255, 255, 255, 0.4) 50%,
+      transparent 100%);
+    border-radius: 50%;
+    z-index: 2;
+    animation: shimmer 3s ease-in-out infinite;
   }
 
   &:active {
     transform: scale(0.98);
     background: #f8f9fa;
   }
+}
+
+.case-index {
+  position: absolute;
+  top: 40rpx;
+  right: 40rpx;
+  font-size: 32rpx;
+  color: #a1a0a0;
+  font-weight: 600;
+  z-index: 3;
+  line-height: 1;
 }
 
 .case-header {
@@ -370,6 +407,38 @@ function handleWatchProgress(caseItem) {
   justify-content: flex-end;
   padding-top: 20rpx;
   border-top: 1rpx solid #f0f0f0;
+}
+
+// 动画效果
+@keyframes shimmer {
+  0%, 100% {
+    opacity: 0.6;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.1);
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4rpx);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(1.2);
+  }
 }
 
 // 响应式设计

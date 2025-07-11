@@ -37,7 +37,6 @@ declare module 'vue' {
     WdMessageBox: typeof import('wot-design-uni/components/wd-message-box/wd-message-box.vue')['default']
     WdNotify: typeof import('wot-design-uni/components/wd-notify/wd-notify.vue')['default']
     WdPopup: typeof import('wot-design-uni/components/wd-popup/wd-popup.vue')['default']
-    WdSearch: typeof import('wot-design-uni/components/wd-search/wd-search.vue')['default']
     WdStep: typeof import('wot-design-uni/components/wd-step/wd-step.vue')['default']
     WdSteps: typeof import('wot-design-uni/components/wd-steps/wd-steps.vue')['default']
     WdTabbar: typeof import('wot-design-uni/components/wd-tabbar/wd-tabbar.vue')['default']
@@ -45,5 +44,6 @@ declare module 'vue' {
     WdTag: typeof import('wot-design-uni/components/wd-tag/wd-tag.vue')['default']
     WdToast: typeof import('wot-design-uni/components/wd-toast/wd-toast.vue')['default']
     Webview: typeof import('./components/webview.vue')['default']
+    YpTag: typeof import('./components/YpTag.vue')['default']
   }
 }
