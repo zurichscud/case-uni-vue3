@@ -33,5 +33,7 @@ export default uni({
     'import/order': 'off',
     'sort-imports': 'off',
     'vue/prefer-template': 'off',
+    'unocss/order-attributify': 'off',
+    'unocss/order-classnames': 'off',
   },
 })

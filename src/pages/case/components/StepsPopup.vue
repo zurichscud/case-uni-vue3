@@ -15,10 +15,11 @@ const visible = defineModel('modelValue', { type: Boolean })
         <text class="progress-title">案件进程</text>
       </view>
       <!-- 步骤条 -->
-      <view class="progress-content ml-4">
+      <view class="progress-content ml-4 my-10">
         <wd-steps :active="1" vertical>
           <wd-step description="注册1个账号" />
           <wd-step description="登录账号并绑定手机" />
+          <wd-step description="完善个人信息" />
           <wd-step description="完善个人信息" />
         </wd-steps>
       </view>
@@ -27,7 +28,6 @@ const visible = defineModel('modelValue', { type: Boolean })
 </template>
 
 <style scoped lang="scss">
-// 办理进程弹窗样式
 .progress-popup {
   max-height: 80vh;
   padding: 0 30rpx 30rpx;

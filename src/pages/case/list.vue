@@ -192,16 +192,17 @@ function getStatusText(status) {
 <template>
   <view class="case-list-container">
     <!-- 搜索栏 -->
-    <view class="search-section">
+    <!-- <view class="search-section">
       <wd-search
         v-model="searchKeyword"
+        placeholder-left
         placeholder="搜索案件编号、案件名称"
         @search="handleSearch"
         @clear="handleClear"
         hide-cancel
         show-action
       />
-    </view>
+    </view> -->
 
     <!-- 筛选栏 -->
     <!-- <view class="filter-section">
@@ -261,7 +262,7 @@ function getStatusText(status) {
                 <wd-icon name="time" size="28rpx" color="#999"></wd-icon>
                 <text class="info-label">提交时间</text>
                 <text class="info-value">
-                  {{ formatTime(item.caseSubmitTime || item.submitTime) }}
+                  {{ formatTime(item.caseSubmitTime || item.submitTime, 'YYYY-MM-DD HH:mm:ss') }}
                 </text>
               </view>
             </view>
@@ -269,7 +270,12 @@ function getStatusText(status) {
 
           <!-- 操作按钮 -->
           <view class="case-actions">
-            <wd-button type="primary" size="small" plain @click.stop="handleWatchProgress(item)">
+            <wd-button
+              type="primary"
+              size="small"
+              plain
+              @click.stop="handleWatchProgress(item)"
+            >
               查看案件进程
             </wd-button>
           </view>
@@ -310,7 +316,7 @@ function getStatusText(status) {
 }
 
 .case-scroll-view {
-  height: calc(100vh - 200rpx);
+  height: 100vh;
 }
 
 .case-list {
@@ -414,10 +420,6 @@ function getStatusText(status) {
     font-size: 24rpx;
   }
 }
-
-
-
-
 
 .progress-step {
   display: flex;

@@ -144,6 +144,7 @@
           "type": "page",
           "name": "caseList",
           "layout": "default",
+          "auth": true,
           "style": {
             "navigationBarTitleText": "案件列表"
           }
