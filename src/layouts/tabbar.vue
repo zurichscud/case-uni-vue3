@@ -36,23 +36,20 @@ export default {
 
 <template>
   <wd-config-provider :theme-vars="themeVars" :custom-class="`page-wraper ${theme}`" :theme="theme">
-    <slot />
-    <wd-tabbar
-      :model-value="activeTabbar.name" placeholder bordered safe-area-inset-bottom fixed
-      @change="handleTabbarChange"
-    >
-      <wd-tabbar-item
-        v-for="(item, index) in tabbarList" :key="index" :name="item.name"
-        :value="getTabbarItemValue(item.name)" :title="item.title"
-      >
+    <!-- 剩余部分 -->
+    <view class="flex-1">
+      <slot />
+    </view>
+    <!-- 50px -->
+    <wd-tabbar :model-value="activeTabbar.name" placeholder bordered safe-area-inset-bottom fixed
+      @change="handleTabbarChange">
+      <wd-tabbar-item v-for="(item, index) in tabbarList" :key="index" :name="item.name"
+        :value="getTabbarItemValue(item.name)" :title="item.title">
         <template #icon="{ active }">
-          <i
-            class="iconfont"
-            :class="[
+          <i class="iconfont" :class="[
               active ? item.activeIcon : item.icon,
               active ? 'tabbar-icon-active' : 'tabbar-icon-normal',
-            ]"
-          />
+            ]" />
         </template>
       </wd-tabbar-item>
     </wd-tabbar>
@@ -70,7 +67,10 @@ export default {
 
 <style lang="scss">
 .page-wraper {
-  min-height: calc(100vh - var(--window-top));
+  height: calc(100vh - var(--window-top));
+  // 解决margin塌陷的问题
+  display: flex;
+  flex-direction: column;
   box-sizing: border-box;
   background: #ffffff;
 }

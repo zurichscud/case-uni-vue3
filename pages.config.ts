@@ -39,12 +39,12 @@ export default defineUniPages({
     backgroundColorBottom: '@bgColorBottom',
 
     // 下拉刷新配置
-    enablePullDownRefresh: true,
+    enablePullDownRefresh: false,
     onReachBottomDistance: 50,
 
     // 动画配置
-    // animationType: 'pop-in',
-    // animationDuration: 300,
+    animationType: 'pop-in',
+    animationDuration: 300,
   },
   tabBar: {
     custom: true,

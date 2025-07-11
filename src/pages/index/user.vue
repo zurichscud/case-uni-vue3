@@ -1,21 +1,63 @@
+<script setup>
+import { ref, computed } from 'vue'
+import { useUserStore, useMessageStore } from '@/stores'
+import { onShow } from '@dcloudio/uni-app'
+
+const router = useRouter()
+const userStore = useUserStore()
+const { getUserInfo } = userStore
+const { getUnReadNumData } = useMessageStore()
+const isLogin = computed(() => userStore.isLogin)
+const remarkText = computed(() => userStore.remarkText)
+
+const menuGroups = ref([
+  [
+    {
+      name: '邀请好友',
+      url: '/pages/invite/fuli',
+      img: '../../static/my/img12.png',
+    },
+  ],
+])
+
+function redirect(url) {
+  router.push(url)
+}
+
+function toLogin() {
+  router.push('/pages/login/login')
+}
+
+onShow(() => {
+  if (isLogin.value) {
+    getUnReadNumData()
+    getUserInfo()
+  }
+})
+</script>
+
 <template>
   <view class="container">
     <!-- 未登录状态 -->
     <view v-if="!isLogin">
       <none name="请登录账号后查看~"></none>
-      <view class="login-btn" @click="toLogin">立即登录</view>
+      <view class="login-btn" @click="toLogin">
+        立即登录
+      </view>
     </view>
 
     <!-- 已登录状态 -->
     <view class="user-profile" v-else>
       <!-- 用户信息头部 -->
-      <view class="profile-header centerBox">
+      <view class="profile-header">
         <view class="user-info">
           <view class="user-title">
             <image class="avatar" :src="userStore.photo" />
             <view class="nickname">
               <view>{{ userStore.nickName }}</view>
-              <wd-tag mark>{{ remarkText }}</wd-tag>
+              <wd-tag mark>
+                {{ remarkText }}
+              </wd-tag>
             </view>
           </view>
           <view class="settings-btn" @click="router.push('/pages/user/userInfo')">
@@ -33,7 +75,8 @@
                 <image class="menu-icon" :style="{
                   width: i === 0 ? '42rpx' : '44rpx',
                   height: '44rpx',
-                }" :src="item.img" />
+                }" :src="item.img"
+                />
                 <text>{{ item.name }}</text>
                 <image src="../../static/right.png" class="arrow-icon" />
               </view>
@@ -44,45 +87,6 @@
     </view>
   </view>
 </template>
-
-<script setup>
-  import { ref, computed } from 'vue'
-  import { useUserStore } from '@/stores'
-  import { useMessageStore } from '@/stores'
-  import { onShow } from '@dcloudio/uni-app'
-
-  const router = useRouter()
-  const userStore = useUserStore()
-  const { getUserInfo } = userStore
-  const { getUnReadNumData } = useMessageStore()
-  const isLogin = computed(() => userStore.isLogin)
-  const remarkText = computed(() => userStore.remarkText)
-
-  const menuGroups = ref([
-    [
-      {
-        name: '邀请好友',
-        url: '/pages/invite/fuli',
-        img: '../../static/my/img12.png',
-      },
-    ],
-  ])
-
-  function redirect(url) {
-    router.push(url)
-  }
-
-  function toLogin() {
-    router.push('/pages/login/login')
-  }
-
-  onShow(() => {
-    if (isLogin.value) {
-      getUnReadNumData()
-      getUserInfo()
-    }
-  })
-</script>
 
 <style lang="scss" scoped>
   .icon-shezhi1 {
@@ -117,6 +121,9 @@
     background-size: 100% 100%;
     background-repeat: no-repeat;
     background-image: url('https://app.y9net.cn/data/01/31/wKgBNmNYnZuAUfn1AADiYPNcOwQ092.png');
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
     .user-info {
       position: relative;
@@ -126,8 +133,9 @@
 
       .settings-btn {
         position: absolute;
-        top: 32%;
-        right: 80rpx;
+        top: 50%;
+        right: 32rpx;
+        transform: translateY(-50%);
       }
     }
 
@@ -205,11 +213,13 @@
   }
 </style>
 
-<route lang="json">{
+<route lang="json">
+{
   "name": "user",
   "layout": "tabbar",
   "style": {
     "navigationBarTitleText": "我的",
     "navigationStyle": "custom"
   }
-}</route>
+}
+</route>

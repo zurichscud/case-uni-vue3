@@ -209,12 +209,12 @@ onShow(() => {
 
 <style scoped lang="scss">
 .message-container {
-  height: 100vh;
+  height: 100%;
   background-color: #f5f6fa;
 }
 
 .message-scroll {
-  height: 100vh;
+  height: 100%;
   box-sizing: border-box;
 }
 

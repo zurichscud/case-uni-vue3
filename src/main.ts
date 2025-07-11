@@ -20,15 +20,16 @@ export function createApp() {
     app,
   }
 }
+
 // #ifdef MP-WEIXIN
 const updateManager = uni.getUpdateManager()
 
-updateManager.onCheckForUpdate(function (res) {
+updateManager.onCheckForUpdate((res) => {
   // 请求完新版本信息的回调
   console.log('检查更新', res.hasUpdate)
 })
 
-updateManager.onUpdateReady(function (res) {
+updateManager.onUpdateReady((res) => {
   uni.showModal({
     title: '更新提示',
     content: '新版本已经准备好，是否重启应用？',
@@ -41,7 +42,7 @@ updateManager.onUpdateReady(function (res) {
   })
 })
 
-updateManager.onUpdateFailed(function (res) {
+updateManager.onUpdateFailed((res) => {
   // 新的版本下载失败
   uni.showToast({
     title: '更新失败',

@@ -30,11 +30,11 @@
         </view>
       </view>
       <view class="btn_style" @click="handleLogout">
-        <image src="/src/static/img36.png" class="img_size" mode=""></image>
+        <image src="../../static/img36.png" class="img_size" mode=""></image>
         退出登录
       </view>
       <view class="btn_style" @click="handleRedirect">
-        <image src="/src/static/img36.png" class="img_size" mode=""></image>
+        <image src="../../static/img36.png" class="img_size" mode=""></image>
         定向
       </view>
     </view>
@@ -76,6 +76,13 @@ function handleLogout() {
 function handleRedirect() {
   uni.navigateTo({
     url: '/pages/login/setUserInfo',
+  })
+}
+
+function changeUserImg() {
+  uni.showToast({
+    title: '更换头像功能暂未开放',
+    icon: 'none',
   })
 }
 </script>
@@ -123,6 +130,9 @@ page {
   margin-right: 30rpx;
 }
 .flex_between_x {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   padding: 32rpx 0;
 }
 .list {

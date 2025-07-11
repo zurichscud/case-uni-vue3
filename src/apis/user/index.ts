@@ -16,7 +16,7 @@ export function login(data) {
 export function getDecryptPhone(data) {
   return http({
     url: 'iclaim/login/decryptPhone',
-    method: 'GET',
+    method: 'POST',
     data
   })
 }
