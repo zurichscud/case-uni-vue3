@@ -10,7 +10,7 @@
       <view class="subT">专业 便捷 公允 价值</view>
     </view>
     <view class="login_wx">
-      <wd-button open-type="getPhoneNumber" @getphonenumber="getPhoneNumber" block>
+      <wd-button open-type="getPhoneNumber" @getphonenumber="getPhoneNumber" block size="large">
         手机号快捷登录
       </wd-button>
     </view>

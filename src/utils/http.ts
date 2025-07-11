@@ -1,5 +1,6 @@
 import Request from 'luch-request'
 import { useUserStore } from '@/stores'
+import { useRouter } from 'uni-mini-router'
 
 const options = {
   // 显示操作成功消息 默认不显示
@@ -85,9 +86,9 @@ const http = new Request({
   timeout: 10000,
   method: 'GET',
   header: {
-    Accept: '*/*',
+    'Accept': '*/*',
     'Content-Type': 'application/json',
-    source: 'weixin',
+    'source': 'weixin',
   },
   custom: options,
 })
@@ -123,12 +124,8 @@ http.interceptors.response.use(
       closeLoading()
     }
     if (response.data.code !== 200) {
-      // 特殊：如果 401 错误码，则跳转到登录页
       if (response.data.code === 401) {
-        uni.showToast({
-          icon: 'none',
-          title: '请重新登录',
-        })
+        handle401Error()
       }
       if (response.config.custom?.showError) {
         showErrorToast(response.data.message || '服务器开小差啦,请稍后再试~', 'none')
@@ -138,9 +135,9 @@ http.interceptors.response.use(
     }
     // 自定义处理【showSuccess 成功提示】：如果需要显示成功提示，则显示成功提示
     if (
-      response.config.custom?.showSuccess &&
-      response.config.custom.successMsg !== '' &&
-      response.data.code === 200
+      response.config.custom?.showSuccess
+      && response.config.custom.successMsg !== ''
+      && response.data.code === 200
     ) {
       uni.showToast({
         title: response.config.custom.successMsg,
@@ -150,14 +147,13 @@ http.interceptors.response.use(
     return Promise.resolve(response.data)
   },
   (error) => {
-    const user = uni.getStorageSync('user')
     let errorMessage = '网络不给力哦，请稍后再试'
     if (error !== undefined) {
       if (error.statusCode && ERROR_CODE_MAP[error.statusCode]) {
         errorMessage = ERROR_CODE_MAP[error.statusCode]
         // 特殊处理401错误
         if (error.statusCode === 401) {
-          errorMessage = user ? '您的登陆已过期' : '请先登录'
+          handle401Error()
         }
       }
 
@@ -180,14 +176,26 @@ http.interceptors.response.use(
     return Promise.reject(error)
   },
 )
+
+function handle401Error() {
+  const router = useRouter()
+  const userStore = useUserStore()
+  userStore.resetInfo()
+  uni.showToast({
+    icon: 'none',
+    title: '请重新登录',
+  })
+  router.push('/pages/login/login')
+}
+
 export default (config) => {
   return http.middleware(config)
 }
 
 export async function uploadFile(path) {
   const userStore = useUserStore()
-  const {data} = await uni.uploadFile({
-    url: import.meta.env.VITE_BASE_URL + 'iclaim/user/photoUpload2',
+  const { data } = await uni.uploadFile({
+    url: `${import.meta.env.VITE_BASE_URL}iclaim/user/photoUpload2`,
     filePath: path,
     header: {
       Authorization: `Bearer ${userStore.token}`,

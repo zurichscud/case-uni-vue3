@@ -198,6 +198,7 @@ page {
 <route lang="json">
 {
   "name": "userInfo",
+  "auth": true,
   "style": {
     "navigationBarTitleText": "个人信息"
   }

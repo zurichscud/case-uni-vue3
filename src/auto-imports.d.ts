@@ -51,7 +51,7 @@ declare global {
   const getCurrentPath: typeof import('./utils/index')['getCurrentPath']
   const getCurrentScope: typeof import('vue')['getCurrentScope']
   const h: typeof import('vue')['h']
-  const http: typeof import('./utils/http.js')['default']
+  const http: typeof import('./utils/http')['default']
   const ignorableWatch: typeof import('@vueuse/core')['ignorableWatch']
   const inject: typeof import('vue')['inject']
   const injectLocal: typeof import('@vueuse/core')['injectLocal']
@@ -160,7 +160,7 @@ declare global {
   const unrefElement: typeof import('@vueuse/core')['unrefElement']
   const until: typeof import('@vueuse/core')['until']
   const updateQueryParams: typeof import('./utils/url')['updateQueryParams']
-  const uploadFile: typeof import('./utils/http.js')['uploadFile']
+  const uploadFile: typeof import('./utils/http')['uploadFile']
   const useActiveElement: typeof import('@vueuse/core')['useActiveElement']
   const useAnimate: typeof import('@vueuse/core')['useAnimate']
   const useArrayDifference: typeof import('@vueuse/core')['useArrayDifference']
@@ -407,7 +407,7 @@ declare module 'vue' {
     readonly getCurrentPath: UnwrapRef<typeof import('./utils/index')['getCurrentPath']>
     readonly getCurrentScope: UnwrapRef<typeof import('vue')['getCurrentScope']>
     readonly h: UnwrapRef<typeof import('vue')['h']>
-    readonly http: UnwrapRef<typeof import('./utils/http.js')['default']>
+    readonly http: UnwrapRef<typeof import('./utils/http')['default']>
     readonly ignorableWatch: UnwrapRef<typeof import('@vueuse/core')['ignorableWatch']>
     readonly inject: UnwrapRef<typeof import('vue')['inject']>
     readonly injectLocal: UnwrapRef<typeof import('@vueuse/core')['injectLocal']>
@@ -515,7 +515,7 @@ declare module 'vue' {
     readonly unrefElement: UnwrapRef<typeof import('@vueuse/core')['unrefElement']>
     readonly until: UnwrapRef<typeof import('@vueuse/core')['until']>
     readonly updateQueryParams: UnwrapRef<typeof import('./utils/url')['updateQueryParams']>
-    readonly uploadFile: UnwrapRef<typeof import('./utils/http.js')['uploadFile']>
+    readonly uploadFile: UnwrapRef<typeof import('./utils/http')['uploadFile']>
     readonly useActiveElement: UnwrapRef<typeof import('@vueuse/core')['useActiveElement']>
     readonly useAnimate: UnwrapRef<typeof import('@vueuse/core')['useAnimate']>
     readonly useArrayDifference: UnwrapRef<typeof import('@vueuse/core')['useArrayDifference']>

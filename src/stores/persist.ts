@@ -1,14 +1,5 @@
-/*
- * @Author: weisheng
- * @Date: 2025-06-23 22:23:05
- * @LastEditTime: 2025-06-24 19:03:21
- * @LastEditors: weisheng
- * @Description:
- * @FilePath: /wot-demo/src/store/persist.ts
- * 记得注释
- */
 import type { PiniaPluginContext } from 'pinia'
-import {CommonUtil} from 'wot-design-uni'
+import { CommonUtil } from 'wot-design-uni'
 
 function persist({ store }: PiniaPluginContext, excludedIds: string[]) {
   // 检查当前store的id是否在排除列表中
@@ -35,5 +26,5 @@ function persist({ store }: PiniaPluginContext, excludedIds: string[]) {
 
 export function persistPlugin(context: PiniaPluginContext) {
   // 调用persist函数，并传入排除列表
-  persist(context, ['temp'])
+  persist(context, ['message'])
 }

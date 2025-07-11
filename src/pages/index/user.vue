@@ -6,7 +6,6 @@ import { onShow } from '@dcloudio/uni-app'
 const router = useRouter()
 const userStore = useUserStore()
 const { getUserInfo } = userStore
-const { getUnReadNumData } = useMessageStore()
 const isLogin = computed(() => userStore.isLogin)
 const remarkText = computed(() => userStore.remarkText)
 
@@ -30,7 +29,6 @@ function toLogin() {
 
 onShow(() => {
   if (isLogin.value) {
-    getUnReadNumData()
     getUserInfo()
   }
 })

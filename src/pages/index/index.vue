@@ -5,7 +5,7 @@ import { onLoad, onShareAppMessage, onShow } from '@dcloudio/uni-app'
 import typicalCase from './components/typical-case.vue'
 import * as ArticleAPI from '@/apis/article'
 import img from '@/static/home/弈寻.png'
-import { useMessageStore, useUserStore } from '@/stores'
+import { useUserStore } from '@/stores'
 import { useShare } from '@/hooks/useShare'
 import appConfig from '@/config/app'
 import uQrcode from '@/uni_modules/Sansnn-uQRCode/components/u-qrcode/u-qrcode.vue'
@@ -15,7 +15,6 @@ const slogans = appConfig.slogans
 const sloganDuration = appConfig.sloganDuration
 const shareVisible = ref(false)
 const posterVisible = ref(false)
-const { getUnReadNumData } = useMessageStore()
 const { shareOptions } = useShare()
 const userStore = useUserStore()
 const articleList = ref([])
@@ -268,10 +267,6 @@ onLoad(() => {
 })
 
 onShow(() => {
-  if (isLogin.value) {
-    getUnReadNumData()
-  }
-  startScrollText() // 页面显示时启动滚动
 })
 
 onMounted(() => {

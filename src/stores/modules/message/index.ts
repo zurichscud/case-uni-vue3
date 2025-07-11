@@ -33,12 +33,12 @@ export const useMessageStore = defineStore('message', {
       this.unreadNum = data.count.caseStatusCount + data.count.interactCount + data.count.sysCount
       if (this.unreadNum > 0) {
         this.setRedDot()
-      } else {
+      }
+      else {
         this.removeRedDot()
       }
     },
   },
-  persist: true,
 })
 
 export default useMessageStore
