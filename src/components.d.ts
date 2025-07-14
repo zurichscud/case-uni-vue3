@@ -44,6 +44,7 @@ declare module 'vue' {
     WdTag: typeof import('wot-design-uni/components/wd-tag/wd-tag.vue')['default']
     WdToast: typeof import('wot-design-uni/components/wd-toast/wd-toast.vue')['default']
     Webview: typeof import('./components/webview.vue')['default']
+    YpScrollView: typeof import('./components/YpScrollView.vue')['default']
     YpTag: typeof import('./components/YpTag.vue')['default']
   }
 }
