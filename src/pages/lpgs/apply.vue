@@ -38,7 +38,6 @@
 </template>
 
 <script>
-  import http from '@/common/api/interface.js'
   export default {
     data() {
       return {

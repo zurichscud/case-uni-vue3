@@ -52,7 +52,6 @@ interface NavigateToOptions {
        "/pages/public/agreement/serviceText" |
        "/pages/user/inviteList" |
        "/pages/user/userInfo" |
-       "/pages/user/workpoints" |
        "/pages/user/components/invitepersonal" |
        "/pages/user/components/teaminvite";
 }
