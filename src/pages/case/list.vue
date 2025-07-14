@@ -3,17 +3,10 @@ import { formatTime } from '@/utils/date'
 import StepsPopup from './components/StepsPopup.vue'
 import * as CaseAPI from '@/apis/case'
 
-const caseList = ref([])
-const loading = ref(false)
-const loadingMore = ref(false)
-const refreshing = ref(false)
-const pageParams = ref({
-  pageNum: 1,
-  pageSize: 4,
-})
 const progressVisible = ref(false)
 const currentCase = ref(null)
-const moreStatus = ref('more')
+const ypScrollViewRef = ref()
+
 // const selectedTime = ref('all')
 // const timeOptions = ref([
 //   { text: '全部时间', value: 'all' },
@@ -21,60 +14,16 @@ const moreStatus = ref('more')
 //   { text: '本周', value: 'week' },
 //   { text: '本月', value: 'month' },
 // ])
-// 获取案件列表
-async function getCaseListData() {
-  try {
-
-    const { rows, total } = await CaseAPI.getCaseList(pageParams.value)
-
-    if (pageParams.value.pageNum === 1) {
-      caseList.value = rows
-    } else {
-      caseList.value.push(...rows)
-    }
-
-    if (caseList.value.length < total) {
-      moreStatus.value = 'more'
-      pageParams.value.pageNum++
-    } else {
-      moreStatus.value = 'noMore'
-    }
-
-  } catch (error) {
-    console.error(error)
-    uni.showToast({
-      title: '加载失败，请重试',
-      icon: 'error',
-    })
-  } finally {
-    loading.value = false
-    loadingMore.value = false
-    refreshing.value = false
-  }
-}
-
- async function handleRefresh() {
-  refreshing.value = true
-  pageParams.value.pageNum = 1
-  moreStatus.value = 'more'
-  await getCaseListData()
-  refreshing.value = false
-}
-
-function handleScrolltoLower() {
-  if (moreStatus.value === 'noMore') {
-    return
-  }
-  getCaseListData()
-}
 
 function handleWatchProgress(caseItem) {
   currentCase.value = caseItem
   progressVisible.value = true
 }
 
-onLoad(() => {
-  getCaseListData()
+onMounted(() => {
+  nextTick(() => {
+    ypScrollViewRef.value?.getData()
+  })
 })
 </script>
 
@@ -104,81 +53,74 @@ onLoad(() => {
     </view> -->
 
     <!-- 案件列表 -->
-    <scroll-view
-      class="case-scroll-view"
-      scroll-y
-      :refresher-enabled="true"
-      :refresher-triggered="refreshing"
-      @refresherrefresh="handleRefresh"
-      @scrolltolower="handleScrolltoLower"
-      enhanced
-      :show-scrollbar="false"
-    >
-      <view class="case-list">
-        <view v-for="(item, index) in caseList" :key="item.caseId || index" class="case-card">
-          <!-- 序号 -->
-          <view class="case-index">
-            {{ index + 1 }}
-          </view>
-
-          <!-- 案件卡片头部 -->
-          <view class="case-header">
-            <view class="case-number">
-              <text class="case-label">案件编号</text>
-              <text class="case-id">
-                {{ item.caseId }}
-              </text>
+    <YpScrollView :query="CaseAPI.getCaseList" ref="ypScrollViewRef">
+      <template #default="{ list }">
+        <view class="case-list">
+          <view v-for="(item, index) in list" :key="item.caseId || index" class="case-card">
+            <!-- 序号 -->
+            <view class="case-index">
+              {{ index + 1 }}
             </view>
-          </view>
 
-          <!-- 案件名称 -->
-          <view class="case-title">
-            {{ item.accidentType || '未知案件名称' }}
-          </view>
-
-          <!-- 案件信息 -->
-          <view class="case-info">
-            <view class="info-row">
-              <view class="info-item">
-                <wd-icon name="user" size="28rpx" color="#999"></wd-icon>
-                <text class="info-label">提交人</text>
-                <text class="info-value mr-4">
-                  {{ item.membersName || '未知提交人' }}
+            <!-- 案件卡片头部 -->
+            <view class="case-header">
+              <view class="case-number">
+                <text class="case-label">
+                  案件编号
                 </text>
-                <yp-tag :status="4" text="社长" />
-              </view>
-            </view>
-
-            <view class="info-row">
-              <view class="info-item">
-                <wd-icon name="time" size="28rpx" color="#999"></wd-icon>
-                <text class="info-label">提交时间</text>
-                <text class="info-value">
-                  {{ formatTime(item.registerTime, 'YYYY-MM-DD HH:mm:ss') }}
+                <text class="case-id">
+                  {{ item.caseId }}
                 </text>
               </view>
             </view>
-          </view>
 
-          <!-- 操作按钮 -->
-          <view class="case-actions">
-            <wd-button type="primary" size="small" plain @click.stop="handleWatchProgress(item)">
-              <view class="flex items-center">
-                <text class="iconfont icon-renwujincheng mr-1"></text>
-                <text>查看案件进程</text>
+            <!-- 案件名称 -->
+            <view class="case-title">
+              {{ item.accidentType || '未知案件名称' }}
+            </view>
+
+            <!-- 案件信息 -->
+            <view class="case-info">
+              <view class="info-row">
+                <view class="info-item">
+                  <wd-icon name="user" size="28rpx" color="#999"></wd-icon>
+                  <text class="info-label">
+                    提交人
+                  </text>
+                  <text class="info-value mr-4">
+                    {{ item.membersName || '未知提交人' }}
+                  </text>
+                  <yp-tag :status="4" text="社长" />
+                </view>
               </view>
-            </wd-button>
+
+              <view class="info-row">
+                <view class="info-item">
+                  <wd-icon name="time" size="28rpx" color="#999"></wd-icon>
+                  <text class="info-label">
+                    提交时间
+                  </text>
+                  <text class="info-value">
+                    {{ formatTime(item.registerTime, 'YYYY-MM-DD HH:mm:ss') }}
+                  </text>
+                </view>
+              </view>
+            </view>
+
+            <!-- 操作按钮 -->
+            <view class="case-actions">
+              <wd-button type="primary" size="small" plain @click.stop="handleWatchProgress(item)">
+                <view class="flex items-center">
+                  <text class="iconfont icon-renwujincheng mr-1"></text>
+                  <text>查看案件进程</text>
+                </view>
+              </wd-button>
+            </view>
           </view>
         </view>
-
-        <!-- 加载更多 -->
-        <uni-load-more v-if="caseList.length > 0" :status="moreStatus" />
-      </view>
-      <!-- 空状态 -->
-      <empty v-if="!loading && caseList.length === 0" text="暂无案件数据" />
-    </scroll-view>
+      </template>
+    </YpScrollView>
   </view>
-
   <!-- 办理进程弹窗 -->
   <StepsPopup v-model="progressVisible" />
 </template>
@@ -187,10 +129,6 @@ onLoad(() => {
 .case-list-container {
   min-height: 100vh;
   background-color: #ffffff;
-}
-
-.case-scroll-view {
-  height: 100vh;
 }
 
 .case-list {

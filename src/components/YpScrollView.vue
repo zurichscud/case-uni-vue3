@@ -1,5 +1,4 @@
 <script setup>
-
 const props = defineProps({
   query: {
     type: Function,
@@ -7,18 +6,16 @@ const props = defineProps({
   },
 })
 const list = ref([])
-const refreshing = ref(false)
-const moreStatus = ref('more')
+const refreshing = ref(false)// 下拉刷新状态
+const loading = ref(false)// 加载状态
+const moreStatus = ref('more')// 加载更多状态
 const pageParams = ref({
   pageNum: 1,
   pageSize: 4,
 })
 
-
-
 async function getData() {
   try {
-
     const { rows, total } = await props.query(pageParams.value)
 
     if (pageParams.value.pageNum === 1) {
@@ -33,7 +30,6 @@ async function getData() {
     } else {
       moreStatus.value = 'noMore'
     }
-
   } catch (error) {
     console.error('加载案件列表失败:', error)
     uni.showToast({
@@ -42,12 +38,11 @@ async function getData() {
     })
   } finally {
     loading.value = false
-    loadingMore.value = false
     refreshing.value = false
   }
 }
 
- async function handleRefresh() {
+async function handleRefresh() {
   refreshing.value = true
   pageParams.value.pageNum = 1
   moreStatus.value = 'more'
@@ -65,7 +60,6 @@ function handleScrolltoLower() {
 defineExpose({
   getData,
 })
-
 </script>
 
 <template>
@@ -79,7 +73,9 @@ defineExpose({
     enhanced
     :show-scrollbar="false"
   >
-    <slot></slot>
+    <slot :list="list"></slot>
+    <!-- 加载更多 -->
+    <uni-load-more v-if="list.length > 0" :status="moreStatus" />
   </scroll-view>
 </template>
 
