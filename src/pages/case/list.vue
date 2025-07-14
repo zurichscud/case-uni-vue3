@@ -41,7 +41,7 @@ async function getCaseListData() {
     }
 
   } catch (error) {
-    console.error('加载案件列表失败:', error)
+    console.error(error)
     uni.showToast({
       title: '加载失败，请重试',
       icon: 'error',
@@ -172,7 +172,7 @@ onLoad(() => {
         </view>
 
         <!-- 加载更多 -->
-        <uni-load-more v-if="caseList?.length > 0" :status="moreStatus" />
+        <uni-load-more v-if="caseList.length > 0" :status="moreStatus" />
       </view>
       <!-- 空状态 -->
       <empty v-if="!loading && caseList.length === 0" text="暂无案件数据" />

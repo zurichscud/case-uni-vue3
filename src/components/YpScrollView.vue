@@ -1,5 +1,12 @@
 <script setup>
 
+const props = defineProps({
+  query: {
+    type: Function,
+    required: true,
+  },
+})
+const list = ref([])
 const refreshing = ref(false)
 const moreStatus = ref('more')
 const pageParams = ref({
@@ -7,12 +14,7 @@ const pageParams = ref({
   pageSize: 4,
 })
 
-const props = defineProps({
-  query: {
-    type: Function,
-    required: true,
-  },
-})
+
 
 async function getData() {
   try {
@@ -20,12 +22,12 @@ async function getData() {
     const { rows, total } = await props.query(pageParams.value)
 
     if (pageParams.value.pageNum === 1) {
-      caseList.value = rows
+      list.value = rows
     } else {
-      caseList.value.push(...rows)
+      list.value.push(...rows)
     }
 
-    if (caseList.value.length < total) {
+    if (list.value.length < total) {
       moreStatus.value = 'more'
       pageParams.value.pageNum++
     } else {
@@ -59,6 +61,11 @@ function handleScrolltoLower() {
   }
   getData()
 }
+
+defineExpose({
+  getData,
+})
+
 </script>
 
 <template>
