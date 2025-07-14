@@ -17,7 +17,7 @@
         </view>
       </view>
 
-      <uni-load-more :status="loadMoreState" @clickLoadMore="loadMore" />
+      <uni-load-more :status="loadMoreState" @click-load-more="loadMore" />
     </scroll-view>
   </view>
 </template>

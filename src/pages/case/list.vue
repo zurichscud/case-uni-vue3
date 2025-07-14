@@ -3,16 +3,19 @@ import { ref, computed } from 'vue'
 import { onLoad, onShow } from '@dcloudio/uni-app'
 import { formatTime } from '@/utils/date'
 import StepsPopup from './components/StepsPopup.vue'
+import * as CaseAPI from '@/apis/case'
 
 const caseList = ref([])
 const loading = ref(false)
 const loadingMore = ref(false)
 const refreshing = ref(false)
-const hasMore = ref(true)
-const pageNum = ref(1)
-const pageSize = ref(10)
+const pageParams = ref({
+  pageNum: 1,
+  pageSize: 4,
+})
 const progressVisible = ref(false)
 const currentCase = ref(null)
+const moreStatus = ref('more')
 // const selectedTime = ref('all')
 // const timeOptions = ref([
 //   { text: '全部时间', value: 'all' },
@@ -20,135 +23,70 @@ const currentCase = ref(null)
 //   { text: '本周', value: 'week' },
 //   { text: '本月', value: 'month' },
 // ])
-
-// 模拟案件数据
-const mockCaseList = ref([
-  {
-    caseId: 'CASE202501001',
-    caseName: '交通事故理赔纠纷案',
-    submitterName: '张三',
-    caseSubmitTime: '2025-01-15 09:30:00',
-    status: '2',
-  },
-  {
-    caseId: 'CASE202501002',
-    caseName: '医疗保险理赔争议',
-    submitterName: '李四',
-    caseSubmitTime: '2025-01-14 14:20:00',
-    status: '1',
-  },
-  {
-    caseId: 'CASE202501003',
-    caseName: '财产保险损失评估',
-    submitterName: '王五',
-    caseSubmitTime: '2025-01-13 16:45:00',
-    status: '3',
-  },
-  {
-    caseId: 'CASE202501004',
-    caseName: '人身意外险理赔',
-    submitterName: '赵六',
-    caseSubmitTime: '2025-01-12 11:15:00',
-    status: '2',
-  },
-  {
-    caseId: 'CASE202501005',
-    caseName: '车险定损纠纷处理',
-    submitterName: '钱七',
-    caseSubmitTime: '2025-01-11 08:30:00',
-    status: '4',
-  },
-])
-
-// 生命周期
-onLoad(() => {
-  loadCaseList()
-})
-
-onShow(() => {
-  // 页面显示时可以刷新数据
-})
-
-// 方法
-async function loadCaseList(isRefresh = false, isLoadMore = false) {
+// 获取案件列表
+async function getCaseListData(isRefresh = false, isLoadMore = false) {
   try {
     if (isRefresh) {
       refreshing.value = true
-      pageNum.value = 1
-    }
-    else if (isLoadMore) {
-      if (!hasMore.value || loadingMore.value) {
+      pageParams.value.pageNum = 1
+    } else if (isLoadMore) {
+      if (loadingMore.value) {
         return
       }
       loadingMore.value = true
-      pageNum.value++
-    }
-    else {
+      pageParams.value.pageNum++
+    } else {
       loading.value = true
-      pageNum.value = 1
+      pageParams.value.pageNum = 1
     }
 
-    // 模拟API调用延迟
-    await new Promise(resolve => setTimeout(resolve, 1000))
-
-    // 这里应该调用实际的API
-    // const response = await fetchCaseList({
-    //   pageNum: pageNum.value,
-    //   pageSize: pageSize.value,
-    //   keyword: searchKeyword.value,
-    //   status: selectedStatus.value,
-    //   timeRange: selectedTime.value
-    // })
-
-    // 模拟数据返回
-    const mockData = mockCaseList.value.slice(0, pageSize.value)
+    const { rows, total } = await CaseAPI.getCaseList(pageParams.value)
+    console.log(rows)
 
     if (isRefresh || !isLoadMore) {
-      caseList.value = mockData
-    }
-    else {
-      caseList.value.push(...mockData)
+      caseList.value = rows
+    } else {
+      caseList.value.push(...rows)
     }
 
-    // 模拟分页逻辑
-    hasMore.value = pageNum.value < 3 // 假设总共3页数据
-  }
-  catch (error) {
+    if (caseList.value.length < total) {
+      moreStatus.value = 'more'
+    } else {
+      moreStatus.value = 'noMore'
+    }
+  } catch (error) {
     console.error('加载案件列表失败:', error)
     uni.showToast({
       title: '加载失败，请重试',
       icon: 'error',
     })
-  }
-  finally {
+  } finally {
     loading.value = false
     loadingMore.value = false
     refreshing.value = false
   }
 }
 
-// function handleStatusChange(value) {
-//   console.log('状态筛选:', value)
-//   loadCaseList()
-// }
-
-// function handleTimeChange(value) {
-//   console.log('时间筛选:', value)
-//   loadCaseList()
-// }
-
 function handleRefresh() {
-  loadCaseList(true)
+  getCaseListData(true)
 }
 
-function loadMore() {
-  loadCaseList(false, true)
+function handleScrolltoLower() {
+  if (moreStatus.value === 'noMore') {
+    return
+  }
+  getCaseListData(false, true)
 }
 
 function handleWatchProgress(caseItem) {
   currentCase.value = caseItem
   progressVisible.value = true
 }
+
+onLoad(() => {
+  getCaseListData()
+})
+
 </script>
 
 <template>
@@ -183,7 +121,7 @@ function handleWatchProgress(caseItem) {
       :refresher-enabled="true"
       :refresher-triggered="refreshing"
       @refresherrefresh="handleRefresh"
-      @scrolltolower="loadMore"
+      @scrolltolower="handleScrolltoLower"
       enhanced
       :show-scrollbar="false"
     >
@@ -197,9 +135,7 @@ function handleWatchProgress(caseItem) {
           <!-- 案件卡片头部 -->
           <view class="case-header">
             <view class="case-number">
-              <text class="case-label">
-                案件编号
-              </text>
+              <text class="case-label">案件编号</text>
               <text class="case-id">
                 {{ item.caseId }}
               </text>
@@ -208,7 +144,7 @@ function handleWatchProgress(caseItem) {
 
           <!-- 案件名称 -->
           <view class="case-title">
-            {{ item.caseName || '案件名称' }}
+            {{ item.accidentType || '未知案件名称' }}
           </view>
 
           <!-- 案件信息 -->
@@ -216,11 +152,9 @@ function handleWatchProgress(caseItem) {
             <view class="info-row">
               <view class="info-item">
                 <wd-icon name="user" size="28rpx" color="#999"></wd-icon>
-                <text class="info-label">
-                  提交人
-                </text>
+                <text class="info-label">提交人</text>
                 <text class="info-value">
-                  {{ item.submitterName || item.nickName }}
+                  {{ item.membersName || '未知提交人' }}
                 </text>
               </view>
             </view>
@@ -228,11 +162,9 @@ function handleWatchProgress(caseItem) {
             <view class="info-row">
               <view class="info-item">
                 <wd-icon name="time" size="28rpx" color="#999"></wd-icon>
-                <text class="info-label">
-                  提交时间
-                </text>
+                <text class="info-label">提交时间</text>
                 <text class="info-value">
-                  {{ formatTime(item.caseSubmitTime || item.submitTime, 'YYYY-MM-DD HH:mm:ss') }}
+                  {{ formatTime(item.registerTime, 'YYYY-MM-DD HH:mm:ss') }}
                 </text>
               </view>
             </view>
@@ -249,16 +181,11 @@ function handleWatchProgress(caseItem) {
           </view>
         </view>
 
-        <!-- 空状态 -->
-        <empty v-if="!loading && caseList.length === 0" text="暂无案件数据" />
-
         <!-- 加载更多 -->
-        <!-- <view v-if="caseList.length > 0" class="load-more">
-          <wd-loading v-if="loadingMore" type="spinner" size="32rpx">加载中...</wd-loading>
-          <text v-else-if="hasMore" class="load-more-text" @click="loadMore">点击加载更多</text>
-          <text v-else class="no-more-text">已加载全部数据</text>
-        </view> -->
+        <uni-load-more v-if="caseList?.length > 0" :status="moreStatus" />
       </view>
+      <!-- 空状态 -->
+      <empty v-if="!loading && caseList.length === 0" text="暂无案件数据" />
     </scroll-view>
   </view>
 
@@ -297,11 +224,13 @@ function handleWatchProgress(caseItem) {
     right: 0;
     width: 140rpx;
     height: 140rpx;
-    background: linear-gradient(135deg,
+    background: linear-gradient(
+      135deg,
       rgba(63, 156, 255, 0.15) 0%,
       rgba(82, 196, 26, 0.12) 30%,
       rgba(255, 193, 7, 0.1) 60%,
-      rgba(220, 53, 69, 0.08) 100%);
+      rgba(220, 53, 69, 0.08) 100%
+    );
     border-radius: 0 16rpx 0 140rpx;
     z-index: 1;
     box-shadow: inset 0 0 20rpx rgba(255, 255, 255, 0.3);
@@ -314,10 +243,12 @@ function handleWatchProgress(caseItem) {
     right: 8rpx;
     width: 60rpx;
     height: 60rpx;
-    background: radial-gradient(circle,
+    background: radial-gradient(
+      circle,
       rgba(255, 255, 255, 0.8) 0%,
       rgba(255, 255, 255, 0.4) 50%,
-      transparent 100%);
+      transparent 100%
+    );
     border-radius: 50%;
     z-index: 2;
     animation: shimmer 3s ease-in-out infinite;
@@ -411,7 +342,8 @@ function handleWatchProgress(caseItem) {
 
 // 动画效果
 @keyframes shimmer {
-  0%, 100% {
+  0%,
+  100% {
     opacity: 0.6;
     transform: scale(1);
   }
@@ -422,7 +354,8 @@ function handleWatchProgress(caseItem) {
 }
 
 @keyframes float {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateY(0);
   }
   50% {
@@ -431,7 +364,8 @@ function handleWatchProgress(caseItem) {
 }
 
 @keyframes pulse {
-  0%, 100% {
+  0%,
+  100% {
     opacity: 1;
     transform: scale(1);
   }
