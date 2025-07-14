@@ -142,9 +142,10 @@ onLoad(() => {
               <view class="info-item">
                 <wd-icon name="user" size="28rpx" color="#999"></wd-icon>
                 <text class="info-label">提交人</text>
-                <text class="info-value">
+                <text class="info-value mr-4">
                   {{ item.membersName || '未知提交人' }}
                 </text>
+                <yp-tag :status="4" text="社长" />
               </view>
             </view>
 
@@ -318,7 +319,6 @@ onLoad(() => {
   .info-value {
     font-size: 26rpx;
     color: #333;
-    flex: 1;
   }
 }
 

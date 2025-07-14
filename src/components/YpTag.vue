@@ -1,20 +1,20 @@
 <script setup>
-// 获取状态文本
-function getStatusText(status) {
-  const statusMap = {
-    1: '文本1',
-    2: '文本2',
-    3: '文本3',
-    4: '文本4',
-  }
-  return statusMap[status] || '未知状态'
-}
+defineProps({
+  status: {
+    type: Number,
+    default: 0,
+  },
+  text: {
+    type: String,
+    default: '',
+  },
+})
 </script>
 
 <template>
-  <view class="status-indicator" :class="`status-${item.status}`">
+  <view class="status-indicator" :class="`status-${status}`">
     <view class="status-dot"></view>
-    <text class="status-text">{{ getStatusText(item.status) }}</text>
+    <text class="status-text">{{ text }}</text>
   </view>
 </template>
 
