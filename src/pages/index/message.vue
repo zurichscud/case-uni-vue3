@@ -34,16 +34,14 @@ async function getMessageListData(triggerAnimation = false) {
     // 如果是首次加载或刷新，重置消息列表
     if (pageParams.value.pageNum === 1) {
       msgList.value = rows || []
-    }
-    else {
+    } else {
       msgList.value.push(...(rows || []))
     }
     // 判断是否结束
     if (msgList.value.length < total) {
       moreStatus.value = 'more'
       pageParams.value.pageNum++
-    }
-    else {
+    } else {
       moreStatus.value = 'noMore'
     }
 
@@ -51,8 +49,7 @@ async function getMessageListData(triggerAnimation = false) {
     if (triggerAnimation) {
       triggerEnterAnimation()
     }
-  }
-  catch (error) {
+  } catch (error) {
     console.error('获取消息列表失败:', error)
     moreStatus.value = 'more' // 错误时恢复可加载状态
     uni.showToast({
@@ -69,8 +66,7 @@ function triggerEnterAnimation() {
     if (msgList.value.length === 0) {
       // 空状态动画
       showEmptyAnimation.value = true
-    }
-    else {
+    } else {
       // 消息卡片依次进入动画
       msgList.value.forEach((_, index) => {
         setTimeout(() => {
@@ -96,8 +92,6 @@ async function onRefresh() {
   refreshing.value = false
 }
 
-
-
 onShow(() => {
   if (!isLogin.value) {
     return
@@ -108,8 +102,7 @@ onShow(() => {
   if (isFirstLoad.value) {
     getMessageListData(true)
     isFirstLoad.value = false
-  }
-  else {
+  } else {
     getMessageListData(false)
   }
 })

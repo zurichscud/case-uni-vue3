@@ -1,6 +1,4 @@
 <script setup>
-import { ref, computed } from 'vue'
-import { onLoad, onShow } from '@dcloudio/uni-app'
 import { formatTime } from '@/utils/date'
 import StepsPopup from './components/StepsPopup.vue'
 import * as CaseAPI from '@/apis/case'
@@ -24,26 +22,12 @@ const moreStatus = ref('more')
 //   { text: '本月', value: 'month' },
 // ])
 // 获取案件列表
-async function getCaseListData(isRefresh = false, isLoadMore = false) {
+async function getCaseListData() {
   try {
-    if (isRefresh) {
-      refreshing.value = true
-      pageParams.value.pageNum = 1
-    } else if (isLoadMore) {
-      if (loadingMore.value) {
-        return
-      }
-      loadingMore.value = true
-      pageParams.value.pageNum++
-    } else {
-      loading.value = true
-      pageParams.value.pageNum = 1
-    }
 
     const { rows, total } = await CaseAPI.getCaseList(pageParams.value)
-    console.log(rows)
 
-    if (isRefresh || !isLoadMore) {
+    if (pageParams.value.pageNum === 1) {
       caseList.value = rows
     } else {
       caseList.value.push(...rows)
@@ -51,9 +35,11 @@ async function getCaseListData(isRefresh = false, isLoadMore = false) {
 
     if (caseList.value.length < total) {
       moreStatus.value = 'more'
+      pageParams.value.pageNum++
     } else {
       moreStatus.value = 'noMore'
     }
+
   } catch (error) {
     console.error('加载案件列表失败:', error)
     uni.showToast({
@@ -67,15 +53,19 @@ async function getCaseListData(isRefresh = false, isLoadMore = false) {
   }
 }
 
-function handleRefresh() {
-  getCaseListData(true)
+ async function handleRefresh() {
+  refreshing.value = true
+  pageParams.value.pageNum = 1
+  moreStatus.value = 'more'
+  await getCaseListData()
+  refreshing.value = false
 }
 
 function handleScrolltoLower() {
   if (moreStatus.value === 'noMore') {
     return
   }
-  getCaseListData(false, true)
+  getCaseListData()
 }
 
 function handleWatchProgress(caseItem) {
@@ -86,7 +76,6 @@ function handleWatchProgress(caseItem) {
 onLoad(() => {
   getCaseListData()
 })
-
 </script>
 
 <template>
