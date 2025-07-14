@@ -20,36 +20,29 @@ const pageParams = ref({
 })
 const isLogin = computed(() => userStore.isLogin)
 
-// 获取消息列表
-async function getMessageListData(triggerAnimation = false) {
+// 获取消息列表 - 纯数据获取逻辑
+async function getMessageListData() {
   try {
     moreStatus.value = 'loading'
-    // 只有需要触发动画时才重置动画状态
-    if (triggerAnimation) {
-      animatedCards.value = []
-      showEmptyAnimation.value = false
-    }
     const { rows, total } = await MessageAPI.getMessageList(pageParams.value)
 
     // 如果是首次加载或刷新，重置消息列表
     if (pageParams.value.pageNum === 1) {
       msgList.value = rows || []
-    } else {
+    }
+    else {
       msgList.value.push(...(rows || []))
     }
     // 判断是否结束
     if (msgList.value.length < total) {
       moreStatus.value = 'more'
       pageParams.value.pageNum++
-    } else {
+    }
+    else {
       moreStatus.value = 'noMore'
     }
-
-    // 只有在需要触发动画时才调用动画函数
-    if (triggerAnimation) {
-      triggerEnterAnimation()
-    }
-  } catch (error) {
+  }
+  catch (error) {
     console.error('获取消息列表失败:', error)
     moreStatus.value = 'more' // 错误时恢复可加载状态
     uni.showToast({
@@ -59,6 +52,12 @@ async function getMessageListData(triggerAnimation = false) {
   }
 }
 
+// 重置动画状态
+function resetAnimationState() {
+  animatedCards.value = []
+  showEmptyAnimation.value = false
+}
+
 // 触发进入动画
 function triggerEnterAnimation() {
   // 延迟一帧确保DOM已更新
@@ -66,7 +65,8 @@ function triggerEnterAnimation() {
     if (msgList.value.length === 0) {
       // 空状态动画
       showEmptyAnimation.value = true
-    } else {
+    }
+    else {
       // 消息卡片依次进入动画
       msgList.value.forEach((_, index) => {
         setTimeout(() => {
@@ -77,9 +77,21 @@ function triggerEnterAnimation() {
   }, 50)
 }
 
+// 初始化数据并触发动画（用于首次加载）
+async function initializeWithAnimation() {
+  resetAnimationState()
+  await getMessageListData()
+  triggerEnterAnimation()
+}
+
+// 刷新数据（不触发动画）
+async function refreshData() {
+  await getMessageListData()
+}
+
 function onScrollToLower() {
   if (moreStatus.value === 'more') {
-    getMessageListData(false)
+    getMessageListData()
   }
 }
 
@@ -88,7 +100,7 @@ async function onRefresh() {
   refreshing.value = true
   pageParams.value.pageNum = 1
   moreStatus.value = 'more'
-  await getMessageListData(false)
+  await getMessageListData()
   refreshing.value = false
 }
 
@@ -100,10 +112,11 @@ onShow(() => {
   moreStatus.value = 'more'
   // 只有非首次加载时才刷新数据（不触发动画）
   if (isFirstLoad.value) {
-    getMessageListData(true)
+    initializeWithAnimation()
     isFirstLoad.value = false
-  } else {
-    getMessageListData(false)
+  }
+  else {
+    refreshData()
   }
 })
 </script>
