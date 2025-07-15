@@ -7,9 +7,7 @@ export {}
 
 declare module 'vue' {
   export interface GlobalComponents {
-    Agreement: typeof import('./components/agreement.vue')['default']
     Alert: typeof import('./components/alert.vue')['default']
-    BulletChat: typeof import('./components/bullet-chat.vue')['default']
     Casecard: typeof import('./components/casecard.vue')['default']
     Empty: typeof import('./components/empty.vue')['default']
     FixedFixed: typeof import('./components/fixed/fixed.vue')['default']
@@ -23,9 +21,7 @@ declare module 'vue' {
     GlobalToast: typeof import('./components/GlobalToast.vue')['default']
     Kefu: typeof import('./components/kefu.vue')['default']
     MarkdownRenderer: typeof import('./components/MarkdownRenderer/index.vue')['default']
-    Modal: typeof import('./components/modal.vue')['default']
     None: typeof import('./components/none.vue')['default']
-    PopupClass: typeof import('./components/popupClass.vue')['default']
     PrivacyPopup: typeof import('./components/PrivacyPopup.vue')['default']
     PromptBtm: typeof import('./components/promptBtm.vue')['default']
     WdButton: typeof import('wot-design-uni/components/wd-button/wd-button.vue')['default']
