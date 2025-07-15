@@ -19,7 +19,6 @@ const refreshing = ref(false) // 下拉刷新状态
 const loading = ref(false) // 加载状态
 const moreStatus = ref('more') // 加载更多状态
 
-
 async function getData() {
   try {
     loading.value = true
@@ -96,11 +95,16 @@ defineExpose({
     :lower-threshold="100"
     :enable-back-to-top="true"
     enhanced
-    :show-scrollbar="false" 
+    :show-scrollbar="false"
   >
     <slot :list="list"></slot>
+    <!-- 加载中 -->
+    <view class="w-full h-full flex justify-center items-center" v-if="loading">
+      <wd-loading />
+    </view>
+
     <!-- 空状态 -->
-    <empty v-if="list.length === 0"></empty>
+    <empty v-if="!loading && list.length === 0"></empty>
     <!-- 加载更多 -->
     <uni-load-more v-if="list.length > 0" :status="moreStatus" />
   </scroll-view>
