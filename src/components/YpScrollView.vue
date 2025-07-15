@@ -6,9 +6,9 @@ const props = defineProps({
   },
 })
 const list = ref([])
-const refreshing = ref(false)// 下拉刷新状态
-const loading = ref(false)// 加载状态
-const moreStatus = ref('more')// 加载更多状态
+const refreshing = ref(false) // 下拉刷新状态
+const loading = ref(false) // 加载状态
+const moreStatus = ref('more') // 加载更多状态
 const pageParams = ref({
   pageNum: 1,
   pageSize: 4,
@@ -51,6 +51,7 @@ async function handleRefresh() {
 }
 
 function handleScrolltoLower() {
+  console.log('handleScrolltoLower')
   if (moreStatus.value === 'noMore') {
     return
   }
@@ -64,7 +65,7 @@ defineExpose({
 
 <template>
   <scroll-view
-    class="case-scroll-view"
+    class="h-full"
     scroll-y
     :refresher-enabled="true"
     :refresher-triggered="refreshing"
