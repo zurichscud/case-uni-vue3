@@ -120,6 +120,7 @@
           "path": "chat",
           "type": "page",
           "name": "chat",
+          "auth": true,
           "style": {
             "navigationBarTitleText": "弈寻",
             "enablePullDownRefresh": false,
