@@ -127,8 +127,7 @@ onMounted(() => {
 
 <style scoped lang="scss">
 .case-list-container {
-  min-height: 100vh;
-  background-color: #ffffff;
+  height: 100vh;
 }
 
 .case-list {

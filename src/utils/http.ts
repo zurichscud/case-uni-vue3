@@ -166,7 +166,8 @@ http.interceptors.response.use(
   },
   (error) => {
     let errorMessage = '网络不给力哦，请稍后再试'
-    if (error !== undefined) {
+    if (error) {
+      console.log('[ statusCode ]-170', error.statusCode)
       if (error.statusCode && ERROR_CODE_MAP[error.statusCode as ErrorCode]) {
         errorMessage = ERROR_CODE_MAP[error.statusCode as ErrorCode]
         // 特殊处理401错误

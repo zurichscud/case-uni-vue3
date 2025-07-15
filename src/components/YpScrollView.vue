@@ -16,27 +16,35 @@ const pageParams = ref({
 
 async function getData() {
   try {
-    const { rows, total } = await props.query(pageParams.value)
+    loading.value = true
+    const response = await props.query(pageParams.value)
+    const { rows, total } = response
 
     if (pageParams.value.pageNum === 1) {
-      list.value = rows
-    } else {
-      list.value.push(...rows)
+      list.value = rows || []
+    }
+    else {
+      list.value.push(...(rows || []))
     }
 
     if (list.value.length < total) {
       moreStatus.value = 'more'
       pageParams.value.pageNum++
-    } else {
-      moreStatus.value = 'noMore'
     }
-  } catch (error) {
+    else {
+      moreStatus.value = 'noMore'
+      console.log('No more data available')
+    }
+  }
+  catch (error) {
     console.error('加载案件列表失败:', error)
+    moreStatus.value = 'more' // 错误时恢复可加载状态
     uni.showToast({
       title: '加载失败，请重试',
       icon: 'error',
     })
-  } finally {
+  }
+  finally {
     loading.value = false
     refreshing.value = false
   }
@@ -51,26 +59,41 @@ async function handleRefresh() {
 }
 
 function handleScrolltoLower() {
-  console.log('handleScrolltoLower')
-  if (moreStatus.value === 'noMore') {
+  if (moreStatus.value === 'noMore' || loading.value) {
     return
   }
+  moreStatus.value = 'loading'
   getData()
+}
+
+// 重置组件状态
+function reset() {
+  list.value = []
+  refreshing.value = false
+  loading.value = false
+  moreStatus.value = 'more'
+  pageParams.value = {
+    pageNum: 1,
+    pageSize: 4,
+  }
 }
 
 defineExpose({
   getData,
+  reset,
 })
 </script>
 
 <template>
   <scroll-view
-    class="h-full"
+    class="yp-scroll-view"
     scroll-y
     :refresher-enabled="true"
     :refresher-triggered="refreshing"
     @refresherrefresh="handleRefresh"
     @scrolltolower="handleScrolltoLower"
+    :lower-threshold="100"
+    :enable-back-to-top="true"
     enhanced
     :show-scrollbar="false"
   >
@@ -81,7 +104,7 @@ defineExpose({
 </template>
 
 <style scoped lang="scss">
-.case-scroll-view {
+.yp-scroll-view {
   height: 100%;
 }
 </style>
