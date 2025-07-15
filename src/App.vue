@@ -3,5 +3,4 @@ onLaunch(() => {})
 </script>
 
 <style lang="scss">
-@import './style/iconfont.css';
 </style>

@@ -30,7 +30,7 @@ updateManager.onCheckForUpdate((res) => {
   console.log('检查更新', res.hasUpdate)
 })
 
-updateManager.onUpdateReady((res) => {
+updateManager.onUpdateReady(() => {
   uni.showModal({
     title: '更新提示',
     content: '新版本已经准备好，是否重启应用？',
@@ -43,7 +43,7 @@ updateManager.onUpdateReady((res) => {
   })
 })
 
-updateManager.onUpdateFailed((res) => {
+updateManager.onUpdateFailed(() => {
   // 新的版本下载失败
   uni.showToast({
     title: '更新失败',
