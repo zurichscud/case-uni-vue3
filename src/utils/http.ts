@@ -1,6 +1,5 @@
 import Request from 'luch-request'
 import { useUserStore } from '@/stores'
-import { useRouter } from 'uni-mini-router'
 
 // 定义图标类型
 type ToastIcon = 'success' | 'loading' | 'error' | 'none' | 'fail' | 'exception'
@@ -197,14 +196,15 @@ http.interceptors.response.use(
 )
 
 function handle401Error(): void {
-  const router = useRouter()
   const userStore = useUserStore()
   userStore.resetInfo()
   uni.showToast({
     icon: 'none',
     title: '请重新登录',
   })
-  router.push('/pages/login/login')
+  uni.navigateTo({
+    url: '/pages/login/login',
+  })
 }
 
 export default (config: any) => {
