@@ -1,11 +1,12 @@
 <script setup>
+//获取数据接口
 const props = defineProps({
   query: {
     type: Function,
     required: true,
   },
 })
-const list = ref([])
+const list = ref([])//数据列表
 const refreshing = ref(false) // 下拉刷新状态
 const loading = ref(false) // 加载状态
 const moreStatus = ref('more') // 加载更多状态
@@ -33,7 +34,6 @@ async function getData() {
     }
     else {
       moreStatus.value = 'noMore'
-      console.log('No more data available')
     }
   }
   catch (error) {
