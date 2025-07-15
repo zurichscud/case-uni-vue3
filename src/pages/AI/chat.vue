@@ -1548,6 +1548,7 @@ scroll-view,
 <route lang="json">
 {
   "name": "chat",
+  "auth": true,
   "style": {
     "navigationBarTitleText": "弈寻",
     "enablePullDownRefresh": false,

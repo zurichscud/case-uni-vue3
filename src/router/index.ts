@@ -27,11 +27,10 @@ router.beforeEach((to, from, next) => {
     const userStore = useUserStore()
     console.log('[ userStore.isLogin ]-29', userStore.isLogin)
     if (!userStore.isLogin) {
+      next('/pages/login/login')
       return
     }
   }
-
-  console.log('[ 继续 ]-33')
   // 继续导航
   next()
 })
