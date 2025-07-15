@@ -3,7 +3,7 @@
 import { onLoad, onShow, onUnload } from '@dcloudio/uni-app'
 import Feedback from './components/Feedback.vue'
 import HistoryDrawer from './components/HistoryDrawer.vue'
-import MarkdownRenderer from '@/components/MarkdownRenderer/MarkdownRenderer.vue'
+import MarkdownRenderer from '@/components/MarkdownRenderer/index.vue'
 import { nextTick, ref, computed } from 'vue'
 import * as AIAPI from '@/apis/ai'
 import { useUserStore } from '@/stores'
@@ -19,9 +19,6 @@ const images = ref([])
 const messages = ref([])
 const lastIndex = computed(() => messages.value.length - 1)
 const loading = ref(false)
-
-const maxLength = 1000 // 最大输入长度
-const inputLength = computed(() => userInput.value.length) // 当前输入长度
 const canSend = computed(() => userInput.value.trim().length > 0 && !loading.value) // 是否可以发送
 let checkReplyInterval = null // 检查回复长度
 const lastReplyLength = ref(0)
@@ -126,15 +123,6 @@ async function handleSend() {
   if (!userInput.value.trim()) {
     uni.showToast({
       title: '请输入问题',
-      icon: 'none',
-    })
-    return
-  }
-
-  // 检查是否超过最大长度
-  if (userInput.value.length > maxLength) {
-    uni.showToast({
-      title: `输入内容不能超过${maxLength}个字符`,
       icon: 'none',
     })
     return
@@ -908,23 +896,10 @@ onUnload(() => {
       <!-- 消息输入框容器 -->
       <view class="input_container">
         <!-- 输入框 -->
-        <textarea class="chat_input" auto-height :maxlength="maxLength" :adjust-position="false"
-                  :show-confirm-bar="false" v-model="userInput" :placeholder="inputLength === 0 ? '输入您的问题...' : ''"
-                  @confirm="handleSend" :class="{
-                    'has-counter': inputLength > 0,
-                  }"
+        <textarea class="chat_input" auto-height :adjust-position="false"
+                  :show-confirm-bar="false" v-model="userInput" placeholder="输入您的问题..."
+                  @confirm="handleSend"
         />
-
-        <!-- 字符计数 -->
-        <view class="input_counter" v-if="inputLength > 0">
-          <text class="counter_text" :class="{
-            warning: inputLength > maxLength * 0.8,
-            error: inputLength >= maxLength,
-          }"
-          >
-            {{ inputLength }}/{{ maxLength }}
-          </text>
-        </view>
       </view>
 
       <!-- 功能按钮区域 -->
@@ -1433,39 +1408,12 @@ scroll-view,
         resize: none;
         outline: none;
 
-        /* 当有计数器显示时，调整底部边距 */
-        &.has-counter {
-          padding-bottom: 50rpx;
-        }
-
         &::placeholder {
           color: #999;
         }
       }
 
-      .input_counter {
-        position: absolute;
-        bottom: 12rpx;
-        right: 20rpx;
-        background: rgba(255, 255, 255, 0.9);
-        border-radius: 20rpx;
-        padding: 4rpx 12rpx;
-        backdrop-filter: blur(4px);
-        z-index: 10;
 
-        .counter_text {
-          font-size: 22rpx;
-          color: #666;
-
-          &.warning {
-            color: #fa8c16;
-          }
-
-          &.error {
-            color: #f5222d;
-          }
-        }
-      }
 
       .send_btn {
         background: #6190e8;
