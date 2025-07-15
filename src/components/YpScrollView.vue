@@ -1,50 +1,51 @@
 <script setup>
-//获取数据接口
+// 获取数据接口
 const props = defineProps({
   query: {
     type: Function,
     required: true,
   },
 })
-const list = ref([])//数据列表
+const pageParams = defineModel('page', {
+  type: Object,
+  default: () => ({
+    pageNum: 1,
+    pageSize: 4,
+  }),
+})
+
+const list = ref([]) // 数据列表
 const refreshing = ref(false) // 下拉刷新状态
 const loading = ref(false) // 加载状态
 const moreStatus = ref('more') // 加载更多状态
-const pageParams = ref({
-  pageNum: 1,
-  pageSize: 4,
-})
+
 
 async function getData() {
   try {
     loading.value = true
-    const response = await props.query(pageParams.value)
-    const { rows, total } = response
+    // 用户可以自定义如何进行请求
+    const { rows, total } = await props.query()
 
     if (pageParams.value.pageNum === 1) {
       list.value = rows || []
-    }
-    else {
+    } else {
       list.value.push(...(rows || []))
     }
 
     if (list.value.length < total) {
       moreStatus.value = 'more'
       pageParams.value.pageNum++
-    }
-    else {
+    } else {
       moreStatus.value = 'noMore'
     }
-  }
-  catch (error) {
+  } catch (error) {
     console.error('加载案件列表失败:', error)
     moreStatus.value = 'more' // 错误时恢复可加载状态
     uni.showToast({
       title: '加载失败，请重试',
       icon: 'error',
     })
-  }
-  finally {
+  } finally {
     loading.value = false
     refreshing.value = false
   }
@@ -98,6 +99,8 @@ defineExpose({
     :show-scrollbar="false"
   >
     <slot :list="list"></slot>
+    <!-- 空状态 -->
+    <empty v-if="list.length === 0"></empty>
     <!-- 加载更多 -->
     <uni-load-more v-if="list.length > 0" :status="moreStatus" />
   </scroll-view>

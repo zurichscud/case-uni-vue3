@@ -10,6 +10,7 @@
 
 <script setup>
 import defaultImg from '@/static/empty.png'
+
 defineProps({
   src: {
     type: String,

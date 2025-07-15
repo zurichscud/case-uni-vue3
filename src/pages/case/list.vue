@@ -6,7 +6,10 @@ import * as CaseAPI from '@/apis/case'
 const progressVisible = ref(false)
 const currentCase = ref(null)
 const ypScrollViewRef = ref()
-
+const pageParams = ref({
+  pageNum: 1,
+  pageSize: 4,
+})
 // const selectedTime = ref('all')
 // const timeOptions = ref([
 //   { text: '全部时间', value: 'all' },
@@ -18,6 +21,10 @@ const ypScrollViewRef = ref()
 function handleWatchProgress(caseItem) {
   currentCase.value = caseItem
   progressVisible.value = true
+}
+
+async function getCaseListData() {
+  return CaseAPI.getCaseList(pageParams.value)
 }
 
 onMounted(() => {
@@ -53,7 +60,7 @@ onMounted(() => {
     </view> -->
 
     <!-- 案件列表 -->
-    <YpScrollView :query="CaseAPI.getCaseList" ref="ypScrollViewRef">
+    <YpScrollView :query="getCaseListData" ref="ypScrollViewRef" v-model:page="pageParams">
       <template #default="{ list }">
         <view class="case-list">
           <view v-for="(item, index) in list" :key="item.caseId || index" class="case-card">
@@ -65,9 +72,7 @@ onMounted(() => {
             <!-- 案件卡片头部 -->
             <view class="case-header">
               <view class="case-number">
-                <text class="case-label">
-                  案件编号
-                </text>
+                <text class="case-label">案件编号</text>
                 <text class="case-id">
                   {{ item.caseId }}
                 </text>
@@ -84,9 +89,7 @@ onMounted(() => {
               <view class="info-row">
                 <view class="info-item">
                   <wd-icon name="user" size="28rpx" color="#999"></wd-icon>
-                  <text class="info-label">
-                    提交人
-                  </text>
+                  <text class="info-label">提交人</text>
                   <text class="info-value mr-4">
                     {{ item.membersName || '未知提交人' }}
                   </text>
@@ -97,9 +100,7 @@ onMounted(() => {
               <view class="info-row">
                 <view class="info-item">
                   <wd-icon name="time" size="28rpx" color="#999"></wd-icon>
-                  <text class="info-label">
-                    提交时间
-                  </text>
+                  <text class="info-label">提交时间</text>
                   <text class="info-value">
                     {{ formatTime(item.registerTime, 'YYYY-MM-DD HH:mm:ss') }}
                   </text>
