@@ -96,7 +96,7 @@ defineExpose({
     :lower-threshold="100"
     :enable-back-to-top="true"
     enhanced
-    :show-scrollbar="false"
+    :show-scrollbar="false" 
   >
     <slot :list="list"></slot>
     <!-- 空状态 -->

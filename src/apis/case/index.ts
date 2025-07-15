@@ -6,6 +6,9 @@ export function getCaseList(data: PageParams) {
     url: 'claims-business/app/case/allCase',
     method: 'GET',
     data,
+    custom: {
+      loading: true,
+    },
   })
 }
 
