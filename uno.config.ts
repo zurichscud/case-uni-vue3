@@ -31,4 +31,9 @@ export default defineConfig({
     transformerDirectives(),
     transformerVariantGroup(),
   ],
+  theme:{
+    fontFamily:{
+      number: ['SF Mono', 'Consolas', 'monospace']
+    }
+  }
 })

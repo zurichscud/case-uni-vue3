@@ -70,13 +70,11 @@ onMounted(() => {
             </view>
 
             <!-- 案件卡片头部 -->
-            <view class="case-header">
-              <view class="case-number">
-                <text class="case-label">案件编号</text>
-                <text class="case-id">
+            <view class="mb-2">
+                <text class="text-[24rpx] text-[#999] mr-2">案件编号</text>
+                <text class="text-[28rpx] text-[#333] font-bold number">
                   {{ item.caseId }}
                 </text>
-              </view>
             </view>
 
             <!-- 案件名称 -->
@@ -89,32 +87,27 @@ onMounted(() => {
               <view class="info-row">
                 <view class="info-item">
                   <wd-icon name="user" size="28rpx" color="#999"></wd-icon>
-                  <text class="info-label">提交人</text>
-                  <text class="info-value mr-4">
+                  <text class="text-[26rpx] text-[#666] min-w-[120rpx] ml-1">提交人</text>
+                  <text class="text-[26rpx] text-[#333] mr-4">
                     {{ item.membersName || '未知提交人' }}
                   </text>
                   <yp-tag :status="4" text="社长" />
                 </view>
               </view>
 
-              <view class="info-row">
-                <view class="info-item">
-                  <wd-icon name="time" size="28rpx" color="#999"></wd-icon>
-                  <text class="info-label">提交时间</text>
-                  <text class="info-value">
-                    {{ formatTime(item.registerTime, 'YYYY-MM-DD HH:mm:ss') }}
-                  </text>
-                </view>
+              <view class="info-row flex items-center">
+                <wd-icon name="time" size="28rpx" color="#999"></wd-icon>
+                <text class="text-[26rpx] text-[#666] min-w-[120rpx] ml-1">提交时间</text>
+                <text class="text-[26rpx] text-[#333]">
+                  {{ formatTime(item.registerTime, 'YYYY-MM-DD HH:mm:ss') }}
+                </text>
               </view>
             </view>
 
             <!-- 操作按钮 -->
             <view class="case-actions">
               <wd-button type="primary" size="small" plain @click.stop="handleWatchProgress(item)">
-                <view class="flex items-center">
-                  <text class="iconfont icon-renwujincheng mr-1"></text>
-                  <text>查看案件进程</text>
-                </view>
+                查看案件进程
               </wd-button>
             </view>
           </view>
@@ -133,6 +126,10 @@ onMounted(() => {
 
 .case-list {
   padding: 0 30rpx;
+}
+
+.number {
+  font-family: 'SF Mono', 'Consolas', 'monospace';
 }
 
 .case-card {
@@ -197,30 +194,6 @@ onMounted(() => {
   font-weight: 600;
   z-index: 3;
   line-height: 1;
-}
-
-.case-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 20rpx;
-}
-
-.case-number {
-  flex: 1;
-
-  .case-label {
-    font-size: 24rpx;
-    color: #999;
-    margin-right: 16rpx;
-  }
-
-  .case-id {
-    font-size: 28rpx;
-    color: #333;
-    font-weight: 600;
-    font-family: 'SF Mono', Consolas, monospace;
-  }
 }
 
 .case-title {
