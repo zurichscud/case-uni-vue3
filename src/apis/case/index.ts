@@ -8,3 +8,10 @@ export function getCaseList(data: PageParams) {
     data,
   })
 }
+
+export function getCaseProcess(caseId: string ) {
+  return http({
+    url: `claims-business/app/case/caseProgress/${caseId}`,
+    method: 'GET',
+  })
+}

@@ -1,5 +1,16 @@
 <script setup>
-const visible = defineModel('modelValue', { type: Boolean })
+const visible = ref(false)
+const caseId = ref('')
+const steps = ref([])
+function open(id, list) {
+  visible.value = true
+  steps.value = list
+  caseId.value = id
+}
+
+defineExpose({
+  open,
+})
 </script>
 
 <template>
@@ -16,11 +27,8 @@ const visible = defineModel('modelValue', { type: Boolean })
       </view>
       <!-- 步骤条 -->
       <view class="progress-content ml-4 my-10">
-        <wd-steps :active="1" vertical>
-          <wd-step description="注册1个账号" />
-          <wd-step description="登录账号并绑定手机" />
-          <wd-step description="完善个人信息" />
-          <wd-step description="完善个人信息" />
+        <wd-steps :active="steps.length - 1" vertical>
+          <wd-step v-for="(item,index) in steps" :key="`${caseId}-${index}`" :title="item" description=" " />
         </wd-steps>
       </view>
     </view>

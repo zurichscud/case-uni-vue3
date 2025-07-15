@@ -3,8 +3,7 @@ import { formatTime } from '@/utils/date'
 import StepsPopup from './components/StepsPopup.vue'
 import * as CaseAPI from '@/apis/case'
 
-const progressVisible = ref(false)
-const currentCase = ref(null)
+const stepsPopupRef = ref()
 const ypScrollViewRef = ref()
 const pageParams = ref({
   pageNum: 1,
@@ -18,9 +17,9 @@ const pageParams = ref({
 //   { text: '本月', value: 'month' },
 // ])
 
-function handleWatchProgress(caseItem) {
-  currentCase.value = caseItem
-  progressVisible.value = true
+async function handleWatchProgress({ caseId }) {
+  const { rows } = await CaseAPI.getCaseProcess(caseId)
+  stepsPopupRef.value.open(caseId,rows)
 }
 
 async function getCaseListData() {
@@ -71,10 +70,10 @@ onMounted(() => {
 
             <!-- 案件卡片头部 -->
             <view class="mb-2">
-                <text class="text-[24rpx] text-[#999] mr-2">案件编号</text>
-                <text class="text-[28rpx] text-[#333] font-bold number">
-                  {{ item.caseId }}
-                </text>
+              <text class="text-[24rpx] text-[#999] mr-2">案件编号</text>
+              <text class="text-[28rpx] text-[#333] font-bold number">
+                {{ item.caseId }}
+              </text>
             </view>
 
             <!-- 案件名称 -->
@@ -91,7 +90,7 @@ onMounted(() => {
                   <text class="text-[26rpx] text-[#333] mr-4">
                     {{ item.membersName || '未知提交人' }}
                   </text>
-                  <yp-tag :status="4" text="社长" />
+                  <yp-tag :status="4" :text="item.remarkName" />
                 </view>
               </view>
 
@@ -116,7 +115,7 @@ onMounted(() => {
     </YpScrollView>
   </view>
   <!-- 办理进程弹窗 -->
-  <StepsPopup v-model="progressVisible" />
+  <StepsPopup ref="stepsPopupRef" />
 </template>
 
 <style scoped lang="scss">
