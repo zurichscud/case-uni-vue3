@@ -8,7 +8,7 @@
     >
     </image>
     <button class="wx_code" @click="openWxCode">申请成为分社社长</button>
-    <u-popup
+    <!-- <u-popup
       :show="showPopup"
       bgColor="transparent"
       :round="10"
@@ -28,7 +28,7 @@
           mode="widthFix"
         />
       </view>
-    </u-popup>
+    </u-popup> -->
   </view>
 </template>
 
@@ -43,9 +43,6 @@
           'https://app.y9net.cn/data/01/47/wKgBNmZVTgCAHxQ8AAJGY8sYbNQ37.jpeg'
         ]
       }
-    },
-    computed: {
-      ...mapState(['user'])
     },
     onLoad(options) {
       if (options?.pid) {

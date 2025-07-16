@@ -7,17 +7,21 @@ import Agreement from './components/Agreement.vue'
 const router = useRouter()
 const { login } = useUserStore()
 
-const checked = ref(false)
+const isAgree = ref(false)
 
 // e的code无效
 async function getPhoneNumber({ iv, encryptedData }) {
-  if (!checked.value) {
-    uni.showModal({
+  if (!isAgree.value) {
+    return uni.showModal({
       title: '提示',
-      content: '请先勾选并同意服务协议和隐私条款',
-      showCancel: false,
+      content: '请先同意服务协议和隐私条款',
+      confirmText: '同意',
+      success: ({ confirm }) => {
+        if (confirm) {
+          isAgree.value = true
+        }
+      },
     })
-    return
   }
   const { code } = await uni.login()
   const { data: phoneData } = await UserAPI.getDecryptPhone({
@@ -48,13 +52,15 @@ async function getPhoneNumber({ iv, encryptedData }) {
         <wd-button open-type="getPhoneNumber" @getphonenumber="getPhoneNumber" block size="large">
           手机号快捷登录
         </wd-button>
-        <Agreement v-model="checked" />
+        <Agreement v-model="isAgree" />
       </view>
     </view>
 
     <!-- 其他方式登录 -->
     <view class="mb-10">
-      <wd-divider>其他登录方式</wd-divider>
+      <wd-divider>
+        <text class="text-[24rpx]">其他登录方式</text>
+      </wd-divider>
       <!-- 方式 -->
       <view class="flex items-center justify-center flex-col gap-2">
         <view class="other-login-btn" @click="router.push('/pages/login/phoneLogin')">
@@ -62,8 +68,8 @@ async function getPhoneNumber({ iv, encryptedData }) {
         </view>
         <view class="text-[24rpx] text-gray-500">短信验证登录</view>
       </view>
+      <view class="text-[22rpx] text-gray-400 mt-4 text-center">未注册的用户将直接为您创建理赔公社账号</view>
     </view>
-    <view class="text-[24rpx] text-gray-500">未注册的用户将直接为您创建理赔公社账号</view>
   </view>
 </template>
 

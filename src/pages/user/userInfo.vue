@@ -70,12 +70,20 @@ async function handleInput() {
 }
 
 function handleLogout() {
-  logout()
+  uni.showModal({
+    title: '提示',
+    content: '确定退出登录吗？',
+    success: ({ confirm }) => {
+      if (confirm) {
+        logout()
+      }
+    },
+  })
 }
 
 function handleRedirect() {
   uni.navigateTo({
-    url: '/pages/login/setUserInfo',
+    url: '/pages/invite/fuli',
   })
 }
 

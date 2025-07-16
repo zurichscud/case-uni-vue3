@@ -33,9 +33,8 @@ let requestTask = null
 let sessionId = ''
 const uploadVisible = ref(false)
 let sseHandler = null // SSE处理器实例
-
+// #ifdef MP-WEIXIN
 const { top, height, width } = uni.getMenuButtonBoundingClientRect()
-
 const menuButtonInfo = ref({
   top,
   height,
@@ -43,7 +42,7 @@ const menuButtonInfo = ref({
 const wxMenu = {
   width: `${width}px`,
 }
-
+// #endif
 // 页面返回按钮处理
 function handleBack() {
   // 如果正在生成中，先停止生成

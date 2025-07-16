@@ -5,7 +5,7 @@
       lazy-load
       mode="widthFix"
       :src="
-        user.remark == '7' || user.remark == '8'
+        remark === '7' || remark === '8'
           ? 'https://app.y9net.cn/data/01/38/wKgBNmPpoIuAZKK9AAQgKJOGCkI935.jpg'
           : 'https://app.y9net.cn/data/01/38/wKgBNmPpoFGAOrKJAAKHyfxrjp8415.jpg'
       "
@@ -18,13 +18,12 @@
 <script>
   export default {
     data() {
-      return {}
-    },
-    computed: {
-      ...mapState(['user', 'userType'])
+      return {
+        remark: 6,
+      }
     },
     onLoad() {
-      if (this.user.remark == 6) {
+      if (this.remark === 6) {
         uni.setNavigationBarTitle({
           title: '晋升大队长条件'
         })

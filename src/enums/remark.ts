@@ -5,7 +5,7 @@ export const REMARK={
   LianSheZhang:'8',
 }
 
-export const getRemarkText = (remark:string) => {
+export function getRemarkText(remark:string) {
   switch(remark){
     case REMARK.BaoMin:
       return '保民'

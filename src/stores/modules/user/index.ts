@@ -62,6 +62,12 @@ export const useUserStore = defineStore('user', {
       if (this.remark) {
         uni.reLaunch({
           url: '/pages/index/index',
+          success: () => {
+            uni.showToast({
+              title: '登录成功',
+              icon: 'success',
+            })
+          },
         })
       } else {
         //设置默认身份

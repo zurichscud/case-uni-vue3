@@ -59,12 +59,12 @@ const menus: Menus = {
       {
         text: '奖励政策',
         icon: 'icon-purse',
-        url: '/pages/policy/file',
+        url: '/pages/invite/fuli',
       },
       {
         text: '晋升办法',
         icon: 'icon-gift',
-        url: '/pages/policy/file',
+        url: '/pages/lpgs/promotion',
       },
     ],
   },
