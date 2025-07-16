@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { formatTime } from '@/utils/date'
 // 假设有API，后续可替换
 // import * as InviteAPI from '@/apis/invite'
@@ -9,6 +9,11 @@ const pageParams = ref({
   page: 1,
   pageSize: 4,
 })
+
+// 统计数据（可用API替换）
+const memberCount = ref(3)
+const baominCount = ref(1)
+const needInviteCount = ref(16)
 
 // 示例数据，后续用API替换
 async function getInviteListData() {
@@ -39,7 +44,7 @@ function handleUpgrade(member) {
   // 升级逻辑，后续可接API
   uni.showToast({ title: `已请求升级：${member.name}`, icon: 'success' })
 }
-//使用onMounted代替onLoad
+// 使用onMounted代替onLoad
 onMounted(() => {
   ypScrollViewRef.value?.getData()
 })
@@ -50,12 +55,22 @@ onMounted(() => {
     <YpScrollView :query="getInviteListData" ref="ypScrollViewRef" v-model:page="pageParams">
       <template #default="{ list }">
         <view class="invite-card-list">
+          <!-- 统计提示区域 -->
+          <view class="invite-summary">
+            <text>您目前社员数量：</text>
+            <text class="summary-num">{{ memberCount }}位</text>
+            ，保民
+            <text class="summary-num">{{ baominCount }}位</text>
+            ，再邀请
+            <text class="summary-highlight">{{ needInviteCount }}位社员</text>
+            就可以成为分社社长
+          </view>
           <view v-for="(item, index) in list" :key="item.id || index" class="invite-card">
             <!-- 序号 -->
             <view class="invite-index">
               {{ index + 1 }}
             </view>
-            <!-- 姓名 -->
+            <!-- 姓名+身份 -->
             <view class="flex items-center gap-2 mb-2">
               <text class="text-[32rpx] text-[#333] font-bold">
                 {{ item.name }}
@@ -102,6 +117,30 @@ onMounted(() => {
 <style scoped lang="scss">
 .invite-list {
   height: 100vh;
+}
+
+.invite-summary {
+  margin: 24rpx 0;
+  padding: 24rpx 30rpx;
+  background: linear-gradient(90deg, #e0f7fa 0%, #f1f8e9 100%);
+  border-radius: 16rpx;
+  font-size: 28rpx;
+  color: #333;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.04);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-bottom: 16rpx;
+}
+.summary-num {
+  color: #1976d2;
+  font-weight: bold;
+  margin: 0 4rpx;
+}
+.summary-highlight {
+  color: #43a047;
+  font-weight: bold;
+  margin: 0 4rpx;
 }
 
 .invite-card-list {
