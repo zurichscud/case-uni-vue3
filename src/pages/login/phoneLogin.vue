@@ -7,8 +7,8 @@
         mode="widthFix"
         src="https://app.y9net.cn/data/01/33/wKgBNmNrRUaAQIbIAAEk8PcicTA220.png"
       />
-      <view class="title">欢迎来到理赔公社！</view>
       <view class="subtitle">专业 便捷 公允 价值</view>
+      <view class="title">欢迎来到理赔公社</view>
     </view>
 
     <!-- 登录表单 -->
@@ -147,6 +147,7 @@ async function handleLogin() {
   .title {
     margin-top: 40rpx;
     font-size: 52rpx;
+    font-family: '钉钉进步体 Regular';
     font-weight: 600;
     color: #333;
     line-height: 1.2;

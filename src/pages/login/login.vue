@@ -100,6 +100,7 @@ function toPrivacy() {
 
     .login_title {
       margin: 50rpx auto;
+      margin-bottom: 80rpx;
       color: $uni-text-color-subTitle;
       font-family: '钉钉进步体 Regular';
       font-size: 52rpx;
