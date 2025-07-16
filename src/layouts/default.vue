@@ -29,7 +29,7 @@ export default {
 
 <style lang="scss">
 .page-wraper {
-  min-height: calc(100vh - var(--window-top));
+  height: calc(100vh - var(--window-top));
   box-sizing: border-box;
   background: #ffffff;
 }

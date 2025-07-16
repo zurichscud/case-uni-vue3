@@ -9,7 +9,7 @@ const { login } = useUserStore()
 
 const checked = ref(false)
 
-//e的code无效
+// e的code无效
 async function getPhoneNumber({ iv, encryptedData }) {
   if (!checked.value) {
     uni.showModal({
@@ -31,67 +31,83 @@ async function getPhoneNumber({ iv, encryptedData }) {
   })
 }
 
-function goToService() {
+function toService() {
   router.push('/pages/public/agreement/serviceText')
 }
-function goToPrivacy() {
+function toPrivacy() {
   router.push('/pages/public/agreement/privacyText')
 }
 </script>
 
 <template>
-  <view class="login">
-    <view class="login_top">
-      <image
-        class="border login_icon_yipei"
-        mode="widthFix"
-        src="https://app.y9net.cn/data/01/33/wKgBNmNrRUaAQIbIAAEk8PcicTA220.png"
-      ></image>
-      <view class="login_title">欢迎来到理赔公社！</view>
-      <view class="subT">专业 便捷 公允 价值</view>
-    </view>
-    <view class="login_wx">
-      <wd-button open-type="getPhoneNumber" @getphonenumber="getPhoneNumber" block size="large">
-        手机号快捷登录
-      </wd-button>
-      <view class="agreement flex items-center justify-center gap-1 text-xs text-gray-500 mt-6">
-        <wd-checkbox v-model="checked" shape="round" size="20"></wd-checkbox>
-        <text>我已认真阅读并同意</text>
-        <text class="link text-blue-500 underline mx-1" @click="goToService">服务协议</text>
-        <text>和</text>
-        <text class="link text-blue-500 underline mx-1" @click="goToPrivacy">隐私条款</text>
+  <view class="login flex flex-col justify-between">
+    <view>
+      <view class="login_top">
+        <image
+          class="border login_icon_yipei"
+          mode="widthFix"
+          src="https://app.y9net.cn/data/01/33/wKgBNmNrRUaAQIbIAAEk8PcicTA220.png"
+        ></image>
+        <view class="subT">专业 便捷 公允 价值</view>
+        <view class="login_title">欢迎来到理赔公社</view>
+      </view>
+      <view class="login_wx">
+        <wd-button open-type="getPhoneNumber" @getphonenumber="getPhoneNumber" block size="large">
+          手机号快捷登录
+        </wd-button>
+        <view class="agreement flex items-center justify-center gap-1 text-xs text-gray-500 mt-6">
+          <wd-checkbox v-model="checked" shape="round" size="20"></wd-checkbox>
+          <text>我已认真阅读并同意</text>
+          <text class="link text-blue-500 underline mx-1" @click="toService">服务协议</text>
+          <text>和</text>
+          <text class="link text-blue-500 underline mx-1" @click="toPrivacy">隐私条款</text>
+        </view>
       </view>
     </view>
-    <view class="other-login">
-      <view class="btn_phone" @click="router.push('/pages/login/phoneLogin')">
-        使用短信验证登录/注册
+
+    <!-- 其他方式登录 -->
+    <view class="mb-10">
+      <wd-divider>其他登录方式</wd-divider>
+      <view class="flex items-center justify-center flex-col gap-2">
+        <view class="other-login-btn" @click="router.push('/pages/login/phoneLogin')">
+          <i class="iconfont icon-duanxinshezhi text-green-500" style="font-size: 32rpx"></i>
+        </view>
+        <view class="text-[24rpx] text-gray-500">短信验证登录</view>
       </view>
     </view>
   </view>
 </template>
 
 <style lang="scss" scoped>
-page,
-uni-app {
-  background: #fff;
+.other-login-btn {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 50%;
+  background-color: transparent;
+  border: 1px solid #dcdcdc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .login {
-  padding: 54rpx 60rpx 0 60rpx;
+  padding: 0 60rpx;
+  height: 100vh;
 
   &_top {
+    margin-top: 100rpx;
     text-align: center;
 
     .login_title {
-      margin-top: 32rpx;
-      margin-bottom: 16rpx;
+      margin: 50rpx auto;
       color: $uni-text-color-subTitle;
+      font-family: '钉钉进步体 Regular';
       font-size: 52rpx;
     }
 
     .subT {
       color: #bbbbbb;
-      margin-bottom: 82rpx;
+      margin: 30rpx 0;
     }
   }
 
@@ -125,6 +141,7 @@ uni-app {
 <route lang="json">
 {
   "name": "login",
+  "layout": "default",
   "style": {
     "navigationBarTitleText": "登录"
   }

@@ -229,6 +229,7 @@
           "path": "login",
           "type": "page",
           "name": "login",
+          "layout": "default",
           "style": {
             "navigationBarTitleText": "登录"
           }
