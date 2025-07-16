@@ -102,16 +102,16 @@ const visible = computed({
 })
 
 // 方法
-const handleClose = () => {
+function handleClose() {
   visible.value = false
 }
 
-const handleSelectHistory = (item) => {
+function handleSelectHistory(item) {
   emit('select-history', item)
   handleClose()
 }
 
-const handleDeleteHistory = (sessionId) => {
+function handleDeleteHistory(sessionId) {
   uni.showModal({
     title: '确认要删除此会话吗？',
     success: async (res) => {
@@ -130,7 +130,7 @@ const handleDeleteHistory = (sessionId) => {
   })
 }
 
-const handleNewChat = () => {
+function handleNewChat() {
   emit('new-chat')
   handleClose()
 }
@@ -142,7 +142,7 @@ async function getAllChatData() {
     historyList.value = (data || []).map((item) => ({
       sessionId: item.sessionId,
       content: item.content,
-      createTime: item.createTime || Date.now(), // 如果没有时间，使用当前时间
+      createTime: item.createTime ,
       ...item,
     }))
   } catch (error) {

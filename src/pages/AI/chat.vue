@@ -452,7 +452,7 @@ function convertHistoryToMessages(historyData) {
   }
 
   // 按时间排序（确保消息顺序正确）
-  const sortedHistory = historyData.reverse()
+  const sortedHistory = historyData
 
   return sortedHistory.flatMap((item) => {
     if (item.type === MSG_TYPE.USER) {
