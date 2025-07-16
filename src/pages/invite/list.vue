@@ -13,17 +13,15 @@ const pageParams = ref({
 const memberCount = ref(3)
 const baominCount = ref(1)
 const needInviteCount = ref(16)
-const remark = computed(() => {
-  return userStore.remark
-})
 
 async function getInviteListData() {
-  return InviteAPI.getInviteListById({...pageParams.value,userId:userStore.id})
+  return InviteAPI.getInviteListById({ ...pageParams.value, userId: userStore.id })
 }
 
 function handleUpgrade(member) {
   uni.showToast({ title: `已请求升级：${member.name}`, icon: 'success' })
 }
+
 // 使用onMounted代替onLoad
 onMounted(() => {
   ypScrollViewRef.value?.getData()
@@ -38,56 +36,64 @@ onMounted(() => {
           <!-- 统计提示区域 -->
           <view class="invite-summary" v-if="true">
             <text>您目前社员数量：</text>
-            <text class="summary-num">{{ memberCount }}位</text>
+            <text class="summary-num">
+              {{ memberCount }}位
+            </text>
             ，保民
-            <text class="summary-num">{{ baominCount }}位</text>
+            <text class="summary-num">
+              {{ baominCount }}位
+            </text>
             ，再邀请
-            <text class="summary-highlight">{{ needInviteCount }}位社员</text>
+            <text class="summary-highlight">
+              {{ needInviteCount }}位社员
+            </text>
             就可以成为分社社长
           </view>
-          <view v-for="(item, index) in list" :key="item.id || index" class="invite-card">
-            <!-- 序号 -->
-            <view class="invite-index">
+          <BaseCard v-for="(item, index) in list" :key="item.id || index">
+            <template #index>
               {{ index + 1 }}
-            </view>
-            <!-- 姓名+身份 -->
-            <view class="flex items-center gap-2 mb-2">
-              <text class="text-[32rpx] text-[#333] font-bold">
-                {{ item.nickName }}
-              </text>
-              <yp-tag :status="4" :text="item.remarkName" />
-            </view>
-            <!-- 手机号码 -->
+            </template>
+            <template #header>
+              <view class="flex items-center gap-2 mb-2">
+                <text class="text-[32rpx] text-[#333] font-bold">
+                  {{ item.nickName }}
+                </text>
+                <yp-tag :status="4" :text="item.remarkName" />
+              </view>
+            </template>
             <view class="mb-2">
-              <text class="text-[24rpx] text-[#999] mr-2">手机号码</text>
+              <text class="text-[24rpx] text-[#999] mr-2">
+                手机号码
+              </text>
               <text class="text-[28rpx] text-[#333]">
                 {{ item.mobile }}
               </text>
             </view>
-            <!-- 登记时间 -->
             <view class="mb-2">
-              <text class="text-[24rpx] text-[#999] mr-2">登记时间</text>
+              <text class="text-[24rpx] text-[#999] mr-2">
+                登记时间
+              </text>
               <text class="text-[28rpx] text-[#333]">
                 {{ formatTime(item.gmtCreate, 'YYYY-MM-DD HH:mm') }}
               </text>
             </view>
-            <!-- 邀请成员数量 -->
             <view class="mb-2">
-              <text class="text-[24rpx] text-[#999] mr-2">邀请成员数量</text>
+              <text class="text-[24rpx] text-[#999] mr-2">
+                邀请成员数量
+              </text>
               <text class="text-[28rpx] text-[#333]">
                 {{ item.count }}
               </text>
             </view>
-            <!-- 操作按钮 -->
-            <view class="invite-actions">
+            <template #actions>
               <wd-button type="primary" size="small" plain @click.stop="handleUpgrade(item)">
                 查看邀请成员
               </wd-button>
               <wd-button type="success" size="small" plain @click.stop="handleUpgrade(item)">
                 升级成为社员
               </wd-button>
-            </view>
-          </view>
+            </template>
+          </BaseCard>
         </view>
       </template>
     </YpScrollView>
@@ -126,77 +132,7 @@ onMounted(() => {
   padding: 0 30rpx;
 }
 
-.invite-card {
-  background: #fff;
-  border-radius: 16rpx;
-  margin: 20rpx 0;
-  padding: 30rpx;
-  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.08);
-  transition: all 0.3s ease;
-  position: relative;
-  overflow: hidden;
-
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 140rpx;
-    height: 140rpx;
-    background: linear-gradient(
-      135deg,
-      rgba(63, 156, 255, 0.15) 0%,
-      rgba(82, 196, 26, 0.12) 30%,
-      rgba(255, 193, 7, 0.1) 60%,
-      rgba(220, 53, 69, 0.08) 100%
-    );
-    border-radius: 0 16rpx 0 140rpx;
-    z-index: 1;
-    box-shadow: inset 0 0 20rpx rgba(255, 255, 255, 0.3);
-  }
-
-  &::after {
-    content: '';
-    position: absolute;
-    top: 8rpx;
-    right: 8rpx;
-    width: 60rpx;
-    height: 60rpx;
-    background: radial-gradient(
-      circle,
-      rgba(255, 255, 255, 0.8) 0%,
-      rgba(255, 255, 255, 0.4) 50%,
-      transparent 100%
-    );
-    border-radius: 50%;
-    z-index: 2;
-    animation: shimmer 3s ease-in-out infinite;
-  }
-
-  &:active {
-    transform: scale(0.98);
-    background: #f8f9fa;
-  }
-}
-
-.invite-index {
-  position: absolute;
-  top: 40rpx;
-  right: 40rpx;
-  font-size: 32rpx;
-  color: #a1a0a0;
-  font-weight: 600;
-  z-index: 3;
-  line-height: 1;
-}
-
-.invite-actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 20rpx;
-  padding-top: 20rpx;
-  border-top: 1rpx solid #f0f0f0;
-}
+// 移除 .invite-card, .invite-index, .invite-actions 样式，使用 BaseCard 的样式
 
 @keyframes shimmer {
   0%,
@@ -211,10 +147,7 @@ onMounted(() => {
 }
 
 @media (max-width: 750rpx) {
-  .invite-card {
-    margin: 16rpx 0;
-    padding: 24rpx;
-  }
+  // BaseCard 已有响应式设计
 }
 </style>
 
