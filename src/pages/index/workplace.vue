@@ -44,7 +44,7 @@ const menus: Menus = {
       {
         text: '邀请记录',
         icon: 'icon-paper',
-        url: '/pages/invite/record',
+        url: '/pages/invite/list',
       },
       {
         text: '邀请二维码',

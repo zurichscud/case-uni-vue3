@@ -205,6 +205,16 @@
           "type": "page"
         },
         {
+          "path": "list",
+          "type": "page",
+          "name": "inviteList",
+          "layout": "default",
+          "auth": true,
+          "style": {
+            "navigationBarTitleText": "邀请列表"
+          }
+        },
+        {
           "path": "record",
           "type": "page"
         },
