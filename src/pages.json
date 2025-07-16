@@ -241,6 +241,10 @@
           "style": {
             "navigationBarTitleText": "登录"
           }
+        },
+        {
+          "path": "components/Agreement",
+          "type": "page"
         }
       ]
     },

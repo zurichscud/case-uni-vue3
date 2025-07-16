@@ -33,7 +33,9 @@ let requestTask = null
 let sessionId = ''
 const uploadVisible = ref(false)
 let sseHandler = null // SSE处理器实例
+
 const { top, height, width } = uni.getMenuButtonBoundingClientRect()
+
 const menuButtonInfo = ref({
   top,
   height,

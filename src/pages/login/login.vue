@@ -2,7 +2,7 @@
 import { useUserStore } from '@/stores'
 import * as UserAPI from '@/apis/user'
 import { SOURCE } from '@/enums/source'
-import { ref } from 'vue'
+import Agreement from './components/Agreement.vue'
 
 const router = useRouter()
 const { login } = useUserStore()
@@ -30,13 +30,6 @@ async function getPhoneNumber({ iv, encryptedData }) {
     mobile: phoneData.phoneNumber,
   })
 }
-
-function toService() {
-  router.push('/pages/public/agreement/serviceText')
-}
-function toPrivacy() {
-  router.push('/pages/public/agreement/privacyText')
-}
 </script>
 
 <template>
@@ -55,19 +48,14 @@ function toPrivacy() {
         <wd-button open-type="getPhoneNumber" @getphonenumber="getPhoneNumber" block size="large">
           手机号快捷登录
         </wd-button>
-        <view class="agreement flex items-center justify-center gap-1 text-xs text-gray-500 mt-6">
-          <wd-checkbox v-model="checked" shape="round" size="20"></wd-checkbox>
-          <text>我已认真阅读并同意</text>
-          <text class="link text-blue-500 underline mx-1" @click="toService">服务协议</text>
-          <text>和</text>
-          <text class="link text-blue-500 underline mx-1" @click="toPrivacy">隐私条款</text>
-        </view>
+        <Agreement v-model="checked" />
       </view>
     </view>
 
     <!-- 其他方式登录 -->
     <view class="mb-10">
       <wd-divider>其他登录方式</wd-divider>
+      <!-- 方式 -->
       <view class="flex items-center justify-center flex-col gap-2">
         <view class="other-login-btn" @click="router.push('/pages/login/phoneLogin')">
           <i class="iconfont icon-duanxinshezhi text-green-500" style="font-size: 32rpx"></i>
@@ -75,6 +63,7 @@ function toPrivacy() {
         <view class="text-[24rpx] text-gray-500">短信验证登录</view>
       </view>
     </view>
+    <view class="text-[24rpx] text-gray-500">未注册的用户将直接为您创建理赔公社账号</view>
   </view>
 </template>
 

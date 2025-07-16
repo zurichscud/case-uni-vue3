@@ -33,6 +33,7 @@ interface NavigateToOptions {
        "/pages/invite/components/teaminvite" |
        "/pages/login/login" |
        "/pages/login/phoneLogin" |
+       "/pages/login/components/Agreement" |
        "/pages/lpgs/apply" |
        "/pages/lpgs/processing" |
        "/pages/lpgs/promotion" |

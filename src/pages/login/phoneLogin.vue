@@ -41,6 +41,8 @@
           </text>
         </view>
       </view>
+      <!-- 协议 -->
+      <Agreement v-model="isAgree" />
 
       <!-- 登录按钮 -->
       <button
@@ -57,19 +59,20 @@
 </template>
 
 <script setup>
-import { ref,computed } from 'vue'
+import { ref, computed } from 'vue'
 import { useUserStore } from '@/stores'
 import * as UserAPI from '@/apis/user'
 import { SOURCE } from '@/enums/source'
+import Agreement from './components/Agreement.vue'
 
 const userStore = useUserStore()
 const { login } = userStore
-
 const mobile = ref('')
 const verifyCode = ref('')
 const codeCountdown = ref(0)
 const loginLoading = ref(false)
 const timer = ref(null)
+const isAgree = ref(false)
 
 const isValidMobile = computed(() => {
   const mobileReg = /^1[3-9]\d{9}$/
@@ -115,6 +118,18 @@ function startCountdown() {
 }
 
 async function handleLogin() {
+  if (!isAgree.value) {
+    return uni.showModal({
+      title: '提示',
+      content: '请先同意服务协议和隐私条款',
+      confirmText: '同意',
+      success: ({ confirm, cancel }) => {
+        if (confirm) {
+          isAgree.value = true
+        }
+      },
+    })
+  }
   login({
     source: SOURCE.SMS,
     mobile: mobile.value,
