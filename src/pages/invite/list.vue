@@ -1,47 +1,27 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { formatTime } from '@/utils/date'
-// 假设有API，后续可替换
-// import * as InviteAPI from '@/apis/invite'
+import { useUserStore } from '@/stores'
+import * as InviteAPI from '@/apis/invite'
 
 const ypScrollViewRef = ref(null)
+const userStore = useUserStore()
 const pageParams = ref({
   page: 1,
   pageSize: 4,
 })
-
-// 统计数据（可用API替换）
 const memberCount = ref(3)
 const baominCount = ref(1)
 const needInviteCount = ref(16)
+const remark = computed(() => {
+  return userStore.remark
+})
 
-// 示例数据，后续用API替换
 async function getInviteListData() {
-  return {
-    rows: [
-      {
-        id: 1,
-        joinTime: '2024-06-01T10:00:00',
-        name: '张三',
-        role: '社员',
-        phone: '138****8888',
-        requiredMembers: 3,
-      },
-      {
-        id: 2,
-        joinTime: '2024-06-02T11:30:00',
-        name: '李四',
-        role: '分社社长',
-        phone: '139****9999',
-        requiredMembers: 2,
-      },
-    ],
-    total: 2,
-  }
+  return InviteAPI.getInviteListById({...pageParams.value,userId:userStore.id})
 }
 
 function handleUpgrade(member) {
-  // 升级逻辑，后续可接API
   uni.showToast({ title: `已请求升级：${member.name}`, icon: 'success' })
 }
 // 使用onMounted代替onLoad
@@ -56,7 +36,7 @@ onMounted(() => {
       <template #default="{ list }">
         <view class="invite-card-list">
           <!-- 统计提示区域 -->
-          <view class="invite-summary">
+          <view class="invite-summary" v-if="true">
             <text>您目前社员数量：</text>
             <text class="summary-num">{{ memberCount }}位</text>
             ，保民
@@ -73,29 +53,29 @@ onMounted(() => {
             <!-- 姓名+身份 -->
             <view class="flex items-center gap-2 mb-2">
               <text class="text-[32rpx] text-[#333] font-bold">
-                {{ item.name }}
+                {{ item.nickName }}
               </text>
-              <yp-tag :status="4" :text="item.role" />
+              <yp-tag :status="4" :text="item.remarkName" />
             </view>
             <!-- 手机号码 -->
             <view class="mb-2">
               <text class="text-[24rpx] text-[#999] mr-2">手机号码</text>
               <text class="text-[28rpx] text-[#333]">
-                {{ item.phone }}
+                {{ item.mobile }}
               </text>
             </view>
             <!-- 登记时间 -->
             <view class="mb-2">
               <text class="text-[24rpx] text-[#999] mr-2">登记时间</text>
               <text class="text-[28rpx] text-[#333]">
-                {{ formatTime(item.joinTime, 'YYYY-MM-DD HH:mm') }}
+                {{ formatTime(item.gmtCreate, 'YYYY-MM-DD HH:mm') }}
               </text>
             </view>
             <!-- 邀请成员数量 -->
             <view class="mb-2">
               <text class="text-[24rpx] text-[#999] mr-2">邀请成员数量</text>
               <text class="text-[28rpx] text-[#333]">
-                {{ item.requiredMembers }}
+                {{ item.count }}
               </text>
             </view>
             <!-- 操作按钮 -->
@@ -130,7 +110,6 @@ onMounted(() => {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  margin-bottom: 16rpx;
 }
 .summary-num {
   color: #1976d2;

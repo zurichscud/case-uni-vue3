@@ -5,6 +5,10 @@ const props = defineProps({
     type: Function,
     required: true,
   },
+  refreshable: {
+    type: Boolean,
+    default: false,
+  },
 })
 const pageParams = defineModel('page', {
   type: Object,
@@ -88,7 +92,7 @@ defineExpose({
   <scroll-view
     class="yp-scroll-view"
     scroll-y
-    :refresher-enabled="true"
+    :refresher-enabled="refreshable"
     :refresher-triggered="refreshing"
     @refresherrefresh="handleRefresh"
     @scrolltolower="handleScrolltoLower"
