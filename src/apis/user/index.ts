@@ -1,5 +1,11 @@
 import http from '@/utils/http'
 
+export interface DecryptPhoneParams {
+  code: string
+  iv: string
+  encryptedData: string
+}
+
 //登录
 export function login(data) {
   return http({
@@ -13,7 +19,7 @@ export function login(data) {
   })
 }
 
-export function getDecryptPhone(data) {
+export function getDecryptPhone(data:DecryptPhoneParams) {
   return http({
     url: 'iclaim/login/decryptPhone',
     method: 'POST',
