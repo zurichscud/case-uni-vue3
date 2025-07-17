@@ -6,16 +6,26 @@ export interface DecryptPhoneParams {
   encryptedData: string
 }
 
+export interface UserInfoParams {
+  nickName?: string
+}
+
+export interface IdentityParams {
+  type: string
+}
+
+export interface LoginParams {
+  source: number
+  mobile: string
+  registerType: number
+}
+
 //登录
-export function login(data) {
+export function login(data: LoginParams) {
   return http({
     url: 'iclaim/login/register',
     method: 'POST',
     data,
-    custom: {
-      successMsg: "登录成功",
-      showSuccess: true
-    }
   })
 }
 
@@ -28,7 +38,7 @@ export function getDecryptPhone(data:DecryptPhoneParams) {
 }
 
 //获取手机验证码
-export function sendSms(data) {
+export function sendSms(data: { mobile: string }) {
   return http({
     url: 'iclaim/login/lpgsFetchVcode',
     method: 'GET',
@@ -37,16 +47,15 @@ export function sendSms(data) {
 }
 
 //获取用户信息，后端会自动处理身份
-export function getUserInfo(data) {
+export function getUserInfo() {
   return http({
-    url: 'CastList/caseUser/list',
+    url: 'lpgsUser/getUserInfo',
     method: 'POST',
-    data
   })
 }
 
 //获取sessionKey
-export function getSessionKey(data) {
+export function getSessionKey(data:any) {
   return http({
     url: 'iclaim/login/getSessionKey2',
     method: 'GET',
@@ -55,15 +64,15 @@ export function getSessionKey(data) {
 }
 
 //更新用户信息
-export function updateUserInfo(data) {
+export function updateUserInfo(data: UserInfoParams) {
   return http({
-    url: 'CastList/caseUser/addOrUpdate',
+    url: 'lpgsUser/user/update',
     method: 'PUT',
     data
   })
 }
 
-export function selectIdentity(data) {
+export function selectIdentity(data: IdentityParams) {
   return http({
     url: 'lpgsUser/selectUserIdentity',
     method: 'POST',

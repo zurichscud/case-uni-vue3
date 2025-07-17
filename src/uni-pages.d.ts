@@ -30,6 +30,7 @@ interface NavigateToOptions {
        "/pages/invite/list" |
        "/pages/invite/record" |
        "/pages/invite/team" |
+       "/pages/invite/components/UpgradeTip" |
        "/pages/invite/components/invitepersonal" |
        "/pages/invite/components/teaminvite" |
        "/pages/login/login" |

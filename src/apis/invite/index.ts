@@ -8,7 +8,7 @@ export interface InviteListByIdParams {
 
 export function getInviteListById(data: InviteListByIdParams) {
   return http({
-    url: 'lpgsUser/getMyUsers',
+    url: 'lpgsUser/myUsersByUserId',
     method: 'GET',
     data,
   })

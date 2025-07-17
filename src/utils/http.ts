@@ -148,7 +148,8 @@ http.interceptors.response.use(
         showErrorToast(response.data.message || '服务器开小差啦,请稍后再试~', 'none')
       }
       // 未知状态码抛出服务器异常
-      return Promise.reject(response.data)
+      logError(response)
+      return Promise.reject(new Error('接口异常'))
     }
     // 自定义处理【showSuccess 成功提示】：如果需要显示成功提示，则显示成功提示
     if (
@@ -222,4 +223,46 @@ export async function uploadFile(path: string) {
     name: 'photo',
   })
   return JSON.parse(data)
+}
+
+function logError(response: any) {
+  console.log('[ response ]-229', response)
+  const { config, data } = response
+
+  // 使用 console.group 分组显示错误信息
+  console.group('🚨 接口请求错误')
+
+  // 接口基本信息
+  console.group('📡 请求信息')
+  console.log('📍 接口地址:', config.fullPath)
+  console.log('🔧 请求方法:', config.method?.toUpperCase())
+  console.log('⏱️  请求时间:', new Date().toLocaleString())
+  console.groupEnd()
+
+  // 请求参数
+  console.group('📤 请求参数')
+  if (config.data) {
+    console.log('📦 Data参数:', config.data)
+  }
+  if (config.params) {
+    console.log('🔍 Params参数:', config.params)
+  }
+  console.groupEnd()
+
+  // 请求头信息
+  console.group('📋 请求头')
+  console.log('🔑 Token:', config.header?.Authorization ? '已携带' : '未携带')
+  if (config.header?.Authorization) {
+    console.log('   Token值:', `${config.header.Authorization.substring(0, 20)}...`)
+  }
+  console.groupEnd()
+
+  // 响应信息
+  console.group('📥 响应信息')
+  console.log('📊 状态码:', data.code)
+  console.log('💬 错误信息:', data.message)
+  console.log('📄 完整响应:', data)
+  console.groupEnd()
+
+  console.groupEnd()
 }

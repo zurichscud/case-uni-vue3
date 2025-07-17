@@ -3,6 +3,7 @@ import * as UserAPI from '@/apis/user'
 import type { UserState } from './types'
 import { getRemarkText } from '@/enums/remark'
 import appConfig from '@/config/app'
+import type { LoginParams } from '@/apis/user'
 
 // 使用命名导出取代默认导出
 export const useUserStore = defineStore('user', {
@@ -24,7 +25,7 @@ export const useUserStore = defineStore('user', {
       return !!this.token
     },
     remarkText(): string {
-      return getRemarkText(this.remark || '')
+      return getRemarkText(this.remark!)
     },
   },
 
@@ -39,7 +40,7 @@ export const useUserStore = defineStore('user', {
     },
     // 获取用户信息
     async getUserInfo() {
-      const { data } = await UserAPI.getUserInfo({ id: this.id })
+      const { data } = await UserAPI.getUserInfo()
       this.setUser({
         id: data.id,
         nickName: data.nickName,
@@ -49,7 +50,7 @@ export const useUserStore = defineStore('user', {
       })
     },
     // 登录
-    async login(loginForm: { source: number; mobile: string; registerType: number }) {
+    async login(loginForm: LoginParams) {
       const { data } = await UserAPI.login(loginForm)
       this.setUser({
         id: data.id,
@@ -72,7 +73,6 @@ export const useUserStore = defineStore('user', {
       } else {
         //设置默认身份
         await UserAPI.selectIdentity({
-          userId: this.id,
           type: '2',
         })
       }

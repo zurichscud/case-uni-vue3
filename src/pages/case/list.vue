@@ -19,7 +19,7 @@ const pageParams = ref({
 
 async function handleWatchProgress({ caseId }) {
   const { rows } = await CaseAPI.getCaseProcess(caseId)
-  stepsPopupRef.value.open(caseId,rows)
+  stepsPopupRef.value.open(caseId, rows)
 }
 
 async function getCaseListData() {
@@ -27,9 +27,7 @@ async function getCaseListData() {
 }
 
 onMounted(() => {
-  nextTick(() => {
-    ypScrollViewRef.value?.getData()
-  })
+  ypScrollViewRef.value?.getData()
 })
 </script>
 

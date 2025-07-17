@@ -223,6 +223,10 @@
           "type": "page"
         },
         {
+          "path": "components/UpgradeTip",
+          "type": "page"
+        },
+        {
           "path": "components/invitepersonal",
           "type": "page"
         },

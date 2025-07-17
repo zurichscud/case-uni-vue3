@@ -3,16 +3,17 @@ import { ref, onMounted } from 'vue'
 import { formatTime } from '@/utils/date'
 import { useUserStore } from '@/stores'
 import * as InviteAPI from '@/apis/invite'
+import UpgradeTip from './components/UpgradeTip.vue'
 
-const ypScrollViewRef = ref(null)
+const ypScrollViewRef = ref()
+const ypScrollViewRef2 = ref()
 const userStore = useUserStore()
+const remark = computed(() => userStore.remark)
 const pageParams = ref({
   page: 1,
   pageSize: 4,
 })
-const memberCount = ref(3)
-const baominCount = ref(1)
-const needInviteCount = ref(16)
+const currentTab = ref(0)
 
 async function getInviteListData() {
   return InviteAPI.getInviteListById({ ...pageParams.value, userId: userStore.id })
@@ -22,69 +23,108 @@ function handleUpgrade(member) {
   uni.showToast({ title: `已请求升级：${member.name}`, icon: 'success' })
 }
 
+async function getGroupListData() {
+  return {
+    rows: [
+      {
+        id: 1,
+        name: '枫叶联社1',
+        count: 10,
+      },
+      {
+        id: 2,
+        name: '枫叶联社2',
+        count: 20,
+      },
+    ],
+    total: 2,
+  }
+}
+
 // 使用onMounted代替onLoad
 onMounted(() => {
   ypScrollViewRef.value?.getData()
+  ypScrollViewRef2.value?.getData()
 })
 </script>
 
 <template>
   <view class="invite-list">
-    <YpScrollView :query="getInviteListData" ref="ypScrollViewRef" v-model:page="pageParams">
-      <template #default="{ list }">
-        <view class="invite-card-list">
-          <!-- 统计提示区域 -->
-          <view class="invite-summary" v-if="true">
-            <text>您目前社员数量：</text>
-            <text class="summary-num">{{ memberCount }}位</text>
-            ，保民
-            <text class="summary-num">{{ baominCount }}位</text>
-            ，再邀请
-            <text class="summary-highlight">{{ needInviteCount }}位社员</text>
-            就可以成为分社社长
-          </view>
-          <BaseCard v-for="(item, index) in list" :key="item.id || index">
-            <template #index>
-              {{ index + 1 }}
-            </template>
-            <view class="mb-2">
-              <view class="flex items-center gap-2 mb-2">
-                <text class="text-[32rpx] text-[#333] font-bold">
-                  {{ item.nickName }}
+    <wd-tabs v-model="currentTab" auto-line-width>
+      <wd-tab title="人员">
+        <YpScrollView :query="getInviteListData" ref="ypScrollViewRef" v-model:page="pageParams">
+          <template #default="{ list }">
+            <view class="invite-card-list">
+              <!-- 升级提示区域 -->
+              <UpgradeTip :remark="remark" />
+              <!-- 邀请列表 -->
+              <BaseCard v-for="(item, index) in list" :key="item.id || index">
+                <template #index>
+                  {{ index + 1 }}
+                </template>
+                <view class="mb-2">
+                  <view class="flex items-center gap-2 mb-2">
+                    <text class="text-[32rpx] text-[#333] font-bold">
+                      {{ item.nickName }}
+                    </text>
+                    <yp-tag :status="4" :text="item.remarkName || '未知身份'" />
+                  </view>
+                  <text class="text-[24rpx] text-[#999] mr-2">手机号码</text>
+                  <text class="text-[28rpx] text-[#333]">
+                    {{ item.mobile }}
+                  </text>
+                </view>
+                <view class="mb-2">
+                  <text class="text-[24rpx] text-[#999] mr-2">登记时间</text>
+                  <text class="text-[28rpx] text-[#333]">
+                    {{ formatTime(item.gmtCreate, 'YYYY-MM-DD HH:mm') }}
+                  </text>
+                </view>
+                <view class="mb-2">
+                  <text class="text-[24rpx] text-[#999] mr-2">邀请成员数量</text>
+                  <text class="text-[28rpx] text-[#333]">
+                    {{ item.count }}
+                  </text>
+                </view>
+                <template #actions>
+                  <view class="flex gap-2 mt-4">
+                    <wd-button type="primary" size="small" plain @click.stop="handleUpgrade(item)">
+                      查看邀请成员
+                    </wd-button>
+                    <wd-button type="success" size="small" plain @click.stop="handleUpgrade(item)">
+                      升级成为社员
+                    </wd-button>
+                  </view>
+                </template>
+              </BaseCard>
+            </view>
+          </template>
+        </YpScrollView>
+      </wd-tab>
+      <wd-tab title="组织">
+        <YpScrollView :query="getGroupListData" ref="ypScrollViewRef2" v-model:page="pageParams">
+          <template #default="{ list }">
+            <BaseCard v-for="(item, index) in list" :key="item.id || index">
+              <template #index>
+                {{ index + 1 }}
+              </template>
+              <view class="mb-2">
+                <text class="text-[24rpx] text-[#999] mr-2">组织名称</text>
+                <text class="text-[28rpx] text-[#333]">
+                  {{ item.name }}
                 </text>
-                <yp-tag :status="4" :text="item.remarkName || '未知身份'" />
               </view>
-              <text class="text-[24rpx] text-[#999] mr-2">手机号码</text>
-              <text class="text-[28rpx] text-[#333]">
-                {{ item.mobile }}
-              </text>
-            </view>
-            <view class="mb-2">
-              <text class="text-[24rpx] text-[#999] mr-2">登记时间</text>
-              <text class="text-[28rpx] text-[#333]">
-                {{ formatTime(item.gmtCreate, 'YYYY-MM-DD HH:mm') }}
-              </text>
-            </view>
-            <view class="mb-2">
-              <text class="text-[24rpx] text-[#999] mr-2">邀请成员数量</text>
-              <text class="text-[28rpx] text-[#333]">
-                {{ item.count }}
-              </text>
-            </view>
-            <template #actions>
-              <view class="flex gap-2 mt-4">
-                <wd-button type="primary" size="small" plain @click.stop="handleUpgrade(item)">
-                  查看邀请成员
-                </wd-button>
-                <wd-button type="success" size="small" plain @click.stop="handleUpgrade(item)">
-                  升级成为社员
-                </wd-button>
+              <view class="mb-2">
+                <text class="text-[24rpx] text-[#999] mr-2">组织成员数量</text>
+                <text class="text-[28rpx] text-[#333]">
+                  {{ item.count }}
+                </text>
               </view>
-            </template>
-          </BaseCard>
-        </view>
-      </template>
-    </YpScrollView>
+            </BaseCard>
+          </template>
+        </YpScrollView>
+      </wd-tab>
+    </wd-tabs>
   </view>
 </template>
 
@@ -92,35 +132,9 @@ onMounted(() => {
 .invite-list {
   height: 100vh;
 }
-
-.invite-summary {
-  margin: 24rpx 0;
-  padding: 24rpx 30rpx;
-  background: linear-gradient(90deg, #e0f7fa 0%, #f1f8e9 100%);
-  border-radius: 16rpx;
-  font-size: 28rpx;
-  color: #333;
-  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.04);
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-}
-.summary-num {
-  color: #1976d2;
-  font-weight: bold;
-  margin: 0 4rpx;
-}
-.summary-highlight {
-  color: #43a047;
-  font-weight: bold;
-  margin: 0 4rpx;
-}
-
 .invite-card-list {
   padding: 0 30rpx;
 }
-
-// 移除 .invite-card, .invite-index, .invite-actions 样式，使用 BaseCard 的样式
 
 @keyframes shimmer {
   0%,
@@ -132,10 +146,6 @@ onMounted(() => {
     opacity: 1;
     transform: scale(1.1);
   }
-}
-
-@media (max-width: 750rpx) {
-  // BaseCard 已有响应式设计
 }
 </style>
 

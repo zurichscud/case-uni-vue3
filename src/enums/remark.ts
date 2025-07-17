@@ -1,12 +1,12 @@
-export const REMARK={
+export const REMARK = {
   BaoMin: '5',
-  SheYuan:'6',
-  FenSheZhang:'7',
-  LianSheZhang:'8',
+  SheYuan: '6',
+  FenSheZhang: '7',
+  LianSheZhang: '8',
 }
 
-export function getRemarkText(remark:string) {
-  switch(remark){
+export function getRemarkText(remark: string) {
+  switch (remark) {
     case REMARK.BaoMin:
       return '保民'
       break;
