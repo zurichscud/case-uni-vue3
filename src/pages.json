@@ -219,6 +219,10 @@
           "type": "page"
         },
         {
+          "path": "share",
+          "type": "page"
+        },
+        {
           "path": "team",
           "type": "page"
         },

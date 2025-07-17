@@ -29,6 +29,7 @@ interface NavigateToOptions {
        "/pages/invite/fuli" |
        "/pages/invite/list" |
        "/pages/invite/record" |
+       "/pages/invite/share" |
        "/pages/invite/team" |
        "/pages/invite/components/UpgradeTip" |
        "/pages/invite/components/invitepersonal" |
