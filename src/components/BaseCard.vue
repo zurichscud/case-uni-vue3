@@ -51,7 +51,6 @@ defineProps<{
 .base-card-actions {
   display: flex;
   justify-content: flex-end;
-  gap: 20rpx;
   border-top: 1rpx solid #f0f0f0;
 }
 </style>

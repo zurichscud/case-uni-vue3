@@ -36,62 +36,50 @@ onMounted(() => {
           <!-- 统计提示区域 -->
           <view class="invite-summary" v-if="true">
             <text>您目前社员数量：</text>
-            <text class="summary-num">
-              {{ memberCount }}位
-            </text>
+            <text class="summary-num">{{ memberCount }}位</text>
             ，保民
-            <text class="summary-num">
-              {{ baominCount }}位
-            </text>
+            <text class="summary-num">{{ baominCount }}位</text>
             ，再邀请
-            <text class="summary-highlight">
-              {{ needInviteCount }}位社员
-            </text>
+            <text class="summary-highlight">{{ needInviteCount }}位社员</text>
             就可以成为分社社长
           </view>
           <BaseCard v-for="(item, index) in list" :key="item.id || index">
             <template #index>
               {{ index + 1 }}
             </template>
-            <template #header>
+            <view class="mb-2">
               <view class="flex items-center gap-2 mb-2">
                 <text class="text-[32rpx] text-[#333] font-bold">
                   {{ item.nickName }}
                 </text>
-                <yp-tag :status="4" :text="item.remarkName" />
+                <yp-tag :status="4" :text="item.remarkName || '未知身份'" />
               </view>
-            </template>
-            <view class="mb-2">
-              <text class="text-[24rpx] text-[#999] mr-2">
-                手机号码
-              </text>
+              <text class="text-[24rpx] text-[#999] mr-2">手机号码</text>
               <text class="text-[28rpx] text-[#333]">
                 {{ item.mobile }}
               </text>
             </view>
             <view class="mb-2">
-              <text class="text-[24rpx] text-[#999] mr-2">
-                登记时间
-              </text>
+              <text class="text-[24rpx] text-[#999] mr-2">登记时间</text>
               <text class="text-[28rpx] text-[#333]">
                 {{ formatTime(item.gmtCreate, 'YYYY-MM-DD HH:mm') }}
               </text>
             </view>
             <view class="mb-2">
-              <text class="text-[24rpx] text-[#999] mr-2">
-                邀请成员数量
-              </text>
+              <text class="text-[24rpx] text-[#999] mr-2">邀请成员数量</text>
               <text class="text-[28rpx] text-[#333]">
                 {{ item.count }}
               </text>
             </view>
             <template #actions>
-              <wd-button type="primary" size="small" plain @click.stop="handleUpgrade(item)">
-                查看邀请成员
-              </wd-button>
-              <wd-button type="success" size="small" plain @click.stop="handleUpgrade(item)">
-                升级成为社员
-              </wd-button>
+              <view class="flex gap-2 mt-4">
+                <wd-button type="primary" size="small" plain @click.stop="handleUpgrade(item)">
+                  查看邀请成员
+                </wd-button>
+                <wd-button type="success" size="small" plain @click.stop="handleUpgrade(item)">
+                  升级成为社员
+                </wd-button>
+              </view>
             </template>
           </BaseCard>
         </view>
