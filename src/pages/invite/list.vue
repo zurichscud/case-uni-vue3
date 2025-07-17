@@ -110,7 +110,7 @@ onMounted(() => {
                       plain
                       @click.stop="handleUpgrade(item)"
                     >
-                      升级成为社员
+                      邀请成为社员
                     </wd-button>
                   </view>
                 </template>
