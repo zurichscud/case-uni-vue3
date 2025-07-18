@@ -11,7 +11,7 @@
 
 <route lang="json">
 {
-  "name": "teamQrcode2",
+  "name": "teamQrcode",
   "layout": "default",
   "auth": true,
   "style": {

@@ -215,6 +215,16 @@
           }
         },
         {
+          "path": "qrcode",
+          "type": "page",
+          "name": "teamQrcode",
+          "layout": "default",
+          "auth": true,
+          "style": {
+            "navigationBarTitleText": "邀请二维码"
+          }
+        },
+        {
           "path": "record",
           "type": "page"
         },
@@ -395,6 +405,25 @@
         {
           "path": "components/teaminvite",
           "type": "page"
+        }
+      ]
+    },
+    {
+      "root": "pages/team",
+      "pages": [
+        {
+          "path": "index",
+          "type": "page"
+        },
+        {
+          "path": "qrcode",
+          "type": "page",
+          "name": "teamQrcode2",
+          "layout": "default",
+          "auth": true,
+          "style": {
+            "navigationBarTitleText": "邀请二维码"
+          }
         }
       ]
     }
