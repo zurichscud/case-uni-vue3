@@ -60,16 +60,15 @@ export const useUserStore = defineStore('user', {
         remark: data.remark,
         token: data.token,
       })
-      uni.reLaunch({
-        url: '/pages/index/index',
-        success: () => {
-          uni.showToast({
-            title: '登录成功',
-            icon: 'success',
-          })
-        },
+      uni.showToast({
+        title: '登录成功',
+        icon: 'success',
       })
-
+      setTimeout(() => {
+      uni.reLaunch({
+          url: '/pages/index/index',
+        })
+      }, 1000)
     },
     // 退出
     logout() {
