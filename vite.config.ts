@@ -19,7 +19,21 @@ export default async () => {
       UniHelperPages({
         dts: 'src/uni-pages.d.ts',
         dir: 'src/pages/index',
-        subPackages: ['src/pages/AI', 'src/pages/case', 'src/pages/chat', 'src/pages/invite', 'src/pages/login', 'src/pages/lpgs', 'src/pages/mcd', 'src/pages/meeting', 'src/pages/pay', 'src/pages/public', 'src/pages/user', 'src/pages/workplace'],
+        subPackages: [
+          'src/pages/AI',
+          'src/pages/case',
+          'src/pages/chat',
+          'src/pages/invite',
+          'src/pages/login',
+          'src/pages/lpgs',
+          'src/pages/mcd',
+          'src/pages/meeting',
+          'src/pages/pay',
+          'src/pages/public',
+          'src/pages/user',
+          'src/pages/workplace',
+          'src/pages/team',
+        ],
       }),
       /**
        * 构建时: UniHelperLayouts 插件读取 pages.json 中的 layout 属性
@@ -38,7 +52,11 @@ export default async () => {
       Uni(),
       // https://github.com/antfu/unplugin-auto-import
       AutoImport({
-        imports: ['vue', '@vueuse/core', 'pinia', 'uni-app',
+        imports: [
+          'vue',
+          '@vueuse/core',
+          'pinia',
+          'uni-app',
           {
             from: 'uni-mini-router',
             imports: ['createRouter', 'useRouter', 'useRoute'],
@@ -50,7 +68,8 @@ export default async () => {
           {
             from: 'alova/client',
             imports: ['usePagination', 'useRequest'],
-          }],
+          },
+        ],
         dts: 'src/auto-imports.d.ts',
         //dirs: ['src/composables', 'src/store', 'src/utils', 'src/api'] - 这个配置告诉 AutoImport 插件自动扫描这些目录下的文件，并自动导入其中导出的函数和变量。
         dirs: ['src/composables', 'src/utils', 'src/api'],

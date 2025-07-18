@@ -3,10 +3,11 @@
 </script>
 
 <template>
- <div></div>
+ 二维码
 </template>
 
-<style scoped></style>
+<style scoped lang="scss">
+</style>
 
 <route lang="json">
 {
