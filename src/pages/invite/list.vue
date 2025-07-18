@@ -11,7 +11,11 @@ const ypScrollViewRef2 = ref()
 const userStore = useUserStore()
 const remark = computed(() => userStore.remark)
 const pageParams = ref({
-  page: 1,
+  pageNum: 1,
+  pageSize: 4,
+})
+const pageParams2 = ref({
+  pageNum: 1,
   pageSize: 4,
 })
 const currentTab = ref(0)
@@ -53,13 +57,13 @@ async function getGroupListData() {
   }
 }
 
-watch(currentTab, (newVal) => {
-  if (newVal === 0) {
+function handleTabChange({ index }) {
+  if (index === 0) {
     ypScrollViewRef.value?.getData()
-  } else if (newVal === 1) {
+  } else if (index === 1) {
     ypScrollViewRef2.value?.getData()
   }
-})
+}
 
 // 使用onMounted代替onLoad
 onMounted(() => {
@@ -69,7 +73,14 @@ onMounted(() => {
 
 <template>
   <view class="invite-list">
-    <wd-tabs v-model="currentTab" auto-line-width sticky>
+    <wd-tabs
+      v-model="currentTab"
+      auto-line-width
+      sticky
+      animated
+      @change="handleTabChange"
+      swipeable
+    >
       <!-- 人员 -->
       <wd-tab title="人员">
         <YpScrollView :query="getInviteListData" ref="ypScrollViewRef" v-model:page="pageParams">
@@ -135,7 +146,7 @@ onMounted(() => {
       </wd-tab>
       <!-- 组织 -->
       <wd-tab title="组织">
-        <YpScrollView :query="getGroupListData" ref="ypScrollViewRef2" v-model:page="pageParams">
+        <YpScrollView :query="getGroupListData" ref="ypScrollViewRef2" v-model:page="pageParams2">
           <template #default="{ list }">
             <view class="px-4">
               <BaseCard v-for="(item, index) in list" :key="item.id || index">

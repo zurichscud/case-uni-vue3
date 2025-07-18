@@ -163,7 +163,7 @@ async function handleLogin() {
     margin-top: 40rpx;
     font-size: 52rpx;
     font-family: '钉钉进步体 Regular';
-    font-weight: 600;
+    font-weight: 500;
     color: #333;
     line-height: 1.2;
   }

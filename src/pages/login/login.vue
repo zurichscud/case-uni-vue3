@@ -97,6 +97,7 @@ async function getPhoneNumber({ code }) {
       margin-bottom: 80rpx;
       color: $uni-text-color-subTitle;
       font-family: '钉钉进步体 Regular';
+      font-weight: 500;
       font-size: 52rpx;
     }
 
