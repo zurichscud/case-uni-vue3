@@ -6,10 +6,19 @@ export interface InviteListByIdParams {
   pageSize: number
 }
 
+//获取邀请列表
 export function getInviteListById(data: InviteListByIdParams) {
   return http({
     url: 'lpgsUser/myUsersByUserId',
     method: 'GET',
     data,
+  })
+}
+
+//获取升级信息
+export function getUpgardMSg(){
+  return http({
+    url: 'lpgsUser/getMyUsersNum',
+    method: 'GET',
   })
 }

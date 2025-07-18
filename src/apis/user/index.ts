@@ -1,4 +1,5 @@
 import http from '@/utils/http'
+
 export interface UserInfoParams {
   nickName?: string
 }

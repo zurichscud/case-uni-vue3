@@ -17,6 +17,7 @@ const pageParams = ref({
 const currentTab = ref(0)
 
 async function getInviteListData() {
+  getUpgardMSgData()
   return InviteAPI.getInviteListById({ ...pageParams.value, userId: userStore.id })
 }
 
@@ -26,6 +27,11 @@ function handleWatchMember(member) {
 
 function handleUpgrade(member) {
   uni.showToast({ title: `已请求升级：${member.name}`, icon: 'success' })
+}
+
+async function getUpgardMSgData() {
+  const { data } = await InviteAPI.getUpgardMSg()
+  console.log('[ data ]-32', data)
 }
 
 async function getGroupListData() {
@@ -46,10 +52,17 @@ async function getGroupListData() {
   }
 }
 
+watch(currentTab, (newVal) => {
+  if (newVal === 0) {
+    ypScrollViewRef.value?.getData()
+  } else if (newVal === 1) {
+    ypScrollViewRef2.value?.getData()
+  }
+})
+
 // 使用onMounted代替onLoad
 onMounted(() => {
   ypScrollViewRef.value?.getData()
-  ypScrollViewRef2.value?.getData()
 })
 </script>
 
