@@ -6,33 +6,53 @@ defineProps({
     type: String,
     default: '',
   },
+  count: {
+    type: Object,
+    default: () => ({
+      sheyuanCount: 0,
+      baominCount: 0,
+      fensheCount: 0,
+      liansheCount: 0,
+      lackCount: 0,
+    }),
+  },
 })
 </script>
 
 <template>
+  <!-- 需要优化升级文字 -->
   <view class="summary-container">
     <!-- 保民 -->
     <template v-if="remark === REMARK.BaoMin">
-      <text>保民无法邀请，点击申请成为社员</text>
+      <text>保民无法邀请</text>
     </template>
     <!-- 社员 -->
     <template v-else-if="remark === REMARK.SheYuan">
-      <text>您目前社员数量：</text>
-      <text class="summary-num">{{ 1 }}位</text>
+      <text>
+        <text>您目前社员数量：</text>
+        <text class="summary-num">{{ count.sheyuanCount }}位</text>
+      </text>
+      <template v-if="count.baominCount">
       ，保民
-      <text class="summary-num">{{ 2 }}位</text>
+      <text class="summary-num">{{ count.baominCount }}位</text>
+      </template>
+      <template v-if="count.liansheCount">
+        ，联社社长
+        <text class="summary-num">{{ count.liansheCount }}位</text>
+      </template>
       ，再邀请
-      <text class="summary-highlight">{{ 3 }}位社员</text>
+      <text class="summary-highlight">{{ count.lackCount }}位社员</text>
       就可以成为分社社长
     </template>
     <!-- 分社社长 -->
     <template v-else-if="remark === REMARK.FenSheZhang">
       <text>您目前分社数量：</text>
-      <text class="summary-num">{{ 1 }}个</text>
+      <text class="summary-num">{{ count.fensheCount }}个</text>
       ，再有
-      <text class="summary-highlight">{{ 2 }}个分社</text>
+      <text class="summary-highlight">{{ count.lackCount }}个分社</text>
       就可以成为联社社长
     </template>
+    <!--  -->
     <template v-else>未知身份</template>
   </view>
 </template>

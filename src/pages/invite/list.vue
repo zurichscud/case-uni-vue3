@@ -15,6 +15,7 @@ const pageParams = ref({
   pageSize: 4,
 })
 const currentTab = ref(0)
+const count = ref({})
 
 async function getInviteListData() {
   getUpgardMSgData()
@@ -31,7 +32,7 @@ function handleUpgrade(member) {
 
 async function getUpgardMSgData() {
   const { data } = await InviteAPI.getUpgardMSg()
-  console.log('[ data ]-32', data)
+  count.value = data.count
 }
 
 async function getGroupListData() {
@@ -75,7 +76,7 @@ onMounted(() => {
           <template #default="{ list }">
             <view class="px-4">
               <!-- 升级提示区域 -->
-              <UpgradeTip :remark="remark" />
+              <UpgradeTip :remark="remark" :count="count" />
               <!-- 邀请列表 -->
               <BaseCard v-for="(item, index) in list" :key="item.id || index">
                 <template #index>

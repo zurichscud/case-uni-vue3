@@ -192,7 +192,8 @@ http.interceptors.response.use(
         closeLoading()
       }
     }
-    return Promise.reject(error)
+    logError(error)
+    return Promise.reject(new Error('接口异常'))
   },
 )
 
@@ -259,6 +260,7 @@ function logError(response: any) {
 
   // 响应信息
   console.group('📥 响应信息')
+  console.log('系统状态码', response.statusCode);
   console.log('📊 状态码:', data.code)
   console.log('💬 错误信息:', data.message)
   console.log('📄 完整响应:', data)
