@@ -49,7 +49,7 @@ const menus: Menus = {
       {
         text: '邀请二维码',
         icon: 'icon-erweima',
-        url: '/pages/invite/qrcode',
+        url: '/pages/team/qrcode',
       },
     ],
   },
