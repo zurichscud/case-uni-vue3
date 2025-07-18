@@ -32,7 +32,7 @@ export default async () => {
           'src/pages/public',
           'src/pages/user',
           'src/pages/workplace',
-          'src/pages/team',
+          'src/pages/group',
         ],
       }),
       /**
