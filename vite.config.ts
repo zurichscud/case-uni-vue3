@@ -28,7 +28,6 @@ export default async () => {
           'src/pages/lpgs',
           'src/pages/mcd',
           'src/pages/meeting',
-          'src/pages/pay',
           'src/pages/public',
           'src/pages/user',
           'src/pages/workplace',
