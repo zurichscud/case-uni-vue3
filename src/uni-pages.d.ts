@@ -49,6 +49,8 @@ interface NavigateToOptions {
        "/pages/mcd/components/comment-list" |
        "/pages/meeting/verResult" |
        "/pages/meeting/verification" |
+       "/pages/pay/payPage" |
+       "/pages/pay/payResults" |
        "/pages/public/webview" |
        "/pages/public/y9net" |
        "/pages/public/agreement/privacyText" |
