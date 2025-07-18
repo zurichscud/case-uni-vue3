@@ -60,31 +60,16 @@ export const useUserStore = defineStore('user', {
         remark: data.remark,
         token: data.token,
       })
-      if (this.remark) {
-        uni.reLaunch({
-          url: '/pages/index/index',
-          success: () => {
-            uni.showToast({
-              title: '登录成功',
-              icon: 'success',
-            })
-          },
-        })
-      } else {
-        //设置默认身份
-        await UserAPI.selectIdentity({
-          type: '2',
-        })
-        uni.reLaunch({
-          url: '/pages/index/index',
-          success: () => {
-            uni.showToast({
-              title: '登录成功',
-              icon: 'success',
-            })
-          },
-        })
-      }
+      uni.reLaunch({
+        url: '/pages/index/index',
+        success: () => {
+          uni.showToast({
+            title: '登录成功',
+            icon: 'success',
+          })
+        },
+      })
+
     },
     // 退出
     logout() {

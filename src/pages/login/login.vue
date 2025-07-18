@@ -10,7 +10,7 @@ const { login } = useUserStore()
 const isAgree = ref(false)
 
 // e的code无效
-async function getPhoneNumber({ iv, encryptedData }) {
+async function getPhoneNumber({ code }) {
   if (!isAgree.value) {
     return uni.showModal({
       title: '提示',
@@ -23,15 +23,12 @@ async function getPhoneNumber({ iv, encryptedData }) {
       },
     })
   }
-  const { code } = await uni.login()
-  const { data: phoneData } = await UserAPI.getDecryptPhone({
+  const { data } = await UserAPI.getDecryptPhone({
     code,
-    iv,
-    encryptedData,
   })
   login({
     source: SOURCE.WECHAT,
-    mobile: phoneData.phoneNumber,
+    mobile: data,
   })
 }
 </script>
@@ -68,7 +65,9 @@ async function getPhoneNumber({ iv, encryptedData }) {
         </view>
         <view class="text-[24rpx] text-gray-500">短信验证登录</view>
       </view>
-      <view class="text-[22rpx] text-gray-400 mt-4 text-center">未注册的用户将直接为您创建理赔公社账号</view>
+      <view class="text-[22rpx] text-gray-400 mt-4 text-center">
+        未注册的用户将直接为您创建理赔公社账号
+      </view>
     </view>
   </view>
 </template>

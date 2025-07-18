@@ -1,11 +1,4 @@
 import http from '@/utils/http'
-
-export interface DecryptPhoneParams {
-  code: string
-  iv: string
-  encryptedData: string
-}
-
 export interface UserInfoParams {
   nickName?: string
 }
@@ -29,11 +22,11 @@ export function login(data: LoginParams) {
   })
 }
 
-export function getDecryptPhone(data:DecryptPhoneParams) {
+export function getDecryptPhone(data:{code:string}) {
   return http({
-    url: 'iclaim/login/decryptPhone',
-    method: 'POST',
-    data
+    url: 'iclaim/login/phone',
+    method: 'GET',
+    params: data
   })
 }
 
