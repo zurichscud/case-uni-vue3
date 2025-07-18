@@ -69,7 +69,7 @@ onMounted(() => {
 
 <template>
   <view class="invite-list">
-    <wd-tabs v-model="currentTab" auto-line-width>
+    <wd-tabs v-model="currentTab" auto-line-width sticky>
       <!-- 人员 -->
       <wd-tab title="人员">
         <YpScrollView :query="getInviteListData" ref="ypScrollViewRef" v-model:page="pageParams">

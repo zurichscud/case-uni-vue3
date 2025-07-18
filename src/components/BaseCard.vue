@@ -39,7 +39,6 @@ defineProps<{
   font-size: 32rpx;
   color: #a1a0a0;
   font-weight: 600;
-  z-index: 3;
   line-height: 1;
 }
 .base-card-header {

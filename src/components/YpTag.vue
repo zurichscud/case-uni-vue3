@@ -28,7 +28,6 @@ defineProps({
   backdrop-filter: blur(10rpx);
   box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.1);
   animation: float 3s ease-in-out infinite;
-  z-index: 3;
   position: relative;
 
   .status-dot {
