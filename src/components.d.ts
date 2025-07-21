@@ -8,7 +8,8 @@ export {}
 declare module 'vue' {
   export interface GlobalComponents {
     Alert: typeof import('./components/alert.vue')['default']
-    BaseCard: typeof import('./components/BaseCard.vue')['default']
+    BaseCardBaseCard: typeof import('./components/BaseCard/BaseCard.vue')['default']
+    BaseCardBaseItem: typeof import('./components/BaseCard/BaseItem.vue')['default']
     Casecard: typeof import('./components/casecard.vue')['default']
     Empty: typeof import('./components/empty.vue')['default']
     FixedFixed: typeof import('./components/fixed/fixed.vue')['default']

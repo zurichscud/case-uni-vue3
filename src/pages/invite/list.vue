@@ -5,6 +5,8 @@ import { useUserStore } from '@/stores'
 import * as InviteAPI from '@/apis/invite'
 import UpgradeTip from './components/UpgradeTip.vue'
 import { REMARK } from '@/enums/remark'
+import BaseItem from '@/components/BaseCard/BaseItem.vue'
+
 
 const ypScrollViewRef = ref()
 const ypScrollViewRef2 = ref()
@@ -100,23 +102,10 @@ onMounted(() => {
                     </text>
                     <yp-tag :status="4" :text="item.remarkName || '未知身份'" />
                   </view>
-                  <text class="text-[24rpx] text-[#999] mr-2">手机号码</text>
-                  <text class="text-[28rpx] text-[#333]">
-                    {{ item.mobile }}
-                  </text>
                 </view>
-                <view class="mb-2">
-                  <text class="text-[24rpx] text-[#999] mr-2">登记时间</text>
-                  <text class="text-[28rpx] text-[#333]">
-                    {{ formatTime(item.gmtCreate, 'YYYY-MM-DD HH:mm') }}
-                  </text>
-                </view>
-                <view class="mb-2">
-                  <text class="text-[24rpx] text-[#999] mr-2">邀请成员数量</text>
-                  <text class="text-[28rpx] text-[#333]">
-                    {{ item.count }}
-                  </text>
-                </view>
+                <BaseItem icon="icon-dianhuahaoma" label="手机号码" :value="item.mobile" />
+                <BaseItem icon="icon-shijian" label="登记时间" :value="formatTime(item.gmtCreate, 'YYYY-MM-DD HH:mm')" />
+                <BaseItem icon="icon-chengyuan" label="邀请成员数量" :value="item.count" />
                 <template #actions>
                   <view class="flex gap-2 mt-4">
                     <wd-button
