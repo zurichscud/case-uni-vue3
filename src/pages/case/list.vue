@@ -249,40 +249,6 @@ onMounted(() => {
     transform: scale(1.1);
   }
 }
-
-@keyframes float {
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-4rpx);
-  }
-}
-
-@keyframes pulse {
-  0%,
-  100% {
-    opacity: 1;
-    transform: scale(1);
-  }
-  50% {
-    opacity: 0.7;
-    transform: scale(1.2);
-  }
-}
-
-// 响应式设计
-@media (max-width: 750rpx) {
-  .case-card {
-    margin: 16rpx 0;
-    padding: 24rpx;
-  }
-
-  .case-title {
-    font-size: 30rpx;
-  }
-}
 </style>
 
 <route lang="json">

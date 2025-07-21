@@ -1,8 +1,8 @@
 @font-face {
   font-family: "iconfont"; /* Project id 4845203 */
-  src: url('//at.alicdn.com/t/c/font_4845203_rmc8k8eml3.woff2?t=1752629074075') format('woff2'),
-       url('//at.alicdn.com/t/c/font_4845203_rmc8k8eml3.woff?t=1752629074075') format('woff'),
-       url('//at.alicdn.com/t/c/font_4845203_rmc8k8eml3.ttf?t=1752629074075') format('truetype');
+  src: url('//at.alicdn.com/t/c/font_4845203_xgz7j1kg0g.woff2?t=1753086515524') format('woff2'),
+       url('//at.alicdn.com/t/c/font_4845203_xgz7j1kg0g.woff?t=1753086515524') format('woff'),
+       url('//at.alicdn.com/t/c/font_4845203_xgz7j1kg0g.ttf?t=1753086515524') format('truetype');
 }
 
 .iconfont {
@@ -11,6 +11,10 @@
   font-style: normal;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-zhongmingming:before {
+  content: "\e657";
 }
 
 .icon-shouji:before {

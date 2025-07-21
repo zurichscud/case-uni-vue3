@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import avatar from '@/static/读书.png'
+import { ref, getCurrentInstance } from 'vue'
+import { useMessage } from 'wot-design-uni'
 // 团队信息数据
-const teamInfo = {
+const teamInfo = ref({
   name: '我的团队',
   description: '杭州市红叶联社',
   avatar,
-}
+})
 
 // 分支机构数据
 const list = [
@@ -46,6 +48,23 @@ const list = [
     status: 'active',
   },
 ]
+
+const message = useMessage('globalMessage')
+async function handleEditName() {
+  const { value: input } = await message.prompt({
+    title: '请输入新团队名称',
+    inputValue: teamInfo.value.name,
+  })
+  if (typeof input === 'undefined') {
+    return // 用户取消
+  }
+  if (typeof input !== 'string' || !input.trim()) {
+    uni.showToast({ title: '团队名称不能为空', icon: 'none' })
+    return
+  }
+  teamInfo.value.name = input.trim()
+  uni.showToast({ title: '修改成功', icon: 'success' })
+}
 </script>
 
 <template>
@@ -62,9 +81,12 @@ const list = [
           />
           <!-- 团队信息 -->
           <view class="flex flex-col items-center justify-center">
-            <text class="text-gray-900 text-[45rpx] font-bold text-center">
-              {{ teamInfo.name }}
-            </text>
+            <view class="flex items-center justify-center">
+              <text class="text-gray-900 text-[45rpx] font-bold text-center">
+                {{ teamInfo.name }}
+              </text>
+              <text class="iconfont icon-zhongmingming ml-2 text-gray-500" @tap="handleEditName" />
+            </view>
             <text class="text-gray-600 text-base font-normal text-center">
               所属联社：{{ teamInfo.description }}
             </text>
@@ -109,7 +131,9 @@ const list = [
 </template>
 
 <style scoped>
-
+.icon-zhongmingming {
+  font-size: 30rpx;
+}
 </style>
 
 <route lang="json">
