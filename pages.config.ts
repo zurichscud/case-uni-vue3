@@ -41,9 +41,9 @@ export default defineUniPages({
     enablePullDownRefresh: false,
     onReachBottomDistance: 50,
 
-    // 动画配置
-    animationType: 'pop-in',
-    animationDuration: 300,
+    // 微信不支持
+    // animationType: 'pop-in',
+    // animationDuration: 300,
   },
   tabBar: {
     custom: true,

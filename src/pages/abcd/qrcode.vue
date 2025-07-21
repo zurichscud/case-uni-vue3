@@ -1,7 +1,8 @@
 <script setup>
 import { ref } from 'vue'
+import uqrcode from '@/uni_modules/Sansnn-uQRCode/components/u-qrcode/u-qrcode.vue'
 
-const uqrcode = ref()
+const uqrcodeRef = ref()
 
 const options = ref({
   sizeUnit: 'rpx',
@@ -13,7 +14,7 @@ const options = ref({
 <template>
   hello
   <view class="qrcode">
-    <uqrcode  ref="uqrcode" canvas-id="qrcode" :value="2024" :options="options"></uqrcode>
+    <uqrcode ref="uqrcodeRef" canvas-id="qrcode" :value="2024" :options="options"></uqrcode>
   </view>
 </template>
 
@@ -35,4 +36,3 @@ const options = ref({
   }
 }
 </route>
-
