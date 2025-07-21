@@ -16,6 +16,7 @@ export default async () => {
       // https://github.com/uni-helper/vite-plugin-uni-manifest
       UniHelperManifest(),
       // https://github.com/uni-helper/vite-plugin-uni-pages
+      //出现问题，建议删除pages.json重新生成
       UniHelperPages({
         dts: 'src/uni-pages.d.ts',
         dir: 'src/pages/index',
@@ -31,7 +32,7 @@ export default async () => {
           'src/pages/public',
           'src/pages/user',
           'src/pages/workplace',
-          'src/pages/group',
+          'src/pages/team',
         ],
       }),
       /**

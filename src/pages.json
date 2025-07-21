@@ -215,16 +215,6 @@
           }
         },
         {
-          "path": "qrcode",
-          "type": "page",
-          "name": "teamQrcode",
-          "layout": "default",
-          "auth": true,
-          "style": {
-            "navigationBarTitleText": "邀请二维码"
-          }
-        },
-        {
           "path": "record",
           "type": "page"
         },
@@ -396,7 +386,7 @@
       ]
     },
     {
-      "root": "pages/group",
+      "root": "pages/team",
       "pages": [
         {
           "path": "index",
