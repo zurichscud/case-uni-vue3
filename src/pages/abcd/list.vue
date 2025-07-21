@@ -8,7 +8,7 @@ const teamInfo = {
 }
 
 // 分支机构数据
-const branches = [
+const list = [
   {
     id: 1,
     name: 'North Branch',
@@ -55,13 +55,14 @@ const branches = [
       <view class="flex w-full flex-col gap-4 items-center">
         <view class="flex gap-4 flex-col items-center">
           <!-- 团队头像 -->
-          <view
-            class="bg-center bg-no-repeat aspect-square bg-cover rounded-full min-h-32 w-32"
-            :style="`background-image: url('${teamInfo.avatar}')`"
-          ></view>
+          <image
+            :src="teamInfo.avatar"
+            class="rounded-full h-30 w-30 object-cover"
+            mode="aspectFill"
+          />
           <!-- 团队信息 -->
           <view class="flex flex-col items-center justify-center">
-            <text class="text-gray-900 text-22px font-bold text-center">
+            <text class="text-gray-900 text-[45rpx] font-bold text-center">
               {{ teamInfo.name }}
             </text>
             <text class="text-gray-600 text-base font-normal text-center">
@@ -72,15 +73,15 @@ const branches = [
       </view>
     </view>
 
-    <!-- 分支机构标题 -->
-    <text class="text-gray-900 text-22px font-bold px-4 pb-3 pt-5 block">
+    <!-- 分社列表标题 -->
+    <text class="text-gray-900 text-[40rpx] font-bold px-4 pb-3 pt-5 block">
       分社列表
     </text>
 
-    <!-- 分支机构列表 -->
+    <!-- 分社列表 -->
     <view class="space-y-0">
       <view
-        v-for="branch in branches"
+        v-for="branch in list"
         :key="branch.id"
         class="flex gap-4 bg-gray-50 px-4 py-3 justify-between"
       >
@@ -108,9 +109,7 @@ const branches = [
 </template>
 
 <style scoped>
-.text-22px {
-  font-size: 22px;
-}
+
 </style>
 
 <route lang="json">
