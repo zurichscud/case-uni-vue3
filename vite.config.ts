@@ -24,6 +24,7 @@ export default async () => {
           'src/pages/AI',
           'src/pages/case',
           'src/pages/chat',
+          'src/pages/abcd',
           'src/pages/invite',
           'src/pages/login',
           'src/pages/lpgs',
@@ -32,7 +33,7 @@ export default async () => {
           'src/pages/public',
           'src/pages/user',
           'src/pages/workplace',
-          'src/pages/team',
+
         ],
       }),
       /**

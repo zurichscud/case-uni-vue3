@@ -11,6 +11,25 @@ import './style/iconfont.css'
 import './style/font.scss'
 // import './style/index.scss'
 
+// 临时清理可能损坏的存储数据
+function clearCorruptedStorage() {
+  try {
+    const storageKeys = ['user', 'message'] // 这里列出所有可能的 store 键
+    storageKeys.forEach(key => {
+      const data = uni.getStorageSync(key)
+      if (data && typeof data === 'string' && (data === 'undefined' || data === 'null')) {
+        console.warn(`Clearing corrupted storage for key: ${key}`)
+        uni.removeStorageSync(key)
+      }
+    })
+  } catch (error) {
+    console.warn('Failed to clear corrupted storage:', error)
+  }
+}
+
+// 在应用启动时清理损坏的存储
+clearCorruptedStorage()
+
 const pinia = createPinia()
 pinia.use(persistPlugin)
 export function createApp() {

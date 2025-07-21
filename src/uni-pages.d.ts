@@ -26,6 +26,7 @@ interface NavigateToOptions {
        "/pages/chat/components/invitepersonal" |
        "/pages/chat/components/teaminvite" |
        "/pages/chat/components/userTypes" |
+       "/pages/abcd/qrcode" |
        "/pages/invite/fuli" |
        "/pages/invite/list" |
        "/pages/invite/record" |
@@ -55,9 +56,7 @@ interface NavigateToOptions {
        "/pages/user/inviteList" |
        "/pages/user/userInfo" |
        "/pages/user/components/invitepersonal" |
-       "/pages/user/components/teaminvite" |
-       "/pages/team/index" |
-       "/pages/team/qrcode";
+       "/pages/user/components/teaminvite";
 }
 interface RedirectToOptions extends NavigateToOptions {}
 

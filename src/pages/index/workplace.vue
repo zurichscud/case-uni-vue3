@@ -49,7 +49,7 @@ const menus: Menus = {
       {
         text: '邀请二维码',
         icon: 'icon-erweima',
-        url: '/pages/team/qrcode',
+        url: '/pages/abcd/qrcode',
       },
     ],
   },
@@ -81,6 +81,7 @@ const menus: Menus = {
 }
 
 function handleItemClick(url: string) {
+  console.log('[ url ]-84', url)
   router.push({
     path: url,
   })

@@ -83,7 +83,7 @@ function handleLogout() {
 
 function handleRedirect() {
   uni.navigateTo({
-    url: '/pages/invite/qrcode',
+    url: '/pages/abcd/qrcode',
   })
 }
 

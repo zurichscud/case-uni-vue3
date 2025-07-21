@@ -814,6 +814,7 @@ onUnload(() => {
                 </MarkdownRenderer>
               </view>
               <!-- 引用文献 -->
+               <!-- TODO：存在BUG，会先出现引用文献 -->
               <view class="reference" v-if="item.msg.references && item.msg.references.length">
                 <view class="reference-title">
                   引用文献

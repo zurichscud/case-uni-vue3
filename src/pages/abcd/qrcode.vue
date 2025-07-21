@@ -11,16 +11,23 @@ const options = ref({
 </script>
 
 <template>
-  <view>
-    <uqrcode ref="uqrcode" canvas-id="qrcode" :value="2024" :options="options"></uqrcode>
+  hello
+  <view class="qrcode">
+    <uqrcode  ref="uqrcode" canvas-id="qrcode" :value="2024" :options="options"></uqrcode>
   </view>
 </template>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+.qrcode {
+  width: 100rpx;
+  height: 100rpx;
+
+}
+</style>
 
 <route lang="json">
 {
-  "name": "teamQrcode2",
+  "name": "myQrcode",
   "layout": "default",
   "auth": true,
   "style": {
@@ -28,3 +35,4 @@ const options = ref({
   }
 }
 </route>
+
