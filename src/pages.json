@@ -203,6 +203,16 @@
       "root": "pages/abcd",
       "pages": [
         {
+          "path": "list",
+          "type": "page",
+          "name": "myTeam",
+          "layout": "default",
+          "auth": true,
+          "style": {
+            "navigationBarTitleText": "我的团队"
+          }
+        },
+        {
           "path": "qrcode",
           "type": "page",
           "name": "myQrcode",

@@ -39,7 +39,7 @@ const menus: Menus = {
       {
         text: '我的团队',
         icon: 'icon-team',
-        url: '/pages/deprecated/myteam',
+        url: '/pages/abcd/list',
       },
       {
         text: '邀请记录',
