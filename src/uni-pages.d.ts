@@ -10,6 +10,7 @@ interface NavigateToOptions {
        "/pages/index/workplace" |
        "/pages/index/article/detail" |
        "/pages/index/article/more" |
+       "/pages/index/components/SharePoster" |
        "/pages/index/components/typical-case" |
        "/pages/index/submit/poster" |
        "/pages/AI/chat" |

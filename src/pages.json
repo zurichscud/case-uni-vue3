@@ -57,6 +57,10 @@
       }
     },
     {
+      "path": "pages/index/components/SharePoster",
+      "type": "page"
+    },
+    {
       "path": "pages/index/components/typical-case",
       "type": "page"
     },
