@@ -4,14 +4,14 @@ import uQrcode from '@/uni_modules/Sansnn-uQRCode/components/u-qrcode/u-qrcode.v
 
 // 定义组件 props
 const props = defineProps({
-  visible: {
-    type: Boolean,
-    default: false,
-  },
   qrCodeUrl: {
     type: String,
     required: true,
   },
+})
+const visible = defineModel('visible', {
+  type: Boolean,
+  default: false,
 })
 
 // 定义组件事件
@@ -59,16 +59,6 @@ async function handleShow() {
     await generateQRCode()
   }
 }
-
-// 内部可见状态管理
-const internalVisible = computed({
-  get: () => props.visible,
-  set: (value) => {
-    if (!value) {
-      emit('close')
-    }
-  },
-})
 
 // 监听 visible 变化
 watch(() => props.visible, handleShow)
@@ -124,7 +114,7 @@ function generatePosterImage() {
 <template>
   <!-- 海报预览弹窗 -->
   <wd-popup
-    v-model="internalVisible"
+    v-model="visible"
     position="center"
     closable
     custom-style="border-radius: 20rpx; background: transparent;"

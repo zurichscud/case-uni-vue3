@@ -259,7 +259,7 @@ onUnmounted(() => {
 
     <!-- 海报组件 -->
     <SharePoster
-      :visible="posterVisible"
+      v-model:visible="posterVisible"
       :qr-code-url="qrCodeUrl"
       @close="handleClosePoster"
     />
