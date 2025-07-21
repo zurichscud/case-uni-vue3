@@ -1,13 +1,22 @@
 <script setup>
+import { ref } from 'vue'
 
+const uqrcode = ref()
+
+const options = ref({
+  sizeUnit: 'rpx',
+  margin: 20,
+  auto: true,
+})
 </script>
 
 <template>
- 二维码
+  <view>
+    <uqrcode ref="uqrcode" canvas-id="qrcode" :value="2024" :options="options"></uqrcode>
+  </view>
 </template>
 
-<style scoped lang="scss">
-</style>
+<style scoped lang="scss"></style>
 
 <route lang="json">
 {

@@ -81,8 +81,9 @@ const menus: Menus = {
 }
 
 function handleItemClick(url: string) {
-  console.log('[ url ]-84', url)
-  router.push(url)
+  router.push({
+    path: url,
+  })
 }
 </script>
 
@@ -95,8 +96,12 @@ function handleItemClick(url: string) {
       </view>
       <!-- 菜单 -->
       <wd-grid clickable :column="4">
-        <wd-grid-item v-for="item in menu.list" :key="item.text" :text="item.text" use-icon-slot
-                      @itemclick="handleItemClick(item.url)"
+        <wd-grid-item
+          v-for="item in menu.list"
+          :key="item.text"
+          :text="item.text"
+          use-icon-slot
+          @itemclick="handleItemClick(item.url)"
         >
           <template #icon>
             <i class="iconfont" :class="item.icon"></i>
@@ -108,35 +113,35 @@ function handleItemClick(url: string) {
 </template>
 
 <style scoped lang="scss">
-  .container {
-    overflow: hidden; /* 解决margin collapse问题 */
-  }
+.container {
+  overflow: hidden; /* 解决margin collapse问题 */
+}
 
-  .iconfont {
-    font-size: 50rpx;
-  }
+.iconfont {
+  font-size: 50rpx;
+}
 
-  .section-title {
-    font-size: 36rpx;
-    font-weight: bold;
-    font-family: '钉钉进步体 Regular';
-    color: #333;
-    margin: 30rpx 0 20rpx 0;
-    padding: 0 30rpx;
-    position: relative;
-  }
+.section-title {
+  font-size: 36rpx;
+  font-weight: bold;
+  font-family: '钉钉进步体 Regular';
+  color: #333;
+  margin: 30rpx 0 20rpx 0;
+  padding: 0 30rpx;
+  position: relative;
+}
 
-  .section-title::before {
-    content: '';
-    position: absolute;
-    font-family: '钉钉进步体 Regular';
-    left: 30rpx;
-    bottom: -8rpx;
-    width: 40rpx;
-    height: 4rpx;
-    background: linear-gradient(90deg, #4a90e2 0%, #7ed321 100%);
-    border-radius: 2rpx;
-  }
+.section-title::before {
+  content: '';
+  position: absolute;
+  font-family: '钉钉进步体 Regular';
+  left: 30rpx;
+  bottom: -8rpx;
+  width: 40rpx;
+  height: 4rpx;
+  background: linear-gradient(90deg, #4a90e2 0%, #7ed321 100%);
+  border-radius: 2rpx;
+}
 </style>
 
 <route lang="json">
