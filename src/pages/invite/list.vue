@@ -7,7 +7,6 @@ import UpgradeTip from './components/UpgradeTip.vue'
 import { REMARK } from '@/enums/remark'
 import BaseItem from '@/components/BaseCard/BaseItem.vue'
 
-
 const ypScrollViewRef = ref()
 const ypScrollViewRef2 = ref()
 const userStore = useUserStore()
@@ -104,7 +103,11 @@ onMounted(() => {
                   </view>
                 </view>
                 <BaseItem icon="icon-dianhuahaoma" label="手机号码" :value="item.mobile" />
-                <BaseItem icon="icon-shijian" label="登记时间" :value="formatTime(item.gmtCreate, 'YYYY-MM-DD HH:mm')" />
+                <BaseItem
+                  icon="icon-shijian"
+                  label="登记时间"
+                  :value="formatTime(item.gmtCreate, 'YYYY-MM-DD HH:mm')"
+                />
                 <BaseItem icon="icon-chengyuan" label="邀请成员数量" :value="item.count" />
                 <template #actions>
                   <view class="flex gap-2 mt-4">
@@ -147,12 +150,7 @@ onMounted(() => {
                     {{ item.name }}
                   </text>
                 </view>
-                <view class="mb-2">
-                  <text class="text-[24rpx] text-[#999] mr-2">成员数量</text>
-                  <text class="text-[28rpx] text-[#333]">
-                    {{ item.count }}
-                  </text>
-                </view>
+                <BaseItem icon="icon-chengyuan" label="成员数量" :value="item.count" />
               </BaseCard>
             </view>
           </template>
@@ -165,18 +163,6 @@ onMounted(() => {
 <style scoped lang="scss">
 .invite-list {
   height: 100vh;
-}
-
-@keyframes shimmer {
-  0%,
-  100% {
-    opacity: 0.6;
-    transform: scale(1);
-  }
-  50% {
-    opacity: 1;
-    transform: scale(1.1);
-  }
 }
 </style>
 
