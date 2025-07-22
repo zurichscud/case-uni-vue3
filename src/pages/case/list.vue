@@ -2,6 +2,7 @@
 import { formatTime } from '@/utils/date'
 import StepsPopup from './components/StepsPopup.vue'
 import * as CaseAPI from '@/apis/case'
+import BaseItem from '@/components/BaseCard/BaseItem.vue'
 
 const stepsPopupRef = ref()
 const ypScrollViewRef = ref()
@@ -80,26 +81,14 @@ onMounted(() => {
             </view>
 
             <!-- 案件信息 -->
-            <view class="case-info">
-              <view class="info-row">
-                <view class="info-item">
-                  <wd-icon name="user" size="28rpx" color="#999"></wd-icon>
-                  <text class="text-[26rpx] text-[#666] min-w-[120rpx] ml-1">提交人</text>
-                  <text class="text-[26rpx] text-[#333] mr-4">
-                    {{ item.membersName || '未知提交人' }}
-                  </text>
-                  <yp-tag :status="4" :text="item.remarkName" />
-                </view>
-              </view>
-
-              <view class="info-row flex items-center">
-                <wd-icon name="time" size="28rpx" color="#999"></wd-icon>
-                <text class="text-[26rpx] text-[#666] min-w-[120rpx] ml-1">提交时间</text>
-                <text class="text-[26rpx] text-[#333]">
-                  {{ formatTime(item.registerTime, 'YYYY-MM-DD HH:mm:ss') }}
-                </text>
-              </view>
-            </view>
+            <BaseItem icon="icon-shijian" label="提交人" :value="item.membersName || '未知提交人'">
+              <yp-tag class="ml-2" :status="4" :text="item.remarkName" />
+            </BaseItem>
+            <BaseItem
+              icon="icon-shijian"
+              label="提交时间"
+              :value="formatTime(item.registerTime, 'YYYY-MM-DD HH:mm:ss')"
+            />
 
             <!-- 操作按钮 -->
             <view class="case-actions">
