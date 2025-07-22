@@ -3,6 +3,7 @@ import { formatTime } from '@/utils/date'
 import StepsPopup from './components/StepsPopup.vue'
 import * as CaseAPI from '@/apis/case'
 import BaseItem from '@/components/BaseCard/BaseItem.vue'
+import BaseCard from '@/components/BaseCard/BaseCard.vue'
 
 const stepsPopupRef = ref()
 const ypScrollViewRef = ref()
@@ -60,27 +61,24 @@ onMounted(() => {
     <!-- 案件列表 -->
     <YpScrollView :query="getCaseListData" ref="ypScrollViewRef" v-model:page="pageParams">
       <template #default="{ list }">
-        <view class="case-list">
-          <view v-for="(item, index) in list" :key="item.caseId || index" class="case-card">
-            <!-- 序号 -->
-            <view class="case-index">
+        <view class="px-4">
+          <BaseCard v-for="(item, index) in list" :key="item.caseId || index">
+            <template #index>
               {{ index + 1 }}
-            </view>
-
-            <!-- 案件卡片头部 -->
+            </template>
             <view class="mb-2">
-              <text class="text-[24rpx] text-[#999] mr-2">案件编号</text>
+              <text class="text-[24rpx] text-[#999] mr-2">
+                案件编号
+              </text>
               <text class="text-[28rpx] text-[#333] font-bold number">
                 {{ item.caseId }}
               </text>
             </view>
-
-            <!-- 案件名称 -->
-            <view class="case-title">
-              {{ item.accidentType || '未知案件名称' }}
+            <view class="mb-2">
+              <text class="text-[32rpx] text-[#333] font-bold">
+                {{ item.accidentType || '未知案件名称' }}
+              </text>
             </view>
-
-            <!-- 案件信息 -->
             <BaseItem icon="icon-ren" label="提交人" :value="item.membersName || '未知提交人'">
               <yp-tag class="ml-2" :status="4" :text="item.remarkName" />
             </BaseItem>
@@ -89,14 +87,14 @@ onMounted(() => {
               label="提交时间"
               :value="formatTime(item.registerTime, 'YYYY-MM-DD HH:mm:ss')"
             />
-
-            <!-- 操作按钮 -->
-            <view class="case-actions">
-              <wd-button type="primary" size="small" plain @click.stop="handleWatchProgress(item)">
-                查看案件进程
-              </wd-button>
-            </view>
-          </view>
+            <template #actions>
+              <view class="flex gap-2 mt-4">
+                <wd-button type="primary" size="small" plain @click.stop="handleWatchProgress(item)">
+                  查看案件进程
+                </wd-button>
+              </view>
+            </template>
+          </BaseCard>
         </view>
       </template>
     </YpScrollView>
@@ -110,133 +108,8 @@ onMounted(() => {
   height: 100vh;
 }
 
-.case-list {
-  padding: 0 30rpx;
-}
-
 .number {
   font-family: 'SF Mono', 'Consolas', 'monospace';
-}
-
-.case-card {
-  background: #fff;
-  border-radius: 16rpx;
-  margin: 20rpx 0;
-  padding: 30rpx;
-  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.08);
-  transition: all 0.3s ease;
-  position: relative;
-  overflow: hidden;
-
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 140rpx;
-    height: 140rpx;
-    background: linear-gradient(
-      135deg,
-      rgba(63, 156, 255, 0.15) 0%,
-      rgba(82, 196, 26, 0.12) 30%,
-      rgba(255, 193, 7, 0.1) 60%,
-      rgba(220, 53, 69, 0.08) 100%
-    );
-    border-radius: 0 16rpx 0 140rpx;
-    z-index: 1;
-    box-shadow: inset 0 0 20rpx rgba(255, 255, 255, 0.3);
-  }
-
-  &::after {
-    content: '';
-    position: absolute;
-    top: 8rpx;
-    right: 8rpx;
-    width: 60rpx;
-    height: 60rpx;
-    background: radial-gradient(
-      circle,
-      rgba(255, 255, 255, 0.8) 0%,
-      rgba(255, 255, 255, 0.4) 50%,
-      transparent 100%
-    );
-    border-radius: 50%;
-    z-index: 2;
-    animation: shimmer 3s ease-in-out infinite;
-  }
-
-  &:active {
-    transform: scale(0.98);
-    background: #f8f9fa;
-  }
-}
-
-.case-index {
-  position: absolute;
-  top: 40rpx;
-  right: 40rpx;
-  font-size: 32rpx;
-  color: #a1a0a0;
-  font-weight: 600;
-  z-index: 3;
-  line-height: 1;
-}
-
-.case-title {
-  font-size: 32rpx;
-  font-weight: 600;
-  color: #1a1a1a;
-  margin-bottom: 24rpx;
-  line-height: 1.4;
-}
-
-.case-info {
-  margin-bottom: 24rpx;
-}
-
-.info-row {
-  margin-bottom: 16rpx;
-
-  &:last-child {
-    margin-bottom: 0;
-  }
-}
-
-.info-item {
-  display: flex;
-  align-items: center;
-
-  .info-label {
-    font-size: 26rpx;
-    color: #666;
-    margin: 0 12rpx 0 8rpx;
-    min-width: 120rpx;
-  }
-
-  .info-value {
-    font-size: 26rpx;
-    color: #333;
-  }
-}
-
-.case-actions {
-  display: flex;
-  justify-content: flex-end;
-  padding-top: 20rpx;
-  border-top: 1rpx solid #f0f0f0;
-}
-
-// 动画效果
-@keyframes shimmer {
-  0%,
-  100% {
-    opacity: 0.6;
-    transform: scale(1);
-  }
-  50% {
-    opacity: 1;
-    transform: scale(1.1);
-  }
 }
 </style>
 
