@@ -81,7 +81,7 @@ onMounted(() => {
             </view>
 
             <!-- 案件信息 -->
-            <BaseItem icon="icon-shijian" label="提交人" :value="item.membersName || '未知提交人'">
+            <BaseItem icon="icon-ren" label="提交人" :value="item.membersName || '未知提交人'">
               <yp-tag class="ml-2" :status="4" :text="item.remarkName" />
             </BaseItem>
             <BaseItem
