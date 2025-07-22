@@ -22,6 +22,7 @@ defineProps({
     <text class="text-[28rpx] text-[#333]">
       {{ value }}
     </text>
+    <slot></slot>
   </view>
 </template>
 
