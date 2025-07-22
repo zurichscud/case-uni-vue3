@@ -66,30 +66,37 @@ onMounted(() => {
             <template #index>
               {{ index + 1 }}
             </template>
-            <view class="mb-2">
-              <text class="text-[24rpx] text-[#999] mr-2">
-                案件编号
-              </text>
-              <text class="text-[28rpx] text-[#333] font-bold number">
-                {{ item.caseId }}
-              </text>
-            </view>
-            <view class="mb-2">
-              <text class="text-[32rpx] text-[#333] font-bold">
-                {{ item.accidentType || '未知案件名称' }}
-              </text>
-            </view>
-            <BaseItem icon="icon-ren" label="提交人" :value="item.membersName || '未知提交人'">
-              <yp-tag class="ml-2" :status="4" :text="item.remarkName" />
-            </BaseItem>
-            <BaseItem
-              icon="icon-shijian"
-              label="提交时间"
-              :value="formatTime(item.registerTime, 'YYYY-MM-DD HH:mm:ss')"
-            />
+
+            <template #default>
+              <view class="mb-2">
+                <text class="text-[24rpx] text-[#999] mr-2">案件编号</text>
+                <text class="text-[28rpx] text-[#333] font-bold number">
+                  {{ item.caseId }}
+                </text>
+              </view>
+              <view class="mb-2">
+                <text class="text-[32rpx] text-[#333] font-bold">
+                  {{ item.accidentType || '未知案件名称' }}
+                </text>
+              </view>
+              <BaseItem icon="icon-ren" label="提交人" :value="item.membersName || '未知提交人'">
+                <yp-tag class="ml-2" :status="4" :text="item.remarkName" />
+              </BaseItem>
+              <BaseItem
+                icon="icon-shijian"
+                label="提交时间"
+                :value="formatTime(item.registerTime, 'YYYY-MM-DD HH:mm:ss')"
+              />
+            </template>
+
             <template #actions>
               <view class="flex gap-2 mt-4">
-                <wd-button type="primary" size="small" plain @click.stop="handleWatchProgress(item)">
+                <wd-button
+                  type="primary"
+                  size="small"
+                  plain
+                  @click.stop="handleWatchProgress(item)"
+                >
                   查看案件进程
                 </wd-button>
               </view>

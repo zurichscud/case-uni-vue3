@@ -1,4 +1,5 @@
 import http from '@/utils/http'
+
 interface MessageParams {
   userId: number
   category: 0

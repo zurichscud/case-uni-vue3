@@ -2,54 +2,50 @@
 import avatar from '@/static/读书.png'
 import { ref, getCurrentInstance } from 'vue'
 import { useMessage } from 'wot-design-uni'
-// 团队信息数据
+import BaseItem from '@/components/BaseCard/BaseItem.vue'
+import * as TeamAPI from '@/apis/team'
+
+const TEAM_TYPE = {
+  DIRECT: 0, //直辖
+  NON_DIRECT: 1, //非直辖
+}
+const message = useMessage('globalMessage')
 const teamInfo = ref({
-  name: '我的团队',
-  description: '杭州市红叶联社',
+  name: undefined,
+  branch: undefined, //分社
+  headquarters: undefined, //联社
   avatar,
 })
+const pageParams = ref({
+  page: 1,
+  pageSize: 4,
+})
+const ypScrollViewRef = ref()
 
-// 分支机构数据
-const list = [
-  {
-    id: 1,
-    name: 'North Branch',
-    members: 15,
-    cases: 23,
-    contracts: 18,
-    established: '2018',
-    status: 'active',
-  },
-  {
-    id: 2,
-    name: 'South Branch',
-    members: 12,
-    cases: 18,
-    contracts: 15,
-    established: '2020',
-    status: 'active',
-  },
-  {
-    id: 3,
-    name: 'East Branch',
-    members: 10,
-    cases: 15,
-    contracts: 12,
-    established: '2019',
-    status: 'active',
-  },
-  {
-    id: 4,
-    name: 'West Branch',
-    members: 8,
-    cases: 12,
-    contracts: 10,
-    established: '2021',
-    status: 'active',
-  },
-]
+// 获取团队信息
+async function getTeamListData() {
+  const { data } = await TeamAPI.getTeamList()
+  const { myTeamList, myteamName } = data
+  teamInfo.value.name = myteamName.nickName
+  teamInfo.value.branch = myteamName.branch
+  teamInfo.value.headquarters = myteamName.headquarters
+  //为什么这样返回，问后端啊，跟我说不支持分页
+  return {
+    rows: myTeamList,
+    total: myTeamList.length,
+  }
+}
+// 查看已报案案件
+function handleWatchSubmitCase(item) {
+  console.log(item)
+}
 
-const message = useMessage('globalMessage')
+// 查看已签约案件
+function handleWatchSignCase(item) {
+  console.log(item)
+}
+
+// 编辑团队名称
 async function handleEditName() {
   const { value: input } = await message.prompt({
     title: '请输入新团队名称',
@@ -65,10 +61,15 @@ async function handleEditName() {
   teamInfo.value.name = input.trim()
   uni.showToast({ title: '修改成功', icon: 'success' })
 }
+
+onMounted(() => {
+  ypScrollViewRef.value.getData()
+})
 </script>
 
 <template>
-  <view class="min-h-screen bg-gray-50">
+  <!-- bg-gray-50 -->
+  <view class="min-h-screen">
     <!-- 团队信息展示区域 -->
     <view class="flex p-4">
       <view class="flex w-full flex-col gap-4 items-center">
@@ -87,8 +88,14 @@ async function handleEditName() {
               </text>
               <text class="iconfont icon-zhongmingming ml-2 text-gray-500" @tap="handleEditName" />
             </view>
-            <text class="text-gray-600 text-base font-normal text-center">
-              所属联社：{{ teamInfo.description }}
+            <text
+              v-if="teamInfo.headquarters"
+              class="text-gray-600 text-base font-normal text-center"
+            >
+              所属联社：{{ teamInfo.headquarters }}
+            </text>
+            <text v-if="teamInfo.branch" class="text-gray-600 text-base font-normal text-center">
+              所属分社：{{ teamInfo.branch }}
             </text>
           </view>
         </view>
@@ -96,37 +103,58 @@ async function handleEditName() {
     </view>
 
     <!-- 分社列表标题 -->
-    <text class="text-gray-900 text-[40rpx] font-bold px-4 pb-3 pt-5 block">
-      分社列表
-    </text>
+    <text class="text-gray-900 text-[40rpx] font-bold px-4 pb-3 pt-5 block">分社列表</text>
 
     <!-- 分社列表 -->
-    <view class="space-y-0">
-      <view
-        v-for="branch in list"
-        :key="branch.id"
-        class="flex gap-4 bg-gray-50 px-4 py-3 justify-between"
-      >
-        <view class="flex items-start gap-4">
-          <!-- 分支机构图标 -->
-          <view class="text-gray-900 flex items-center justify-center rounded-lg bg-gray-200 shrink-0 w-12 h-12">
-            <wd-icon name="home" size="24px" />
-          </view>
-          <!-- 分支机构信息 -->
-          <view class="flex flex-1 flex-col justify-center">
-            <text class="text-gray-900 text-base font-medium">
-              {{ branch.name }}
-            </text>
-            <text class="text-gray-600 text-sm font-normal">
-              Members: {{ branch.members }} | Cases: {{ branch.cases }} | Contracts: {{ branch.contracts }}
-            </text>
-            <text class="text-gray-600 text-sm font-normal">
-              Established: {{ branch.established }}
-            </text>
-          </view>
+    <YpScrollView :query="getTeamListData" v-model:page="pageParams" ref="ypScrollViewRef">
+      <template #default="{ list }">
+        <view class="px-4">
+          <BaseCard v-for="(item, index) in list" :key="item.id">
+            <template #index>
+              {{ index + 1 }}
+            </template>
+
+            <template #default>
+              <view class="flex items-center gap-2">
+                <view>{{ item.branch || '未知分社名称' }}</view>
+                <wd-tag type="primary" plain v-if="item.type === TEAM_TYPE.DIRECT">直辖</wd-tag>
+                <wd-tag type="success" plain v-else-if="item.type === TEAM_TYPE.NON_DIRECT">
+                  非直辖
+                </wd-tag>
+              </view>
+
+              <BaseItem icon="icon-ren" label="成员数量" :value="item.listNum" />
+              <BaseItem icon="icon-shijian" label="成立时间" :value="item.gmtCreate" />
+              <view class="flex justify-between">
+                <BaseItem icon="icon-tijiao" label="已报案案件数量" :value="2" />
+                <BaseItem icon="icon-qianyue" label="已签约案件数量" :value="4" />
+              </view>
+            </template>
+
+            <template #actions>
+              <view class="flex gap-2 mt-4">
+                <wd-button
+                  type="primary"
+                  size="small"
+                  plain
+                  @click.stop="handleWatchSubmitCase(item)"
+                >
+                  查看已报案案件
+                </wd-button>
+                <wd-button
+                  type="success"
+                  size="small"
+                  plain
+                  @click.stop="handleWatchSignCase(item)"
+                >
+                  查看已签约案件
+                </wd-button>
+              </view>
+            </template>
+          </BaseCard>
         </view>
-      </view>
-    </view>
+      </template>
+    </YpScrollView>
   </view>
 </template>
 
