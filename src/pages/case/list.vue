@@ -4,8 +4,11 @@ import StepsPopup from './components/StepsPopup.vue'
 import * as CaseAPI from '@/apis/case'
 import BaseItem from '@/components/BaseCard/BaseItem.vue'
 import BaseCard from '@/components/BaseCard/BaseCard.vue'
+import { useUserStore } from '@/stores'
 
+const userStore = useUserStore()
 const stepsPopupRef = ref()
+let id = userStore.id
 const ypScrollViewRef = ref()
 const pageParams = ref({
   pageNum: 1,
@@ -25,11 +28,17 @@ async function handleWatchProgress({ caseId }) {
 }
 
 async function getCaseListData() {
-  return CaseAPI.getCaseList(pageParams.value)
+  return CaseAPI.getCaseList({ ...pageParams.value, userId: id })
 }
 
-onMounted(() => {
-  ypScrollViewRef.value?.getData()
+onLoad((query) => {
+  console.log('[ query ]-34', query)
+  if (query.id) {
+    id = query.id
+  }
+  nextTick(() => {
+    ypScrollViewRef.value?.getData()
+  })
 })
 </script>
 

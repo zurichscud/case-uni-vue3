@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 defineProps({
   icon: {
     type: String,
@@ -9,7 +9,7 @@ defineProps({
     default: '',
   },
   value: {
-    type: String,
+    type: [String, Number],
     default: '',
   },
 })

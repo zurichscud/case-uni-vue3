@@ -10,6 +10,7 @@ import BaseItem from '@/components/BaseCard/BaseItem.vue'
 const ypScrollViewRef = ref()
 const ypScrollViewRef2 = ref()
 const userStore = useUserStore()
+let id = userStore.id
 const remark = computed(() => userStore.remark)
 const pageParams = ref({
   pageNum: 1,
@@ -21,10 +22,13 @@ const pageParams2 = ref({
 })
 const currentTab = ref(0)
 const count = ref({})
+const isSelf =ref(true)
 
 async function getInviteListData() {
-  getUpgardMSgData()
-  return InviteAPI.getInviteListById({ ...pageParams.value, userId: userStore.id })
+  if (isSelf.value) {
+    getUpgardMSgData()
+  }
+  return InviteAPI.getInviteListById({ ...pageParams.value, userId: id })
 }
 
 function handleWatchMember(member) {
@@ -66,9 +70,15 @@ function handleTabChange({ index }) {
   }
 }
 
-// 使用onMounted代替onLoad
-onMounted(() => {
-  ypScrollViewRef.value?.getData()
+onLoad((query) => {
+  console.log('[ query ]-76', query)
+  if (query.id) {
+    id = query.id
+    isSelf.value = false
+  }
+  nextTick(() => {
+    ypScrollViewRef.value?.getData()
+  })
 })
 </script>
 
@@ -88,7 +98,7 @@ onMounted(() => {
           <template #default="{ list }">
             <view class="px-4">
               <!-- 升级提示区域 -->
-              <UpgradeTip :remark="remark" :count="count" />
+              <UpgradeTip :remark="remark" :count="count" v-if="isSelf"/>
               <!-- 邀请列表 -->
               <BaseCard v-for="(item, index) in list" :key="item.id || index">
                 <template #index>

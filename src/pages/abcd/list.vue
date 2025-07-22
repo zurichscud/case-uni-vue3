@@ -1,19 +1,25 @@
 <script setup lang="ts">
 import avatar from '@/static/读书.png'
-import { ref, getCurrentInstance } from 'vue'
+import { ref } from 'vue'
 import { useMessage } from 'wot-design-uni'
 import BaseItem from '@/components/BaseCard/BaseItem.vue'
 import * as TeamAPI from '@/apis/team'
 
+const router = useRouter()
 const TEAM_TYPE = {
-  DIRECT: 0, //直辖
-  NON_DIRECT: 1, //非直辖
+  DIRECT: 0, // 直辖
+  NON_DIRECT: 1, // 非直辖
 }
 const message = useMessage('globalMessage')
-const teamInfo = ref({
+const teamInfo = ref<{
+  name: string | undefined
+  branch: string | undefined
+  headquarters: string | undefined
+  avatar: string
+}>({
   name: undefined,
-  branch: undefined, //分社
-  headquarters: undefined, //联社
+  branch: undefined, // 分社
+  headquarters: undefined, // 联社
   avatar,
 })
 const pageParams = ref({
@@ -29,20 +35,35 @@ async function getTeamListData() {
   teamInfo.value.name = myteamName.nickName
   teamInfo.value.branch = myteamName.branch
   teamInfo.value.headquarters = myteamName.headquarters
-  //为什么这样返回，问后端啊，跟我说不支持分页
+  // 为什么这样返回，问后端啊，跟我说不支持分页
   return {
     rows: myTeamList,
     total: myTeamList.length,
   }
 }
+
 // 查看已报案案件
-function handleWatchSubmitCase(item) {
-  console.log(item)
+function toInviteList(id: any) {
+  if (id) {
+    router.push({ path: '/pages/invite/list', query: { id } })
+  } else {
+    uni.showToast({
+      title: 'id不能为空',
+      icon: 'none',
+    })
+  }
 }
 
 // 查看已签约案件
-function handleWatchSignCase(item) {
-  console.log(item)
+function toCaseList(id: any) {
+  if (id) {
+    router.push({ path: '/pages/case/list', query: { id } })
+  } else {
+    uni.showToast({
+      title: 'id不能为空',
+      icon: 'none',
+    })
+  }
 }
 
 // 编辑团队名称
@@ -133,21 +154,11 @@ onMounted(() => {
 
             <template #actions>
               <view class="flex gap-2 mt-4">
-                <wd-button
-                  type="primary"
-                  size="small"
-                  plain
-                  @click.stop="handleWatchSubmitCase(item)"
-                >
-                  查看已报案案件
+                <wd-button type="primary" size="small" plain @click.stop="toInviteList(item.id)">
+                  查看邀请列表
                 </wd-button>
-                <wd-button
-                  type="success"
-                  size="small"
-                  plain
-                  @click.stop="handleWatchSignCase(item)"
-                >
-                  查看已签约案件
+                <wd-button type="success" size="small" plain @click.stop="toCaseList(item.id)">
+                  查看案件列表
                 </wd-button>
               </view>
             </template>
