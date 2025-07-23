@@ -39,7 +39,7 @@ const menus: Menus = {
       {
         text: '我的团队',
         icon: 'icon-team',
-        url: '/pages/abcd/list',
+        url: '/pages/team/list',
       },
       {
         text: '邀请记录',
@@ -49,7 +49,7 @@ const menus: Menus = {
       {
         text: '邀请二维码',
         icon: 'icon-erweima',
-        url: '/pages/abcd/qrcode',
+        url: '/pages/team/qrcode',
       },
     ],
   },

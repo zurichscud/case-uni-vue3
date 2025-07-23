@@ -106,6 +106,7 @@ async function sendVerifyCode() {
     })
     startCountdown()
   } catch (error) {
+    console.log('[ error ]-109', error)
     uni.showToast({
       title: '发送失败，请重试',
       icon: 'none',
@@ -130,6 +131,7 @@ async function handleLogin() {
       title: '提示',
       content: '请先同意服务协议和隐私条款',
       confirmText: '同意',
+      // eslint-disable-next-line unused-imports/no-unused-vars
       success: ({ confirm, cancel }) => {
         if (confirm) {
           isAgree.value = true

@@ -24,7 +24,7 @@ export default async () => {
           'src/pages/AI',
           'src/pages/case',
           'src/pages/chat',
-          'src/pages/abcd',
+          'src/pages/team',
           'src/pages/invite',
           'src/pages/login',
           'src/pages/lpgs',

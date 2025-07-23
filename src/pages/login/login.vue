@@ -6,7 +6,7 @@ import Agreement from './components/Agreement.vue'
 
 const router = useRouter()
 const { login } = useUserStore()
-
+const loading = ref(false)
 const isAgree = ref(false)
 
 // e的code无效
@@ -23,13 +23,21 @@ async function getPhoneNumber({ code }) {
       },
     })
   }
-  const { data } = await UserAPI.getDecryptPhone({
-    code,
-  })
-  login({
-    source: SOURCE.WECHAT,
-    mobile: data,
-  })
+  try {
+    loading.value = true
+    const { data } = await UserAPI.getDecryptPhone({
+      code,
+    })
+    await login({
+      source: SOURCE.WECHAT,
+      mobile: data,
+    })
+    loading.value = false
+  } catch (error) {
+    console.log(error)
+  } finally {
+    loading.value = false
+  }
 }
 </script>
 
@@ -46,7 +54,13 @@ async function getPhoneNumber({ code }) {
         <view class="login_title">欢迎来到理赔公社</view>
       </view>
       <view class="login_wx">
-        <wd-button open-type="getPhoneNumber" @getphonenumber="getPhoneNumber" block size="large">
+        <wd-button
+          :loading="loading"
+          open-type="getPhoneNumber"
+          @getphonenumber="getPhoneNumber"
+          block
+          size="large"
+        >
           手机号快捷登录
         </wd-button>
         <Agreement v-model="isAgree" />

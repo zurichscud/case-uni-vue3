@@ -27,8 +27,8 @@ interface NavigateToOptions {
        "/pages/chat/components/invitepersonal" |
        "/pages/chat/components/teaminvite" |
        "/pages/chat/components/userTypes" |
-       "/pages/abcd/list" |
-       "/pages/abcd/qrcode" |
+       "/pages/team/list" |
+       "/pages/team/qrcode" |
        "/pages/invite/fuli" |
        "/pages/invite/list" |
        "/pages/invite/record" |

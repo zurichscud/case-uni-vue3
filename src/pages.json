@@ -200,7 +200,7 @@
       ]
     },
     {
-      "root": "pages/abcd",
+      "root": "pages/team",
       "pages": [
         {
           "path": "list",

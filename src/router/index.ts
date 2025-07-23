@@ -35,8 +35,6 @@ router.beforeEach((to, from, next) => {
 })
 
 // eslint-disable-next-line unused-imports/no-unused-vars
-router.afterEach((to, from) => {
-
-})
+router.afterEach((to, from) => {})
 
 export default router

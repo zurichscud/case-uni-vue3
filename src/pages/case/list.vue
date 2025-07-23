@@ -10,6 +10,7 @@ const userStore = useUserStore()
 const stepsPopupRef = ref()
 let id = userStore.id
 const ypScrollViewRef = ref()
+const isSelf = ref(true)
 const pageParams = ref({
   pageNum: 1,
   pageSize: 4,
@@ -32,9 +33,9 @@ async function getCaseListData() {
 }
 
 onLoad((query) => {
-  console.log('[ query ]-34', query)
   if (query.id) {
     id = query.id
+    isSelf.value = false
   }
   nextTick(() => {
     ypScrollViewRef.value?.getData()
@@ -101,6 +102,7 @@ onLoad((query) => {
             <template #actions>
               <view class="flex gap-2 mt-4">
                 <wd-button
+                  v-if="isSelf"
                   type="primary"
                   size="small"
                   plain
