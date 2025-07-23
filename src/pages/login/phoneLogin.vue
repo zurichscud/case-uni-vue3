@@ -89,6 +89,13 @@ async function sendVerifyCode() {
       icon: 'none',
     })
   }
+  if (codeCountdown.value > 0) {
+    uni.showToast({
+      title: `请${codeCountdown.value}秒后再试`,
+      icon: 'none',
+    })
+    return
+  }
   try {
     await UserAPI.sendSms({
       mobile: mobile.value,

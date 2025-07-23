@@ -1,7 +1,7 @@
 <script setup>
 import { ref, computed } from 'vue'
-import { useUserStore, useMessageStore } from '@/stores'
-import { onShow } from '@dcloudio/uni-app'
+import { useUserStore } from '@/stores'
+import appConfig from '@/config/app'
 
 const router = useRouter()
 const userStore = useUserStore()
@@ -44,7 +44,7 @@ function toLogin() {
       <view class="profile-header">
         <view class="user-info">
           <view class="user-title">
-            <image class="avatar" :src="userStore.photo" />
+            <image class="avatar" :src="userStore.photo || appConfig.defaultAvatar" />
             <view class="nickname">
               <view>{{ userStore.nickName }}</view>
               <wd-tag mark>

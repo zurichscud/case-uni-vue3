@@ -12,7 +12,7 @@ export const useUserStore = defineStore('user', {
     token: undefined,
     nickName: undefined,
     mobile: undefined,
-    photo: appConfig.defaultAvatar,
+    photo: undefined,
     remark: undefined,
     pid: undefined,
   }),
