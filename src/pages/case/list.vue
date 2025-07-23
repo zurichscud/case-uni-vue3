@@ -45,29 +45,6 @@ onLoad((query) => {
 
 <template>
   <view class="case-list-container">
-    <!-- 搜索栏 -->
-    <!-- <view class="search-section">
-      <wd-search
-        v-model="searchKeyword"
-        placeholder-left
-        placeholder="搜索案件编号、案件名称"
-        @search="handleSearch"
-        @clear="handleClear"
-        hide-cancel
-        show-action
-      />
-    </view> -->
-
-    <!-- 筛选栏 -->
-    <!-- <view class="filter-section">
-      <wd-drop-menu>
-        <wd-drop-menu-item v-model="selectedStatus" :options="statusOptions" @change="handleStatusChange">
-        </wd-drop-menu-item>
-        <wd-drop-menu-item v-model="selectedTime" :options="timeOptions" @change="handleTimeChange">
-        </wd-drop-menu-item>
-      </wd-drop-menu>
-    </view> -->
-
     <!-- 案件列表 -->
     <YpScrollView :query="getCaseListData" ref="ypScrollViewRef" v-model:page="pageParams">
       <template #default="{ list }">
