@@ -30,7 +30,6 @@ const options = ref({
 {
   "name": "myQrcode",
   "layout": "default",
-  "auth": true,
   "style": {
     "navigationBarTitleText": "邀请二维码"
   }

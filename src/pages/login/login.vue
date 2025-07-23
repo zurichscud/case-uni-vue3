@@ -24,7 +24,9 @@ async function getPhoneNumber({ code }) {
     })
   }
   try {
-    loading.value = true
+    uni.showLoading({
+      title: '登录中...',
+    })
     const { data } = await UserAPI.getDecryptPhone({
       code,
     })
@@ -32,11 +34,10 @@ async function getPhoneNumber({ code }) {
       source: SOURCE.WECHAT,
       mobile: data,
     })
-    loading.value = false
   } catch (error) {
     console.log(error)
   } finally {
-    loading.value = false
+    uni.hideLoading()
   }
 }
 </script>
@@ -55,7 +56,6 @@ async function getPhoneNumber({ code }) {
       </view>
       <view class="login_wx">
         <wd-button
-          :loading="loading"
           open-type="getPhoneNumber"
           @getphonenumber="getPhoneNumber"
           block

@@ -82,13 +82,7 @@ const menus: Menus = {
 
 function handleItemClick(url: string) {
   console.log('[ url ]-84', url)
-  // router.push(url)
-  uni.navigateTo({
-    url,
-    fail: (err) => {
-      console.log('[ err ]-88', err)
-    },
-  })
+  router.push(url)
 }
 </script>
 
