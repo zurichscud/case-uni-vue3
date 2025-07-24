@@ -6,6 +6,8 @@ import UniHelperLayouts from '@uni-helper/vite-plugin-uni-layouts'
 import UniHelperComponents from '@uni-helper/vite-plugin-uni-components'
 import AutoImport from 'unplugin-auto-import/vite'
 import { WotResolver } from '@uni-helper/vite-plugin-uni-components/resolvers'
+import uniReadPages from './src/libs/uni-read-pages-v3'
+import path from 'path'
 
 // https://vitejs.dev/config/
 export default async () => {
@@ -33,8 +35,11 @@ export default async () => {
           'src/pages/public',
           'src/pages/user',
           'src/pages/workplace',
-
         ],
+      }),
+      uniReadPages({
+        pagesJsonDir: path.resolve(__dirname, './src/pages.json'),
+        includes: ['path', 'aliasPath', 'name', 'auth', 'dev'],
       }),
       /**
        * 构建时: UniHelperLayouts 插件读取 pages.json 中的 layout 属性

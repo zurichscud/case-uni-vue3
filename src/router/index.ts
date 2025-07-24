@@ -41,7 +41,7 @@ router.beforeEach((to, from, next) => {
   }
 
   isNavigating = true
-  if ((to as any).dev && isProd) {
+  if ((to as any).dev) {
     uni.showToast({
       title: '敬请期待',
       icon: 'error',
