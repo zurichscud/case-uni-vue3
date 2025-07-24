@@ -178,6 +178,7 @@ onMounted(() => {
   "name": "myTeam",
   "layout": "default",
   "auth": true,
+  "dev": true,
   "style": {
     "navigationBarTitleText": "我的团队"
   }

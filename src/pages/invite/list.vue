@@ -181,6 +181,7 @@ onLoad((query) => {
   "name": "inviteList",
   "layout": "default",
   "auth": true,
+  "dev": true,
   "style": {
     "navigationBarTitleText": "邀请列表"
   }

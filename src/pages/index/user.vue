@@ -25,7 +25,6 @@ function redirect(url) {
 function toLogin() {
   router.push('/pages/login/login')
 }
-
 </script>
 
 <template>

@@ -113,6 +113,7 @@ onLoad((query) => {
   "name": "caseList",
   "layout": "default",
   "auth": true,
+  "dev": true,
   "style": {
     "navigationBarTitleText": "案件列表"
   }
