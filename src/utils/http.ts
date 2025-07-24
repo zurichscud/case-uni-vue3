@@ -210,7 +210,18 @@ function handle401Error(): void {
   handling401 = true
   const userStore = useUserStore()
   userStore.resetInfo()
-  router.push('/pages/login/login')
+
+  // 直接使用 uni.navigateTo 避免 throttle 限制
+  uni.navigateTo({
+    url: '/pages/login/login',
+    fail: (e) => {
+      console.log('401跳转登录页失败:', e)
+      // 如果 navigateTo 失败，尝试使用 reLaunch
+      uni.reLaunch({
+        url: '/pages/login/login',
+      })
+    },
+  })
 
   // 延迟重置标志位，防止快速重复触发
   setTimeout(() => {
