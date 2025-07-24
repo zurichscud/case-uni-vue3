@@ -83,9 +83,7 @@ function handleLogout() {
 }
 
 function handleRedirect() {
-  uni.navigateTo({
-    url: '/pages/abcd/qrcode',
-  })
+  userStore.setUser({ token: '123' })
 }
 
 function changeUserImg() {

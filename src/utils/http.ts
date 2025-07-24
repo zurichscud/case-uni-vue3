@@ -1,5 +1,6 @@
 import Request from 'luch-request'
 import { useUserStore } from '@/stores'
+import router from '@/utils/router'
 
 // 定义图标类型
 type ToastIcon = 'success' | 'loading' | 'error' | 'none' | 'fail' | 'exception'
@@ -85,7 +86,7 @@ function showErrorToast(message: string, icon: ToastIcon = 'none'): void {
 // 错误码映射表
 const ERROR_CODE_MAP: Record<ErrorCode, string> = {
   400: '请求错误',
-  401: '登录已过期',
+  401: '登录已过期，请重新登录',
   403: '拒绝访问',
   404: '请求出错',
   408: '请求超时',
@@ -197,16 +198,24 @@ http.interceptors.response.use(
   },
 )
 
+// 401错误处理防抖标志
+let handling401 = false
+
 function handle401Error(): void {
+  // 防抖处理：如果正在处理401错误，则直接返回
+  if (handling401) {
+    return
+  }
+
+  handling401 = true
   const userStore = useUserStore()
   userStore.resetInfo()
-  uni.showToast({
-    icon: 'none',
-    title: '请重新登录',
-  })
-  uni.navigateTo({
-    url: '/pages/login/login',
-  })
+  router.push('/pages/login/login')
+
+  // 延迟重置标志位，防止快速重复触发
+  setTimeout(() => {
+    handling401 = false
+  }, 1000)
 }
 
 export default (config: any) => {
@@ -260,7 +269,7 @@ function logError(response: any) {
 
   // 响应信息
   console.group('📥 响应信息')
-  console.log('系统状态码', response.statusCode);
+  console.log('系统状态码', response.statusCode)
   console.log('📊 状态码:', data.code)
   console.log('💬 错误信息:', data.message)
   console.log('📄 完整响应:', data)

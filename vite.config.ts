@@ -64,10 +64,6 @@ export default async () => {
           'pinia',
           'uni-app',
           {
-            from: 'uni-mini-router',
-            imports: ['createRouter', 'useRouter', 'useRoute'],
-          },
-          {
             from: 'wot-design-uni',
             imports: ['useToast', 'useMessage', 'useNotify', 'CommonUtil'],
           },
