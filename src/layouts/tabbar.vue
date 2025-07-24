@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { useMessageStore, useUserStore } from '@/stores'
-import { IS_DEV } from '@/utils/env'
+import { IS_PROD } from '@/utils/env'
 import { useShare } from '@/hooks/useShare'
 import router from '@/utils/router'
 
@@ -14,7 +14,7 @@ const { shareOptions } = useShare()
 
 function handleTabbarChange({ value }: { value: string }) {
   setTabbarItemActive(value)
-  if (!IS_DEV) {
+  if (IS_PROD) {
     uni.vibrateShort()
   }
   if (isLogin.value) {

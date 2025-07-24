@@ -10,6 +10,7 @@ declare global {
   const CommonUtil: typeof import('wot-design-uni')['CommonUtil']
   const EffectScope: typeof import('vue')['EffectScope']
   const IS_DEV: typeof import('./utils/env')['IS_DEV']
+  const IS_PROD: typeof import('./utils/env')['IS_PROD']
   const acceptHMRUpdate: typeof import('pinia')['acceptHMRUpdate']
   const alovaInstance: typeof import('./api/index')['alovaInstance']
   const api: typeof import('./api/index')['default']
@@ -365,6 +366,7 @@ declare module 'vue' {
     readonly CommonUtil: UnwrapRef<typeof import('wot-design-uni')['CommonUtil']>
     readonly EffectScope: UnwrapRef<typeof import('vue')['EffectScope']>
     readonly IS_DEV: UnwrapRef<typeof import('./utils/env')['IS_DEV']>
+    readonly IS_PROD: UnwrapRef<typeof import('./utils/env')['IS_PROD']>
     readonly acceptHMRUpdate: UnwrapRef<typeof import('pinia')['acceptHMRUpdate']>
     readonly alovaInstance: UnwrapRef<typeof import('./api/index')['alovaInstance']>
     readonly api: UnwrapRef<typeof import('./api/index')['default']>

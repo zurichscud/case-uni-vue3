@@ -1,7 +1,7 @@
 import { isString, isEmpty, startsWith, isObject, isNil } from 'lodash-es'
 import throttle from '@/utils/throttle'
 import { useUserStore } from '@/stores'
-import { IS_DEV } from './env'
+import { IS_PROD } from './env'
 
 interface RouteParams {
   [key: string]: string | number | boolean
@@ -28,9 +28,13 @@ interface PageInstance {
   options?: Record<string, any>
 }
 
-function _go(path: RoutePathParam, params: RouteParams = {}, options: RouteOptions = {
-  redirect: false,
-}): void {
+function _go(
+  path: RoutePathParam,
+  params: RouteParams = {},
+  options: RouteOptions = {
+    redirect: false,
+  },
+): void {
   let page = '' // 跳转页面
   let query = '' // 页面参数
   let url = '' // 跳转页面完整路径
@@ -46,8 +50,7 @@ function _go(path: RoutePathParam, params: RouteParams = {}, options: RouteOptio
       page = `/pages/public/webview`
       query = `url=${encodeURIComponent(path as string)}`
       // #endif
-    }
-    else {
+    } else {
       const pathParts = path.split('?')
       page = pathParts[0]
       query = pathParts[1] || ''
@@ -56,8 +59,7 @@ function _go(path: RoutePathParam, params: RouteParams = {}, options: RouteOptio
       const query2 = paramsToQuery(params)
       if (isEmpty(query)) {
         query = query2
-      }
-      else {
+      } else {
         query += `&${query2}`
       }
     }
@@ -78,8 +80,7 @@ function _go(path: RoutePathParam, params: RouteParams = {}, options: RouteOptio
     console.log(`%c未找到指定路径<${page || 'EMPTY'}>`, 'color:red;background:yellow')
     return
   }
-
-  if (nextRoute.dev && !IS_DEV) {
+  if (nextRoute.dev && IS_PROD) {
     uni.showToast({
       title: '敬请期待',
       icon: 'error',
@@ -185,8 +186,7 @@ function getCurrentRoute(field: string = ''): any {
   // #endif
   if (field !== '' && currentPage.$page) {
     return currentPage.$page[field]
-  }
-  else {
+  } else {
     return currentPage.$page
   }
 }
@@ -195,7 +195,6 @@ function getCurrentPage(): PageInstance {
   const pages = getCurrentPages()
   return pages[pages.length - 1] as PageInstance
 }
-
 
 // TODO
 function error(errCode: string | number, errMsg: string = ''): void {
