@@ -31,12 +31,7 @@ interface NavigateToOptions {
        "/pages/team/qrcode" |
        "/pages/invite/fuli" |
        "/pages/invite/list" |
-       "/pages/invite/record" |
-       "/pages/invite/share" |
-       "/pages/invite/team" |
        "/pages/invite/components/UpgradeTip" |
-       "/pages/invite/components/invitepersonal" |
-       "/pages/invite/components/teaminvite" |
        "/pages/login/login" |
        "/pages/login/phoneLogin" |
        "/pages/login/components/Agreement" |

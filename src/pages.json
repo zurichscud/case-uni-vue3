@@ -241,27 +241,7 @@
           }
         },
         {
-          "path": "record",
-          "type": "page"
-        },
-        {
-          "path": "share",
-          "type": "page"
-        },
-        {
-          "path": "team",
-          "type": "page"
-        },
-        {
           "path": "components/UpgradeTip",
-          "type": "page"
-        },
-        {
-          "path": "components/invitepersonal",
-          "type": "page"
-        },
-        {
-          "path": "components/teaminvite",
           "type": "page"
         }
       ]
