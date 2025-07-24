@@ -146,10 +146,8 @@ onMounted(() => {
 
               <BaseItem icon="icon-ren" label="成员数量" :value="item.listNum" />
               <BaseItem icon="icon-shijian" label="成立时间" :value="item.gmtCreate" />
-              <view class="flex justify-between">
-                <BaseItem icon="icon-tijiao" label="已报案案件数量" :value="2" />
-                <BaseItem icon="icon-qianyue" label="已签约案件数量" :value="4" />
-              </view>
+              <BaseItem icon="icon-tijiao" label="已报案案件数量" :value="2" />
+              <BaseItem icon="icon-qianyue" label="已签约案件数量" :value="4" />
             </template>
 
             <template #actions>

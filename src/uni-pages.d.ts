@@ -30,6 +30,7 @@ interface NavigateToOptions {
        "/pages/team/list" |
        "/pages/team/qrcode" |
        "/pages/invite/fuli" |
+       "/pages/invite/inviteYou" |
        "/pages/invite/list" |
        "/pages/invite/components/UpgradeTip" |
        "/pages/login/login" |

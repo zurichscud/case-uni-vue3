@@ -231,6 +231,16 @@
           "type": "page"
         },
         {
+          "path": "inviteYou",
+          "type": "page",
+          "name": "inviteYou",
+          "layout": "default",
+          "auth": true,
+          "style": {
+            "navigationBarTitleText": "邀请加入理赔公社"
+          }
+        },
+        {
           "path": "list",
           "type": "page",
           "name": "inviteList",
