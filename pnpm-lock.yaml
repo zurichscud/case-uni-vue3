@@ -216,9 +216,6 @@ importers:
       typescript:
         specifier: ~5.5.4
         version: 5.5.4
-      uni-mini-router:
-        specifier: ^0.1.6
-        version: 0.1.6
       unocss:
         specifier: ^0.62.3
         version: 0.62.3(postcss@8.4.41)(rollup@4.21.1)(vite@5.2.8(@types/node@20.16.2)(less@4.3.0)(sass@1.78.0)(terser@5.31.6))
@@ -6544,9 +6541,6 @@ packages:
 
   undici-types@6.21.0:
     resolution: {integrity: sha512-iwDZqg0QAGrg9Rav5H4n0M64c3mkR59cJ6wQp+7C4nI0gsmExaedaYLNO44eT4AtBBwjbTiGPMlt2Md0T9H9JQ==}
-
-  uni-mini-router@0.1.6:
-    resolution: {integrity: sha512-dgeEYCv00yTkiX3gVAQXrx4IAzAVtZv+2lVtVaixH6J/IHfZP7R3wqUwBvy4eFD0vP20p+QWNNE2c5LuHbPSiQ==}
 
   unicode-canonical-property-names-ecmascript@2.0.0:
     resolution: {integrity: sha512-yY5PpDlfVIU5+y/BSCxAJRBIS1Zc2dDG3Ujq+sR0U+JjUevW2JhocOF+soROYDSaAezOzOKuyyixhD6mBknSmQ==}
@@ -14808,8 +14802,6 @@ snapshots:
   undici-types@6.19.8: {}
 
   undici-types@6.21.0: {}
-
-  uni-mini-router@0.1.6: {}
 
   unicode-canonical-property-names-ecmascript@2.0.0: {}
 
