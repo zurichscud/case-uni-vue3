@@ -23,6 +23,7 @@ declare module 'vue' {
     GlobalToast: typeof import('./components/GlobalToast.vue')['default']
     Kefu: typeof import('./components/kefu.vue')['default']
     MarkdownRenderer: typeof import('./components/MarkdownRenderer/index.vue')['default']
+    NoLogin: typeof import('./components/NoLogin.vue')['default']
     None: typeof import('./components/none.vue')['default']
     PrivacyPopup: typeof import('./components/PrivacyPopup.vue')['default']
     PromptBtm: typeof import('./components/promptBtm.vue')['default']

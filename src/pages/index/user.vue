@@ -22,19 +22,13 @@ function redirect(url) {
   router.push(url)
 }
 
-function toLogin() {
-  router.push('/pages/login/login')
-}
 </script>
 
 <template>
   <view class="container">
     <!-- 未登录状态 -->
     <view v-if="!isLogin">
-      <none name="请登录账号后查看~"></none>
-      <view class="login-btn" @click="toLogin">
-        立即登录
-      </view>
+      <NoLogin/>
     </view>
 
     <!-- 已登录状态 -->

@@ -29,20 +29,17 @@ async function getMessageListData() {
     // 如果是首次加载或刷新，重置消息列表
     if (pageParams.value.pageNum === 1) {
       msgList.value = rows || []
-    }
-    else {
+    } else {
       msgList.value.push(...(rows || []))
     }
     // 判断是否结束
     if (msgList.value.length < total) {
       moreStatus.value = 'more'
       pageParams.value.pageNum++
-    }
-    else {
+    } else {
       moreStatus.value = 'noMore'
     }
-  }
-  catch (error) {
+  } catch (error) {
     console.error('获取消息列表失败:', error)
     moreStatus.value = 'more' // 错误时恢复可加载状态
     uni.showToast({
@@ -65,8 +62,7 @@ function triggerEnterAnimation() {
     if (msgList.value.length === 0) {
       // 空状态动画
       showEmptyAnimation.value = true
-    }
-    else {
+    } else {
       // 消息卡片依次进入动画
       msgList.value.forEach((_, index) => {
         setTimeout(() => {
@@ -114,8 +110,7 @@ onShow(() => {
   if (isFirstLoad.value) {
     initializeWithAnimation()
     isFirstLoad.value = false
-  }
-  else {
+  } else {
     refreshData()
   }
 })
@@ -123,7 +118,7 @@ onShow(() => {
 
 <template>
   <view class="message-container">
-    <none v-if="!isLogin" name="请登录账号后查看～"></none>
+    <NoLogin v-if="!isLogin" />
     <!-- 消息列表容器 -->
     <scroll-view
       v-else
@@ -184,7 +179,6 @@ onShow(() => {
 
 <style scoped lang="scss">
 .message-container {
-  height: 100%;
   background-color: #f5f6fa;
 }
 
