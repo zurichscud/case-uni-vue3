@@ -93,6 +93,9 @@ function _go(
   if (nextRoute.auth && !userStore.isLogin) {
     uni.navigateTo({
       url: '/pages/login/login',
+      fail: (e) => {
+        console.log(e)
+      },
     })
     return
   }
@@ -120,6 +123,9 @@ function _go(
 
   uni.navigateTo({
     url,
+    fail: (e) => {
+      console.log(e)
+    },
   })
 }
 
@@ -174,21 +180,10 @@ function hasHistory(): boolean {
   // #endif
 }
 
-function getCurrentRoute(field: string = ''): any {
+function getCurrentRoute(): any {
   const currentPage = getCurrentPage() as PageInstance
-  // #ifdef MP
-  if (currentPage.route && !currentPage.$page) {
-    currentPage.$page = {
-      route: currentPage.route,
-      options: currentPage.options || {},
-    }
-  }
-  // #endif
-  if (field !== '' && currentPage.$page) {
-    return currentPage.$page[field]
-  } else {
-    return currentPage.$page
-  }
+  const key = currentPage.$page?.fullPath
+  return ROUTES_MAP[key]
 }
 
 function getCurrentPage(): PageInstance {

@@ -206,7 +206,7 @@ function handle401Error(): void {
   if (handling401) {
     return
   }
-
+  console.log('handle401Error')
   handling401 = true
   const userStore = useUserStore()
   userStore.resetInfo()
@@ -236,7 +236,6 @@ export async function uploadFile(path: string) {
 }
 
 function logError(response: any) {
-  console.log('[ response ]-229', response)
   const { config, data } = response
 
   // 使用 console.group 分组显示错误信息

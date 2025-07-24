@@ -10,7 +10,6 @@ const { activeTabbar, getTabbarItemValue, setTabbarItemActive, tabbarList } = us
 const { getUnReadNumData } = useMessageStore()
 const { getUserInfo } = useUserStore()
 const isLogin = computed(() => userStore.isLogin)
-const { shareOptions } = useShare()
 
 function handleTabbarChange({ value }: { value: string }) {
   setTabbarItemActive(value)
@@ -28,15 +27,9 @@ onMounted(() => {
   // #ifdef APP-PLUS
   uni.hideTabBar()
   // #endif
-  nextTick(() => {
-    if (router.getCurrentRoute().name && router.getCurrentRoute().name !== activeTabbar.value.name) {
-      setTabbarItemActive(router.getCurrentRoute().name)
-    }
-  })
-})
-
-onShareAppMessage(() => {
-  return shareOptions
+  if (router.getCurrentRoute().name !== activeTabbar.value.name) {
+    setTabbarItemActive(router.getCurrentRoute().name)
+  }
 })
 </script>
 
