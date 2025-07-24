@@ -98,7 +98,6 @@ const _go = (
     uni.navigateTo({
       url: '/pages/login/login',
     })
-    // showAuthModal()
     return
   }
 
@@ -109,6 +108,7 @@ const _go = (
 
   // 跳转底部导航
   if (TABBAR.includes(page)) {
+    console.log('[ TABBAR.includes ]-113', TABBAR.includes)
     uni.switchTab({
       url,
     })
@@ -129,7 +129,7 @@ const _go = (
 }
 
 // 限流 防止重复点击跳转
-function go(path: RoutePathParam, params: RouteParams = {}, options?: RouteOptions): void {
+function push(path: RoutePathParam, params: RouteParams = {}, options?: RouteOptions): void {
   throttle(() => {
     _go(path, params, options)
   })
@@ -159,7 +159,7 @@ function back(): void {
 }
 
 function redirect(path: RoutePathParam, params: RouteParams = {}): void {
-  go(path, params, {
+  push(path, params, {
     redirect: true,
   })
 }
@@ -219,7 +219,7 @@ function error(errCode: string | number, errMsg: string = ''): void {
 }
 
 export default {
-  go,
+  push,
   back,
   hasHistory,
   redirect,

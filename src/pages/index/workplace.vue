@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const router = useRouter()
+import router from '@/utils/router'
 
 // 定义菜单项类型
 interface MenuItem {

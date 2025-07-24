@@ -7,9 +7,10 @@ import SharePoster from './components/SharePoster.vue'
 import * as ArticleAPI from '@/apis/article'
 import img from '@/static/home/弈寻.png'
 import { useUserStore } from '@/stores'
+import router from '@/utils/router'
 import appConfig from '@/config/app'
 
-const router = useRouter()
+
 const slogans = appConfig.slogans
 const sloganDuration = appConfig.sloganDuration
 const shareVisible = ref(false)

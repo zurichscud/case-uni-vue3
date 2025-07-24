@@ -4,8 +4,8 @@ import { ref } from 'vue'
 import { useMessage } from 'wot-design-uni'
 import BaseItem from '@/components/BaseCard/BaseItem.vue'
 import * as TeamAPI from '@/apis/team'
+import router from '@/utils/router'
 
-const router = useRouter()
 const TEAM_TYPE = {
   DIRECT: 0, // 直辖
   NON_DIRECT: 1, // 非直辖

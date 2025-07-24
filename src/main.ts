@@ -3,13 +3,9 @@ import { createPinia } from 'pinia'
 import App from './App.vue'
 import 'uno.css'
 import './api'
-import router from './router'
 import { persistPlugin } from './stores/persist'
-
-
 import './style/iconfont.css'
 import './style/font.scss'
-// import './style/index.scss'
 
 // 临时清理可能损坏的存储数据
 function clearCorruptedStorage() {
@@ -34,7 +30,6 @@ const pinia = createPinia()
 pinia.use(persistPlugin)
 export function createApp() {
   const app = createSSRApp(App)
-  app.use(router)
   app.use(pinia)
   return {
     app,

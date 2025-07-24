@@ -2,8 +2,8 @@
 import { ref, computed } from 'vue'
 import { useUserStore } from '@/stores'
 import appConfig from '@/config/app'
+import router from '@/utils/router'
 
-const router = useRouter()
 const userStore = useUserStore()
 const isLogin = computed(() => userStore.isLogin)
 const remarkText = computed(() => userStore.remarkText)

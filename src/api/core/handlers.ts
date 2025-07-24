@@ -7,7 +7,6 @@
  * @FilePath: /wot-demo/src/api/core/handlers.ts
  */
 import type { Method } from 'alova'
-import router from '@/router'
 
 // Custom error class for API errors
 export class ApiError extends Error {

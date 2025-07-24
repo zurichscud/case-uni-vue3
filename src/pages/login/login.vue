@@ -3,10 +3,9 @@ import { useUserStore } from '@/stores'
 import * as UserAPI from '@/apis/user'
 import { SOURCE } from '@/enums/source'
 import Agreement from './components/Agreement.vue'
+import router from '@/utils/router'
 
-const router = useRouter()
 const { login } = useUserStore()
-const loading = ref(false)
 const isAgree = ref(false)
 
 // e的code无效

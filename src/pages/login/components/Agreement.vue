@@ -1,5 +1,6 @@
 <script setup>
-const router = useRouter()
+import router from '@/utils/router'
+
 const isAgree = defineModel('modelValue', {
   type: Boolean,
   default: false,
