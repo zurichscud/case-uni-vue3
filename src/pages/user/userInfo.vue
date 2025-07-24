@@ -33,7 +33,7 @@
         <image src="../../static/img36.png" class="img_size" mode=""></image>
         退出登录
       </view>
-      <view v-if="!isProd" class="btn_style" @click="handleRedirect">
+      <view v-if="!IS_DEV" class="btn_style" @click="handleRedirect">
         <image src="../../static/img36.png" class="img_size" mode=""></image>
         定向
       </view>
@@ -45,7 +45,7 @@
 <script setup>
 import { useUserStore } from '@/stores'
 import { useMessage } from 'wot-design-uni'
-import { isProd } from '@/utils/env'
+import { IS_DEV } from '@/utils/env'
 import * as UserAPI from '@/apis/user'
 
 const message = useMessage()

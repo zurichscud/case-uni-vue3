@@ -81,7 +81,6 @@ const menus: Menus = {
 }
 
 function handleItemClick(url: string) {
-  console.log('[ url ]-84', url)
   router.push(url)
 }
 </script>
