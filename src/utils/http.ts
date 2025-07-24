@@ -198,35 +198,15 @@ http.interceptors.response.use(
   },
 )
 
-// 401错误处理防抖标志
-let handling401 = false
-
 function handle401Error(): void {
   // 防抖处理：如果正在处理401错误，则直接返回
-  if (handling401) {
-    return
-  }
   console.log('handle401Error')
-  handling401 = true
   const userStore = useUserStore()
   userStore.resetInfo()
 
-  // 直接使用 uni.navigateTo 避免 throttle 限制
-  uni.navigateTo({
-    url: '/pages/login/login',
-    fail: (e) => {
-      console.log('401跳转登录页失败:', e)
-      // 如果 navigateTo 失败，尝试使用 reLaunch
-      uni.reLaunch({
-        url: '/pages/login/login',
-      })
-    },
-  })
+  //如果在workplace则不会跳转，原因是router做了节流，点击tabbar时触发了一次，这里的跳转不会再触发
+  router.push('/pages/login/login')
 
-  // 延迟重置标志位，防止快速重复触发
-  setTimeout(() => {
-    handling401 = false
-  }, 1000)
 }
 
 export default (config: any) => {
