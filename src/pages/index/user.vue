@@ -4,19 +4,20 @@ import { useUserStore } from '@/stores'
 import appConfig from '@/config/app'
 import router from '@/utils/router'
 import * as caseAPI from '@/apis/case'
+import { REMARK } from '@/enums/remark'
 
 const userStore = useUserStore()
 const isLogin = computed(() => userStore.isLogin)
+const remark=computed(()=>userStore.remark)
 const remarkText = computed(() => userStore.remarkText)
 const expertPhone = ref(null)
 
 const menus = ref([
   [
     {
-      name: '邀请好友',
-      url: '/pages/invite/fuli',
-      icon: 'icon-paper',
-      handle: () => router.push('/pages/invite/fuli'),
+      name: '申请成为社员',
+      icon: 'icon-shenqing',
+      handle: toApply,
     },
     {
       name: '联系我们',
@@ -30,6 +31,22 @@ const menus = ref([
     },
   ],
 ])
+
+function toApply() {
+  if (!isLogin.value) {
+    return uni.showToast({
+      title: '请先登录',
+      icon: 'none',
+    })
+  }
+  if (remark.value!==REMARK.BaoMin) {
+    return uni.showToast({
+      title: '您已经时保民了哦～',
+      icon: 'none',
+    })
+  }
+  router.push('/pages/lpgs/apply')
+}
 
 function makePhone() {
   if (!expertPhone.value) {
