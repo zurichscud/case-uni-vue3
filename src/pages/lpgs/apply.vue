@@ -9,7 +9,7 @@
         <image class="img_show" src="../../static/xiangji.png" mode=""></image>
       </view>
       <view style="position: relative" @click="previewImage" v-if="!!applyImg">
-        <image :src="applyImg" class="loadPhoto" mode="aspectFill"></image>
+        <image :src="applyImg.url" class="loadPhoto" mode="aspectFill"></image>
         <view class="boxX" @click.stop="handleRemoveImg">
           <image src="../../static/close.png" mode="" class="box_img"></image>
         </view>
@@ -42,9 +42,11 @@ import { useUserStore } from '@/stores'
 import * as LPGSAPI from '@/apis/lpgs'
 import { uploadFile } from '@/utils/http'
 
-
 const userStore = useUserStore()
-const applyImg = ref(null)
+const applyImg = ref({
+  url: null,
+  type: 0, //0本地图片，1远程图片
+})
 const id = ref(null)
 const isUpload = ref(false)
 
@@ -52,20 +54,26 @@ async function getApplyData() {
   const { data } = await LPGSAPI.getApplyDataByUserId({
     userId: userStore.id,
   })
-  id.value = data.id//记录id
-  applyImg.value = data.photoUrl//申请的图片
+  id.value = data.id //记录id
+  applyImg.value = {
+    url: data.photoUrl,
+    type: 1,
+  }
 }
 
 //预览审核照片
 function previewImage() {
   uni.previewImage({
-    urls: [applyImg.value],
+    urls: [applyImg.value.url],
   })
 }
 
 //删除审核照片
 function handleRemoveImg() {
-  applyImg.value = null
+  applyImg.value = {
+    url: null,
+    type: 0,
+  }
 }
 
 function selectApplyImage() {
@@ -74,7 +82,8 @@ function selectApplyImage() {
     sizeType: ['original'], //可以指定是原图还是压缩图，默认二者都有
     success(res) {
       console.log(res.tempFiles[0].tempFilePath)
-      applyImg.value = res.tempFiles[0].tempFilePath
+      applyImg.value.url = res.tempFiles[0].tempFilePath
+      applyImg.value.type = 0
       isUpload.value = false
     },
     fail(res) {
@@ -83,28 +92,28 @@ function selectApplyImage() {
   })
 }
 
-function onloadImg() {
+async function onloadImg() {
   if (applyImg.value && !isUpload.value) {
+    console.log('[ applyImg.value ]-87', applyImg.value)
     uni.showLoading({
       title: '图片上传中',
     })
     isUpload.value = true
-    uni.compressImage({
-      src: applyImg.value,
-      quality: 10,
-      success: async (resImg) => {
-        console.log('tupian1', resImg)
-        const { data } = await uploadFile(resImg.tempFilePath)
-        await LPGSAPI.applyUpgard({
-          photoUrl: data,
-          userId: userStore.id,
-          id: id.value
-        })
-        uni.hideLoading()
-        uni.navigateTo({
-          url: '/pages/lpgs/processing',
-        })
-      },
+    if (applyImg.value.type === 0) {
+      const { data } = await uploadFile(tempFilePath)
+      applyImg.value = {
+        url: data,
+        type: 1,
+      }
+    }
+    await LPGSAPI.applyUpgard({
+      photoUrl: applyImg.value.url,
+      userId: userStore.id,
+      id: id.value,
+    })
+    uni.hideLoading()
+    uni.navigateTo({
+      url: '/pages/lpgs/processing',
     })
   } else {
     uni.showToast({
@@ -205,3 +214,14 @@ onMounted(() => {
   }
 }
 </style>
+
+<route lang="json">
+{
+  "name": "lpgsApply",
+  "layout": "default",
+  "auth": true,
+  "style": {
+    "navigationBarTitleText": "申请入社"
+  }
+}
+</route>

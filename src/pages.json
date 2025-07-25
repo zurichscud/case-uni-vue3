@@ -164,7 +164,11 @@
       "pages": [
         {
           "path": "chatroom",
-          "type": "page"
+          "type": "page",
+          "name": "chatroom",
+          "style": {
+            "navigationBarTitleText": "工作室"
+          }
         },
         {
           "path": "files",
@@ -292,7 +296,12 @@
       "pages": [
         {
           "path": "apply",
-          "type": "page"
+          "type": "page",
+          "name": "lpgsApply",
+          "layout": "default",
+          "style": {
+            "navigationBarTitleText": "申请入社"
+          }
         },
         {
           "path": "processing",
