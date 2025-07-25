@@ -35,55 +35,51 @@ onShow(() => {
   <view class="message-container">
     <NoLogin v-if="!isLogin" />
     <!-- 消息列表容器 -->
-    <YpScrollView
-      v-else
-      :query="getMessageListData"
-      v-model:page="pageParams"
-      ref="ypScrollViewRef"
-    >
-      <template #default="{ list }">
-        <view class="message-list">
-          <view v-for="(item, index) in list" :key="index" class="message-card">
-            <!-- 消息图标 -->
-            <view class="message-icon">
-              <view class="icon-container icon-default">
-                <uni-icons type="email" size="24" color="#ffffff"></uni-icons>
-              </view>
-            </view>
-
-            <!-- 消息内容 -->
-            <view class="message-content">
-              <view class="message-header">
-                <text class="message-title">
-                  {{ item.title }}
-                </text>
-                <view v-if="!item.flag" class="unread-dot"></view>
+    <view class="h-[95vh]" v-else>
+      <YpScrollView :query="getMessageListData" v-model:page="pageParams" ref="ypScrollViewRef">
+        <template #default="{ list }">
+          <view class="message-list">
+            <view v-for="(item, index) in list" :key="index" class="message-card">
+              <!-- 消息图标 -->
+              <view class="message-icon">
+                <view class="icon-container icon-default">
+                  <uni-icons type="email" size="24" color="#ffffff"></uni-icons>
+                </view>
               </view>
 
-              <!-- 完整消息内容 -->
-              <view class="message-body">
-                <text class="message-text">
-                  {{ item.content }}
-                </text>
-              </view>
+              <!-- 消息内容 -->
+              <view class="message-content">
+                <view class="message-header">
+                  <text class="message-title">
+                    {{ item.title }}
+                  </text>
+                  <view v-if="!item.flag" class="unread-dot"></view>
+                </view>
 
-              <view class="message-footer">
-                <text class="message-time">
-                  {{ formatTime(item.gmtCreate) }}
-                </text>
+                <!-- 完整消息内容 -->
+                <view class="message-body">
+                  <text class="message-text">
+                    {{ item.content }}
+                  </text>
+                </view>
+
+                <view class="message-footer">
+                  <text class="message-time">
+                    {{ formatTime(item.gmtCreate) }}
+                  </text>
+                </view>
               </view>
             </view>
           </view>
-        </view>
-      </template>
-    </YpScrollView>
+        </template>
+      </YpScrollView>
+    </view>
   </view>
 </template>
 
 <style scoped lang="scss">
 .message-container {
   background-color: #f5f6fa;
-  height: calc(95vh);
 }
 
 .empty-state {
