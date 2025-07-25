@@ -8,7 +8,7 @@ import { REMARK } from '@/enums/remark'
 
 const userStore = useUserStore()
 const isLogin = computed(() => userStore.isLogin)
-const remark=computed(()=>userStore.remark)
+const remark = computed(() => userStore.remark)
 const remarkText = computed(() => userStore.remarkText)
 const expertPhone = ref(null)
 
@@ -32,6 +32,10 @@ const menus = ref([
   ],
 ])
 
+function toLogin() {
+  router.push('/pages/login/login')
+}
+
 function toApply() {
   if (!isLogin.value) {
     return uni.showToast({
@@ -39,7 +43,7 @@ function toApply() {
       icon: 'none',
     })
   }
-  if (remark.value!==REMARK.BaoMin) {
+  if (remark.value !== REMARK.BaoMin) {
     return uni.showToast({
       title: '您已经时保民了哦～',
       icon: 'none',
@@ -63,27 +67,54 @@ async function getExpertPhoneData() {
 }
 
 onMounted(() => {
-  getExpertPhoneData()
+  if (isLogin.value) {
+    getExpertPhoneData()
+  }
 })
 </script>
 
 <template>
   <view class="container">
     <!-- 未登录状态 -->
-    <view v-if="!isLogin">
-      <NoLogin />
+    <view v-if="!isLogin" class="not-login">
+      <!-- 背景头部 -->
+      <div class="head"></div>
+      <view class="profile-header">
+        <view class="login-section">
+          <image class="default-avatar" :src="appConfig.defaultAvatar" />
+          <view class="login-text">
+            <view class="welcome-text">
+              欢迎使用
+            </view>
+            <view class="login-tip">
+              登录后享受更多服务
+            </view>
+          </view>
+          <view class="login-btn" @click="toLogin">
+            立即登录
+          </view>
+        </view>
+      </view>
+
+      <!-- 菜单列表 -->
+      <view class="menu-list">
+        <MenuCell :list="menus" />
+      </view>
     </view>
 
     <!-- 已登录状态 -->
-    <view class="user-profile" v-else>
+    <view v-else class="user-profile">
       <!-- 用户信息头部 -->
       <div class="head"></div>
       <view class="profile-header">
         <view class="user-info">
-          <view class="user-title">
+          <view class="user-title" @click="router.push('/pages/user/userInfo')">
             <image class="avatar" :src="userStore.photo || appConfig.defaultAvatar" />
             <view class="nickname">
-              <view>{{ userStore.nickName }}</view>
+              <view>
+                <text>{{ userStore.nickName }}</text>
+                <text class="iconfont icon-jiantou_liebiaoxiangyou ml-2"></text>
+              </view>
               <wd-tag mark>
                 {{ remarkText }}
               </wd-tag>
@@ -113,16 +144,57 @@ onMounted(() => {
   box-sizing: border-box;
 }
 
-.login-btn {
-  width: 544rpx;
-  height: 88rpx;
-  border-radius: 120rpx;
-  background-color: #3f9cff;
-  text-align: center;
-  line-height: 88rpx;
+.not-login {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.login-section {
+  position: relative;
+  padding: 24rpx 32rpx;
+  box-sizing: border-box;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-left: 20rpx;
+}
+
+.default-avatar {
+  width: 108rpx;
+  height: 108rpx;
+  border-radius: 50%;
+  border: 2px solid white;
+}
+
+.login-text {
+  flex: 1;
+  margin-left: 20rpx;
   color: #fff;
-  font-size: 32rpx;
-  margin: 30rpx auto;
+}
+
+.welcome-text {
+  font-size: 36rpx;
+  font-weight: bold;
+  margin-bottom: 8rpx;
+}
+
+.login-tip {
+  font-size: 28rpx;
+  opacity: 0.8;
+}
+
+.login-btn {
+  width: 160rpx;
+  height: 68rpx;
+  border-radius: 34rpx;
+  background-color: rgba(255, 255, 255, 0.2);
+  border: 2rpx solid rgba(255, 255, 255, 0.6);
+  text-align: center;
+  line-height: 68rpx;
+  color: #fff;
+  font-size: 28rpx;
+  backdrop-filter: blur(10rpx);
 }
 
 .user-profile {
@@ -135,7 +207,6 @@ onMounted(() => {
   color: #fff;
   background-size: 100% 100%;
   background-repeat: no-repeat;
-  // background-image: url('https://app.y9net.cn/data/01/31/wKgBNmNYnZuAUfn1AADiYPNcOwQ092.png');
   display: flex;
   align-items: center;
   justify-content: center;
@@ -177,62 +248,14 @@ onMounted(() => {
   padding: 0 32rpx;
   position: relative;
   top: -60rpx;
-
-  .menu-item {
-    height: 108rpx;
-    line-height: 108rpx;
-    color: #666666;
-    font-size: 32rpx;
-  }
 }
 
-.menu-card {
-  box-shadow: 0px 3px 22px 0px rgba(0, 0, 0, 0.05);
-  border-radius: 20rpx;
-  z-index: 100;
-  background-color: white;
-  overflow: hidden;
-  margin-bottom: 20rpx;
-
-  .menu-item {
-    padding: 0 20rpx;
-    position: relative;
-
-    .item-content {
-      position: relative;
-
-      .menu-icon {
-        width: 44rpx;
-        height: 44rpx;
-        vertical-align: middle;
-        margin-right: 32rpx;
-        margin-left: 48rpx;
-        margin-bottom: 6rpx;
-      }
-
-      .arrow-icon {
-        width: 12rpx;
-        height: 24rpx;
-        position: absolute;
-        right: 38rpx;
-        top: 44rpx;
-      }
-    }
-  }
-
-  .menu-item:not(:last-child) {
-    .item-content {
-      border-bottom: 1px solid #eeeeee;
-    }
-  }
-}
 .head {
   position: absolute;
   width: 100%;
   height: 500px;
   left: 0px;
   top: -100px;
-  // background: linear-gradient(180deg, rgba(247, 133, 69, 0.89) 0%, rgba(196, 196, 196, 0) 100%);
   background: linear-gradient(180deg, #1c35d0 0%, rgba(196, 196, 196, 0) 100%);
 }
 </style>
