@@ -140,7 +140,7 @@ onUnmounted(() => {
 
       <!-- 快捷功能按钮 -->
       <view class="icon-buttons">
-        <view class="icon-btn" @click="router.push('/pages/index/submit/poster')">
+        <view class="icon-btn" @click="router.push('/pages/chat/chatroom')">
           <text class="iconfont icon-renwujihua icon-white" />
           <text class="btn-text">
             提交案件

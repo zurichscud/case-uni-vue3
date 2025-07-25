@@ -299,6 +299,7 @@
           "type": "page",
           "name": "lpgsApply",
           "layout": "default",
+          "auth": true,
           "style": {
             "navigationBarTitleText": "申请入社"
           }
