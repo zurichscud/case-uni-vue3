@@ -26,6 +26,7 @@ const menus = ref([
     {
       name: '问题反馈',
       icon: 'icon-wentifankui',
+      openType: 'feedback',
     },
   ],
 ])

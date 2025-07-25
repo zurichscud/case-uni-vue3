@@ -16,13 +16,15 @@ function handleClick(item) {
 <template>
   <view class="menu-card" v-for="(menu, index) in list" :key="index">
     <view class="menu-item" v-for="(item, i) in menu" :key="i" @click="handleClick(item)">
-      <view class="item-content flex items-center justify-between px-8">
-        <view class="flex items-center">
-          <text class="iconfont user-icon" :class="item.icon"></text>
-          <text class="ml-4">{{ item.name }}</text>
+      <OpenType :open-type="item.openType">
+        <view class="item-content flex items-center justify-between px-8">
+          <view class="flex items-center">
+            <text class="iconfont user-icon" :class="item.icon"></text>
+            <text class="ml-4">{{ item.name }}</text>
+          </view>
+          <text class="iconfont icon-jiantou_liebiaoxiangyou arrow-icon"></text>
         </view>
-        <text class="iconfont icon-jiantou_liebiaoxiangyou arrow-icon"></text>
-      </view>
+      </OpenType>
     </view>
   </view>
 </template>

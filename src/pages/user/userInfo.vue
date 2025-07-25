@@ -1,47 +1,4 @@
 <!-- 个人资料编辑 -->
-<template>
-  <view class="editPersonal">
-    <view class="content">
-      <view class="list">
-        <view class="li flex_between_x" @click="changeUserImg">
-          <text class="title_size">头像</text>
-          <view class="right">
-            <image class="userImg" :src="userStore.photo" mode="aspectFill"></image>
-            <image
-              src="https://app.y9net.cn/images/imgs/project_iclaim/index/img_go.png"
-              style="vertical-align: middle"
-              mode=""
-            ></image>
-          </view>
-        </view>
-        <view class="li flex_between_x" @click="handleInput">
-          <text class="title_size">昵称</text>
-          <view class="right">
-            <text style="font-size: 36rpx; white-space: nowrap">{{ userStore.nickName }}</text>
-            <image
-              src="https://app.y9net.cn/images/imgs/project_iclaim/index/img_go.png"
-              mode=""
-            ></image>
-          </view>
-        </view>
-        <view class="li flex_between_x">
-          <text class="title_size">手机号</text>
-          <text style="font-size: 36rpx">{{ userStore.mobile }}</text>
-        </view>
-      </view>
-      <view class="btn_style" @click="handleLogout">
-        <image src="../../static/img36.png" class="img_size" mode=""></image>
-        退出登录
-      </view>
-      <view v-if="IS_DEV" class="btn_style" @click="handleRedirect">
-        <image src="../../static/img36.png" class="img_size" mode=""></image>
-        定向
-      </view>
-    </view>
-    <wd-message-box />
-  </view>
-</template>
-
 <script setup>
 import { useUserStore } from '@/stores'
 import { useMessage } from 'wot-design-uni'
@@ -82,10 +39,6 @@ function handleLogout() {
   })
 }
 
-function handleRedirect() {
-  userStore.setUser({ token: '123' })
-}
-
 function changeUserImg() {
   uni.showToast({
     title: '更换头像功能暂未开放',
@@ -93,6 +46,53 @@ function changeUserImg() {
   })
 }
 </script>
+
+<template>
+  <view class="editPersonal">
+    <view class="content">
+      <view class="list">
+        <view class="li flex_between_x" @click="changeUserImg">
+          <text class="title_size">头像</text>
+          <view class="right">
+            <image class="userImg" :src="userStore.photo" mode="aspectFill"></image>
+            <image
+              src="https://app.y9net.cn/images/imgs/project_iclaim/index/img_go.png"
+              style="vertical-align: middle"
+              mode=""
+            ></image>
+          </view>
+        </view>
+        <view class="li flex_between_x" @click="handleInput">
+          <text class="title_size">昵称</text>
+          <view class="right">
+            <text style="font-size: 36rpx; white-space: nowrap">
+              {{ userStore.nickName }}
+            </text>
+            <image
+              src="https://app.y9net.cn/images/imgs/project_iclaim/index/img_go.png"
+              mode=""
+            ></image>
+          </view>
+        </view>
+        <view class="li flex_between_x">
+          <text class="title_size">手机号</text>
+          <text style="font-size: 36rpx">
+            {{ userStore.mobile }}
+          </text>
+        </view>
+      </view>
+      <view class="btn_style" @click="handleLogout">
+        <image src="../../static/img36.png" class="img_size" mode=""></image>
+        退出登录
+      </view>
+      <view v-if="IS_DEV" class="btn_style">
+        <image src="../../static/img36.png" class="img_size" mode=""></image>
+        定向
+      </view>
+    </view>
+    <wd-message-box />
+  </view>
+</template>
 
 <style lang="scss" scoped>
 page {
