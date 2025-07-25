@@ -20,7 +20,11 @@ function handleTabbarChange({ value }: { value: string }) {
     getUnReadNumData()
     getUserInfo()
   }
-  router.push(`/pages/index/${value}`)
+  //切换tab不需要防抖
+  // router.push(`/pages/index/${value}`)
+  uni.switchTab({
+    url: `/pages/index/${value}`,
+  })
 }
 
 onMounted(() => {

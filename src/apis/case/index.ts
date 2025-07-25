@@ -19,3 +19,10 @@ export function getCaseProcess(caseId: string ) {
     method: 'GET',
   })
 }
+
+export function getExpertPhone() {
+  return http({
+    url: '/newCase/getExpertPhone',
+    method: 'GET',
+  })
+}
