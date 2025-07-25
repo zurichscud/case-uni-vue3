@@ -5,12 +5,6 @@ import * as MessageAPI from '@/apis/message'
 import { useUserStore } from '@/stores'
 import { formatTime } from '@/utils/date'
 
-const msgList = ref([])
-const refreshing = ref(false)
-const animatedCards = ref([])
-const showEmptyAnimation = ref(false)
-const isFirstLoad = ref(true) // 标记是否是首次加载
-const moreStatus = ref('more')
 const userStore = useUserStore()
 const pageParams = ref({
   userId: userStore.id,
@@ -18,101 +12,22 @@ const pageParams = ref({
   pageNum: 1,
   pageSize: 5,
 })
+const ypScrollViewRef = ref()
 const isLogin = computed(() => userStore.isLogin)
 
 // 获取消息列表 - 纯数据获取逻辑
 async function getMessageListData() {
-  try {
-    moreStatus.value = 'loading'
-    const { rows, total } = await MessageAPI.getMessageList(pageParams.value)
-
-    // 如果是首次加载或刷新，重置消息列表
-    if (pageParams.value.pageNum === 1) {
-      msgList.value = rows || []
-    } else {
-      msgList.value.push(...(rows || []))
-    }
-    // 判断是否结束
-    if (msgList.value.length < total) {
-      moreStatus.value = 'more'
-      pageParams.value.pageNum++
-    } else {
-      moreStatus.value = 'noMore'
-    }
-  } catch (error) {
-    console.error('获取消息列表失败:', error)
-    moreStatus.value = 'more' // 错误时恢复可加载状态
-    uni.showToast({
-      title: '获取消息失败',
-      icon: 'none',
-    })
-  }
-}
-
-// 重置动画状态
-function resetAnimationState() {
-  animatedCards.value = []
-  showEmptyAnimation.value = false
-}
-
-// 触发进入动画
-function triggerEnterAnimation() {
-  // 延迟一帧确保DOM已更新
-  setTimeout(() => {
-    if (msgList.value.length === 0) {
-      // 空状态动画
-      showEmptyAnimation.value = true
-    } else {
-      // 消息卡片依次进入动画
-      msgList.value.forEach((_, index) => {
-        setTimeout(() => {
-          animatedCards.value.push(index)
-        }, index * 100)
-      })
-    }
-  }, 50)
-}
-
-// 初始化数据并触发动画（用于首次加载）
-async function initializeWithAnimation() {
-  resetAnimationState()
-  await getMessageListData()
-  triggerEnterAnimation()
-}
-
-// 刷新数据（不触发动画）
-async function refreshData() {
-  await getMessageListData()
-}
-
-function onScrollToLower() {
-  if (moreStatus.value === 'more') {
-    getMessageListData()
-  }
-}
-
-// 下拉刷新
-async function onRefresh() {
-  refreshing.value = true
-  pageParams.value.pageNum = 1
-  moreStatus.value = 'more'
-  await getMessageListData()
-  refreshing.value = false
+  return await MessageAPI.getMessageList(pageParams.value)
 }
 
 onShow(() => {
   if (!isLogin.value) {
     return
   }
-  pageParams.value.pageNum = 1
-  moreStatus.value = 'more'
-  // 只有非首次加载时才刷新数据（不触发动画）
-  if (isFirstLoad.value) {
-    initializeWithAnimation()
-    isFirstLoad.value = false
-  } else {
-    refreshData()
-  }
+  nextTick(() => {
+    pageParams.value.pageNum = 1
+    ypScrollViewRef.value?.getData()
+  })
 })
 </script>
 
@@ -120,71 +35,55 @@ onShow(() => {
   <view class="message-container">
     <NoLogin v-if="!isLogin" />
     <!-- 消息列表容器 -->
-    <scroll-view
+    <YpScrollView
       v-else
-      class="message-scroll"
-      scroll-y
-      refresher-enabled
-      :refresher-triggered="refreshing"
-      @refresherrefresh="onRefresh"
-      @scrolltolower="onScrollToLower"
+      :query="getMessageListData"
+      v-model:page="pageParams"
+      ref="ypScrollViewRef"
     >
-      <!-- 空状态 -->
-      <empty v-if="msgList.length === 0" text="暂无消息" src="/static/message-empty.png"></empty>
-      <!-- 消息列表 -->
-      <view v-else class="message-list">
-        <view
-          v-for="(item, index) in msgList"
-          :key="index"
-          class="message-card"
-          :class="{ 'card-enter': animatedCards.includes(index) }"
-          :style="{ 'animation-delay': `${index * 100}ms` }"
-        >
-          <!-- 消息图标 -->
-          <view class="message-icon">
-            <view class="icon-container icon-default">
-              <uni-icons type="email" size="24" color="#ffffff"></uni-icons>
-            </view>
-          </view>
-
-          <!-- 消息内容 -->
-          <view class="message-content">
-            <view class="message-header">
-              <text class="message-title">
-                {{ item.title }}
-              </text>
-              <view v-if="!item.flag" class="unread-dot"></view>
+      <template #default="{ list }">
+        <view class="message-list">
+          <view v-for="(item, index) in list" :key="index" class="message-card">
+            <!-- 消息图标 -->
+            <view class="message-icon">
+              <view class="icon-container icon-default">
+                <uni-icons type="email" size="24" color="#ffffff"></uni-icons>
+              </view>
             </view>
 
-            <!-- 完整消息内容 -->
-            <view class="message-body">
-              <text class="message-text">
-                {{ item.content }}
-              </text>
-            </view>
+            <!-- 消息内容 -->
+            <view class="message-content">
+              <view class="message-header">
+                <text class="message-title">
+                  {{ item.title }}
+                </text>
+                <view v-if="!item.flag" class="unread-dot"></view>
+              </view>
 
-            <view class="message-footer">
-              <text class="message-time">
-                {{ formatTime(item.gmtCreate) }}
-              </text>
+              <!-- 完整消息内容 -->
+              <view class="message-body">
+                <text class="message-text">
+                  {{ item.content }}
+                </text>
+              </view>
+
+              <view class="message-footer">
+                <text class="message-time">
+                  {{ formatTime(item.gmtCreate) }}
+                </text>
+              </view>
             </view>
           </view>
         </view>
-      </view>
-
-      <uni-load-more v-if="msgList?.length > 0" :status="moreStatus" />
-    </scroll-view>
+      </template>
+    </YpScrollView>
   </view>
 </template>
 
 <style scoped lang="scss">
 .message-container {
   background-color: #f5f6fa;
-}
-
-.message-scroll {
-  height: 100%;
-  box-sizing: border-box;
+  height: calc(95vh);
 }
 
 .empty-state {
@@ -193,17 +92,6 @@ onShow(() => {
   align-items: center;
   justify-content: center;
   padding: 120rpx 60rpx;
-
-  /* 初始状态 - 淡入动画 */
-  opacity: 0;
-  transform: scale(0.9);
-  transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-
-  /* 进入动画状态 */
-  &.empty-enter {
-    opacity: 1;
-    transform: scale(1);
-  }
 
   .empty-icon {
     width: 200rpx;
@@ -241,17 +129,6 @@ onShow(() => {
     padding: 32rpx;
     margin-bottom: 20rpx;
     box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.08);
-
-    /* 初始状态 - 隐藏在下方 */
-    opacity: 0;
-    transform: translateY(60rpx);
-    transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-
-    /* 进入动画状态 */
-    &.card-enter {
-      opacity: 1;
-      transform: translateY(0);
-    }
 
     .message-icon {
       margin-right: 24rpx;
@@ -335,23 +212,9 @@ onShow(() => {
   justify-content: center;
   padding: 40rpx;
 
-  /* 加载状态脉动动画 */
-  animation: pulse 2s infinite;
-
   .loading-text {
     font-size: 28rpx;
     color: #999;
-  }
-}
-
-/* 脉动动画 */
-@keyframes pulse {
-  0%,
-  100% {
-    opacity: 0.6;
-  }
-  50% {
-    opacity: 1;
   }
 }
 

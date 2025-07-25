@@ -71,7 +71,6 @@ function handleTabChange({ index }) {
 }
 
 onLoad((query) => {
-  console.log('[ query ]-76', query)
   if (query.id) {
     id = query.id
     isSelf.value = false
