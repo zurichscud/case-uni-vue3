@@ -10,7 +10,6 @@ import { useUserStore } from '@/stores'
 import router from '@/utils/router'
 import appConfig from '@/config/app'
 
-
 const slogans = appConfig.slogans
 const sloganDuration = appConfig.sloganDuration
 const shareVisible = ref(false)
@@ -102,6 +101,7 @@ async function getArticleListData() {
   articleList.value = rows
 }
 
+
 onShow(() => {})
 
 onMounted(() => {
@@ -121,9 +121,7 @@ onUnmounted(() => {
       <!-- 标题栏 -->
       <view class="header-top">
         <view class="header-title">
-          <text class="title-main">
-            理赔公社
-          </text>
+          <text class="title-main">理赔公社</text>
         </view>
         <view class="header-subtitle">
           <view class="subtitle-scroll-container">
@@ -140,25 +138,19 @@ onUnmounted(() => {
 
       <!-- 快捷功能按钮 -->
       <view class="icon-buttons">
-        <view class="icon-btn" @click="router.push('/pages/chat/chatroom')">
+        <view class="icon-btn" @click="router.push('/pages/index/submit/poster')">
           <text class="iconfont icon-renwujihua icon-white" />
-          <text class="btn-text">
-            提交案件
-          </text>
+          <text class="btn-text">提交案件</text>
         </view>
 
         <view class="icon-btn" @click="router.push('/pages/AI/chat')">
           <text class="iconfont icon-mind2-full icon-white" />
-          <text class="btn-text">
-            弈寻AI
-          </text>
+          <text class="btn-text">弈寻AI</text>
         </view>
 
         <view class="icon-btn" @click="handleShare">
           <text class="iconfont icon-fenxiang icon-white" />
-          <text class="btn-text">
-            邀请好友
-          </text>
+          <text class="btn-text">邀请好友</text>
         </view>
       </view>
     </view>
@@ -192,9 +184,7 @@ onUnmounted(() => {
           <view class="view_title_left">
             <!-- 蓝色装饰条 -->
             <view class="view_title_left_block" />
-            <view class="title_text">
-              典型案例
-            </view>
+            <view class="title_text">典型案例</view>
           </view>
           <!-- 更多案例链接 -->
           <view class="view_title_right" @click="router.push('/pages/index/article/more')">
@@ -224,9 +214,7 @@ onUnmounted(() => {
     >
       <view class="share-popup">
         <!-- 标题 -->
-        <view class="share-title">
-          分享到
-        </view>
+        <view class="share-title">分享到</view>
 
         <!-- 分享选项 -->
         <view class="share-options">
@@ -240,9 +228,7 @@ onUnmounted(() => {
             <view class="share-icon">
               <i class="iconfont icon-weixin" style="color: #1aad19" />
             </view>
-            <text class="share-text">
-              分享好友
-            </text>
+            <text class="share-text">分享好友</text>
           </button>
 
           <!-- 生成海报 -->
@@ -250,9 +236,7 @@ onUnmounted(() => {
             <view class="share-icon">
               <i class="iconfont icon-weihaibao" style="color: #ff6b35" />
             </view>
-            <text class="share-text">
-              生成海报
-            </text>
+            <text class="share-text">生成海报</text>
           </button>
         </view>
       </view>

@@ -11,7 +11,6 @@ const isLogin = computed(() => userStore.isLogin)
 const remark = computed(() => userStore.remark)
 const remarkText = computed(() => userStore.remarkText)
 const expertPhone = ref(null)
-
 const menus = ref([
   [
     {
@@ -45,7 +44,7 @@ function toApply() {
   }
   if (remark.value !== REMARK.BaoMin) {
     return uni.showToast({
-      title: '您已经时保民了哦～',
+      title: '您已经是社员了哦～',
       icon: 'none',
     })
   }
