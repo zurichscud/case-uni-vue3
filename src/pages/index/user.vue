@@ -79,7 +79,7 @@ onMounted(() => {
       <!-- 背景头部 -->
       <div class="head"></div>
       <view class="profile-header">
-        <view class="login-section">
+        <view class="login-section" @click="toLogin">
           <image class="default-avatar" :src="appConfig.defaultAvatar" />
           <view class="login-text">
             <view class="welcome-text">
