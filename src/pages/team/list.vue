@@ -45,7 +45,7 @@ async function getTeamListData() {
 // 查看已报案案件
 function toInviteList(id: any) {
   if (id) {
-    router.push({ path: '/pages/invite/list', query: { id } })
+    router.push('/pages/invite/list', { id })
   } else {
     uni.showToast({
       title: 'id不能为空',
@@ -57,7 +57,7 @@ function toInviteList(id: any) {
 // 查看已签约案件
 function toCaseList(id: any) {
   if (id) {
-    router.push({ path: '/pages/case/list', query: { id } })
+    router.push('/pages/case/list', { id })
   } else {
     uni.showToast({
       title: 'id不能为空',
@@ -144,10 +144,10 @@ onMounted(() => {
                 </wd-tag>
               </view>
 
-              <BaseItem icon="icon-ren" label="成员数量" :value="item.listNum" />
+              <BaseItem icon="icon-ren" label="成员数量" :value="item.userNum" />
               <BaseItem icon="icon-shijian" label="成立时间" :value="item.gmtCreate" />
-              <BaseItem icon="icon-tijiao" label="已报案案件数量" :value="2" />
-              <BaseItem icon="icon-qianyue" label="已签约案件数量" :value="4" />
+              <!-- <BaseItem icon="icon-tijiao" label="案件数量" :value="item.listNum" /> -->
+              <BaseItem icon="icon-qianyue" label="已签约案件数量" :value="item.listNum" />
             </template>
 
             <template #actions>

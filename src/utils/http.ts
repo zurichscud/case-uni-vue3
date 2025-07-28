@@ -6,7 +6,7 @@ import router from '@/utils/router'
 type ToastIcon = 'success' | 'loading' | 'error' | 'none' | 'fail' | 'exception'
 
 // 定义错误码类型
-type ErrorCode = 400 | 401 | 403 | 404 | 408 | 429 | 500 | 501 | 502 | 503 | 504 | 505
+type ErrorCode = 1 | 400 | 401 | 403 | 404 | 408 | 429 | 500 | 501 | 502 | 503 | 504 | 505
 
 // 定义请求配置类型
 interface RequestConfig {
@@ -85,6 +85,7 @@ function showErrorToast(message: string, icon: ToastIcon = 'none'): void {
 
 // 错误码映射表
 const ERROR_CODE_MAP: Record<ErrorCode, string> = {
+  1: '验证码有误',
   400: '请求错误',
   401: '登录已过期，请重新登录',
   403: '拒绝访问',
@@ -104,9 +105,9 @@ const http = new Request({
   timeout: 10000,
   method: 'GET',
   header: {
-    'Accept': '*/*',
+    Accept: '*/*',
     'Content-Type': 'application/json',
-    'source': 'weixin',
+    source: 'weixin',
   },
   custom: options,
 })
@@ -146,7 +147,7 @@ http.interceptors.response.use(
         handle401Error()
       }
       if (response.config.custom?.showError) {
-        showErrorToast( '服务器开小差啦,请稍后再试~', 'none')
+        showErrorToast(ERROR_CODE_MAP[response.data.code] || '服务器开小差啦,请稍后再试~', 'none')
       }
       // 未知状态码抛出服务器异常
       logError(response)
@@ -154,9 +155,9 @@ http.interceptors.response.use(
     }
     // 自定义处理【showSuccess 成功提示】：如果需要显示成功提示，则显示成功提示
     if (
-      response.config.custom?.showSuccess
-      && response.config.custom.successMsg !== ''
-      && response.data.code === 200
+      response.config.custom?.showSuccess &&
+      response.config.custom.successMsg !== '' &&
+      response.data.code === 200
     ) {
       uni.showToast({
         title: response.config.custom.successMsg,
@@ -206,7 +207,6 @@ function handle401Error(): void {
 
   //如果在workplace则不会跳转，原因是router做了节流，点击tabbar时触发了一次，这里的跳转不会再触发
   router.push('/pages/login/login')
-
 }
 
 export default (config: any) => {

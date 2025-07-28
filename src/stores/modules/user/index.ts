@@ -65,7 +65,7 @@ export const useUserStore = defineStore('user', {
         icon: 'success',
       })
       setTimeout(() => {
-      uni.reLaunch({
+        uni.reLaunch({
           url: '/pages/index/index',
         })
       }, 1000)
