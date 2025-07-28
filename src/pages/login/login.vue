@@ -32,9 +32,6 @@ async function getPhoneNumber(res) {
     })
   }
   try {
-    // uni.showLoading({
-    //   title: '登录中...',
-    // })
     const { data } = await UserAPI.getDecryptPhone({
       code,
     })
@@ -45,9 +42,6 @@ async function getPhoneNumber(res) {
   }
   catch (error) {
     console.log(error)
-  }
-  finally {
-    // uni.hideLoading()
   }
 }
 </script>

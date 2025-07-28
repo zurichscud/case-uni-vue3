@@ -3,7 +3,7 @@ import type { AppStore } from './types'
 
 export const useAppStore = defineStore('app', {
   state: (): AppStore => ({
-    version: '4.1.1',
+    version: '4.1.3',
     wxVersion: '',
   }),
   getters: {},

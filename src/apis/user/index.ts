@@ -27,7 +27,7 @@ export function getDecryptPhone(data:{code:string}) {
   return http({
     url: 'iclaim/login/phone',
     method: 'GET',
-    params: data
+    data
   })
 }
 
