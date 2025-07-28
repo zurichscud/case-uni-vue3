@@ -48,12 +48,6 @@ async function getPhoneNumber(res) {
     uni.hideLoading()
   }
 }
-function handleTest() {
-  uni.showToast({
-    title: '测试',
-    icon: 'none',
-  })
-}
 </script>
 
 <template>
@@ -78,7 +72,6 @@ function handleTest() {
           手机号快捷登录
         </wd-button>
         <Agreement v-model="isAgree" />
-        <wd-button @click="handleTest">测试</wd-button>
       </view>
     </view>
 
