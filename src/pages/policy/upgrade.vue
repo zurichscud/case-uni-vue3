@@ -1,9 +1,9 @@
 <template>
-  <view class="pagea">
+  <view >
     <image
       lazy-load
       mode="widthFix"
-      :src="lishiSrc"
+      src="https://app.y9net.cn/data/01/38/wKgBNmPpoIuAZKK9AAQgKJOGCkI935.jpg"
       alt=""
       style="width: 100%"
     ></image>
