@@ -9,7 +9,16 @@ const { login } = useUserStore()
 const isAgree = ref(false)
 
 // e的code无效
-async function getPhoneNumber({ code }) {
+async function getPhoneNumber(res) {
+  const { code, errMsg } = res
+  //用户取消授权
+  if (errMsg!=='getPhoneNumber:ok') {
+    return uni.showToast({
+      title: '用户取消授权',
+      icon: 'none',
+    })
+  }
+  //未同意协议
   if (!isAgree.value) {
     return uni.showModal({
       title: '提示',
@@ -39,6 +48,12 @@ async function getPhoneNumber({ code }) {
     uni.hideLoading()
   }
 }
+function handleTest() {
+  uni.showToast({
+    title: '测试',
+    icon: 'none',
+  })
+}
 </script>
 
 <template>
@@ -63,6 +78,7 @@ async function getPhoneNumber({ code }) {
           手机号快捷登录
         </wd-button>
         <Agreement v-model="isAgree" />
+        <wd-button @click="handleTest">测试</wd-button>
       </view>
     </view>
 
