@@ -235,10 +235,6 @@
       "root": "pages/invite",
       "pages": [
         {
-          "path": "fuli",
-          "type": "page"
-        },
-        {
           "path": "inviteYou",
           "type": "page",
           "name": "inviteYou",
@@ -306,10 +302,6 @@
         },
         {
           "path": "processing",
-          "type": "page"
-        },
-        {
-          "path": "promotion",
           "type": "page"
         },
         {
@@ -413,6 +405,38 @@
         {
           "path": "components/teaminvite",
           "type": "page"
+        }
+      ]
+    },
+    {
+      "root": "pages/policy",
+      "pages": [
+        {
+          "path": "fengshe",
+          "type": "page",
+          "name": "fengshePolicy",
+          "layout": "default",
+          "style": {
+            "navigationBarTitleText": "分社社长福利"
+          }
+        },
+        {
+          "path": "sheyuan",
+          "type": "page",
+          "name": "sheyuanPolicy",
+          "layout": "default",
+          "style": {
+            "navigationBarTitleText": "社员奖励政策"
+          }
+        },
+        {
+          "path": "upgrade",
+          "type": "page",
+          "name": "upgradePolicy",
+          "layout": "default",
+          "style": {
+            "navigationBarTitleText": "晋升办法"
+          }
         }
       ]
     }

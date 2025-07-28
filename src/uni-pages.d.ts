@@ -29,7 +29,6 @@ interface NavigateToOptions {
        "/pages/chat/components/userTypes" |
        "/pages/team/list" |
        "/pages/team/qrcode" |
-       "/pages/invite/fuli" |
        "/pages/invite/inviteYou" |
        "/pages/invite/list" |
        "/pages/invite/components/UpgradeTip" |
@@ -38,7 +37,6 @@ interface NavigateToOptions {
        "/pages/login/components/Agreement" |
        "/pages/lpgs/apply" |
        "/pages/lpgs/processing" |
-       "/pages/lpgs/promotion" |
        "/pages/lpgs/reward" |
        "/pages/mcd/mcd-detail" |
        "/pages/mcd/mcd-list" |
@@ -54,7 +52,10 @@ interface NavigateToOptions {
        "/pages/user/inviteList" |
        "/pages/user/userInfo" |
        "/pages/user/components/invitepersonal" |
-       "/pages/user/components/teaminvite";
+       "/pages/user/components/teaminvite" |
+       "/pages/policy/fengshe" |
+       "/pages/policy/sheyuan" |
+       "/pages/policy/upgrade";
 }
 interface RedirectToOptions extends NavigateToOptions {}
 

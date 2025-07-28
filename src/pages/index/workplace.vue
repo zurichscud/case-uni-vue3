@@ -57,14 +57,19 @@ const menus: Menus = {
     title: '政策',
     list: [
       {
-        text: '奖励政策',
-        icon: 'icon-purse',
-        url: '/pages/invite/fuli',
+        text: '社员奖励政策',
+        icon: 'icon-yuangongjiangli',
+        url: '/pages/policy/sheyuan',
+      },
+      {
+        text: '分社社长政策',
+        icon: 'icon-jiangli',
+        url: '/pages/policy/fengshe',
       },
       {
         text: '晋升办法',
-        icon: 'icon-gift',
-        url: '/pages/lpgs/promotion',
+        icon: 'icon-jinsheng',
+        url: '/pages/policy/upgrade',
       },
     ],
   },
