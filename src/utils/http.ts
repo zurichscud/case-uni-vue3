@@ -146,7 +146,7 @@ http.interceptors.response.use(
         handle401Error()
       }
       if (response.config.custom?.showError) {
-        showErrorToast(response.data.message || '服务器开小差啦,请稍后再试~', 'none')
+        showErrorToast( '服务器开小差啦,请稍后再试~', 'none')
       }
       // 未知状态码抛出服务器异常
       logError(response)
