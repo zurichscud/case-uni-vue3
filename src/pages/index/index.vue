@@ -32,7 +32,7 @@ const qrCodeUrl = computed(() => {
   if (!isLogin.value) {
     return appConfig.share.path
   }
-  return `${appConfig.share.path}?pid=${userStore.id}`
+  return userStore.id
 })
 
 // 处理分享功能

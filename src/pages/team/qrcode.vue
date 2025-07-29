@@ -2,68 +2,26 @@
 import { ref, onMounted } from 'vue'
 // @ts-expect-error - uni_modules 组件缺少类型声明
 import uQrcode from '@/uni_modules/Sansnn-uQRCode/components/u-qrcode/u-qrcode.vue'
-import { useShare } from '@/hooks/useShare'
+import { useUserStore } from '@/stores'
+import logo from '@/static/读书.png'
+import { subscribeTemplate, shareOptions } from '@/config/wechat'
 
+const userStore = useUserStore()
 const uqrcodeRef = ref()
-const { shareOptions } = useShare()
-
-// 用户信息
-const userInfo = ref({
-  name: 'Rizky Sentro Mahardy',
-  id: '8273 8293 37292',
-  avatar: '/static/user.png',
-})
-
 // 二维码配置
 const qrOptions = ref({
-  sizeUnit: 'px',
-  size: 256,
   margin: 16,
+  foregroundImageSrc: logo,
   backgroundColor: '#FFFFFF',
-  foregroundColor: '#05BE71',
-  logoImage: '',
-  logoSize: 0.2,
-  logoBackgroundColor: 'transparent',
-  logoCornerRadius: 8,
+  foregroundColor: '#4285f4',
   correctLevel: 'M',
   auto: true,
 })
 
-// 生成邀请链接
-const inviteUrl = ref('')
-
-onMounted(() => {
-  generateInviteUrl()
-})
-
-function generateInviteUrl() {
-  // 生成邀请链接，这里使用用户ID和一些参数
-  const baseUrl = 'https://your-app.com/invite'
-  inviteUrl.value = `${baseUrl}?userId=${userInfo.value.id}&ref=qrcode`
-}
-
-// 复制号码
-async function copyId() {
-  try {
-    await uni.setClipboardData({
-      data: userInfo.value.id,
-    })
-    uni.showToast({
-      title: '已复制到剪贴板',
-      icon: 'success',
-    })
-  } catch {
-    uni.showToast({
-      title: '复制失败',
-      icon: 'error',
-    })
-  }
-}
-
 // 分享功能
 function handleShare() {
   uni.showActionSheet({
-    itemList: ['分享到微信好友', '分享到朋友圈', '保存图片'],
+    itemList: ['分享到微信好友', '分享到朋友圈'],
     success: (res) => {
       switch (res.tapIndex) {
         case 0:
@@ -72,9 +30,6 @@ function handleShare() {
         case 1:
           shareToTimeline()
           break
-        case 2:
-          saveQRCode()
-          break
       }
     },
   })
@@ -82,44 +37,29 @@ function handleShare() {
 
 // 分享到好友
 function shareToFriend() {
-  uni.share({
-    provider: 'weixin',
-    scene: 'WXSceneSession',
-    type: 0,
-    href: inviteUrl.value,
-    title: shareOptions.title,
-    summary: '快来加入我们吧！',
-    imageUrl: shareOptions.imageUrl,
-    success: () => {
+  uni.requestSubscribeMessage({
+    tmplIds: subscribeTemplate,
+    success: (res) => {
+      console.log(res)
+    },
+    fail: ({ errMsg, errCode }) => {
+      console.log(errMsg, errCode)
       uni.showToast({
-        title: '分享成功',
-        icon: 'success',
+        title: '订阅失败',
+        icon: 'none',
       })
     },
   })
+  console.log('不支持')
 }
 
 // 分享到朋友圈
 function shareToTimeline() {
-  uni.share({
-    provider: 'weixin',
-    scene: 'WXSceneTimeline',
-    type: 0,
-    href: inviteUrl.value,
-    title: shareOptions.title,
-    summary: '快来加入我们吧！',
-    imageUrl: shareOptions.imageUrl,
-    success: () => {
-      uni.showToast({
-        title: '分享成功',
-        icon: 'success',
-      })
-    },
-  })
+  console.log('不支持')
 }
 
 // 下载/保存二维码
-function saveQRCode() {
+function handleSave() {
   if (uqrcodeRef.value) {
     uqrcodeRef.value.save({
       success: () => {
@@ -137,51 +77,32 @@ function saveQRCode() {
     })
   }
 }
-
-// 返回
-function goBack() {
-  uni.navigateBack()
-}
+onShareAppMessage(() => shareOptions)
 </script>
 
 <template>
   <view class="min-h-screen bg-white flex flex-col">
-    <!-- 顶部导航 -->
-    <view class="flex justify-between items-center px-4 h-17">
-      <view class="w-6 h-6 flex items-center justify-center" @tap="goBack">
-        <wd-icon name="arrow-left" size="24px" color="#2D2D2D"></wd-icon>
-      </view>
-      <text class="font-medium text-base leading-6 text-[#2D2D2D]">Request</text>
-      <view class="w-6 h-6"></view>
-    </view>
-
     <!-- 主要内容 -->
-    <view class="flex-1 flex flex-col items-center pt-12.5 px-15 gap-8">
-
+    <view class="flex-1 flex flex-col items-center justify-center pt-12.5 px-15 gap-8">
       <!-- 二维码容器 -->
-      <view class="w-64 h-64 bg-white rounded-4 flex items-center justify-center shadow-sm">
+      <view
+        class="w-[400rpx] h-[400rpx] bg-white rounded-4 flex items-center justify-center shadow-sm"
+      >
         <uQrcode
           ref="uqrcodeRef"
           canvas-id="invite-qrcode"
-          :value="inviteUrl"
+          :value="userStore.id"
           :options="qrOptions"
-          class="w-64 h-64"
+          size="400"
+          size-unit="rpx"
         />
       </view>
 
       <!-- 用户信息 -->
       <view class="flex flex-col items-center gap-4">
         <text class="font-medium text-5 leading-7.5 text-[#2D2D2D] text-center">
-          {{ userInfo.name }}
+          {{ userStore.nickName }}
         </text>
-        <view class="flex items-center gap-3">
-          <text class="font-normal text-3.5 leading-5.25 text-[#606060]">
-            {{ userInfo.id }}
-          </text>
-          <view class="w-5 h-5 flex items-center justify-center active:opacity-70" @tap="copyId">
-            <wd-icon name="copy" size="16px" color="#05BE71"></wd-icon>
-          </view>
-        </view>
       </view>
     </view>
 
@@ -194,17 +115,17 @@ function goBack() {
           color="#05BE71"
           custom-style="margin-right: 8px;"
         ></wd-icon>
-        Share
+        分享
       </wd-button>
 
-      <wd-button type="primary" size="large" custom-class="download-btn" @click="saveQRCode">
+      <wd-button type="primary" size="large" custom-class="download-btn" @click="handleSave">
         <wd-icon
           name="download"
           size="16px"
           color="#05BE71"
           custom-style="margin-right: 8px;"
         ></wd-icon>
-        Download
+        保存
       </wd-button>
     </view>
   </view>
@@ -232,7 +153,6 @@ function goBack() {
 :deep(.download-btn:active) {
   opacity: 0.8;
 }
-
 </style>
 
 <route lang="json">
@@ -240,6 +160,7 @@ function goBack() {
   "name": "myQrcode",
   "layout": "default",
   "dev": true,
+  "auth": true,
   "style": {
     "navigationBarTitleText": "邀请二维码",
     "navigationStyle": "custom"

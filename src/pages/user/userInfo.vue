@@ -40,9 +40,12 @@ function handleLogout() {
 }
 
 function changeUserImg() {
-  uni.showToast({
-    title: '更换头像功能暂未开放',
-    icon: 'none',
+  uni.chooseImage({
+    count: 1,
+    sourceType: ['album', 'camera'],
+    success: (res) => {
+      console.log(res)
+    },
   })
 }
 
@@ -51,6 +54,16 @@ function handleDev() {
     url: '/pages/chat/chatroom',
   })
 }
+
+function handleOpenSetting() {
+  uni.openSetting({
+    success: (res) => {
+      console.log(res)
+    },
+  })
+}
+onMounted(() => {
+})
 </script>
 
 <template>
@@ -86,7 +99,17 @@ function handleDev() {
             {{ userStore.mobile }}
           </text>
         </view>
+        <view class="li flex_between_x" @click="handleOpenSetting">
+          <text class="title_size">设置</text>
+          <view class="right">
+            <image
+              src="https://app.y9net.cn/images/imgs/project_iclaim/index/img_go.png"
+              mode=""
+            ></image>
+          </view>
+        </view>
       </view>
+
       <view class="btn_style" @click="handleLogout">
         <image src="../../static/img36.png" class="img_size" mode=""></image>
         退出登录

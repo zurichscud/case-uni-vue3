@@ -28,6 +28,11 @@ const menus = ref([
       icon: 'icon-wentifankui',
       openType: 'feedback',
     },
+    {
+      name:'关注微信',
+      icon:'icon-weixin',
+      handle:toGZH
+    }
   ],
 ])
 
@@ -60,6 +65,15 @@ function makePhone() {
   })
 }
 
+function toGZH() {
+  wx.openOfficialAccountProfile({
+    username:'y919975373019',
+    fail:(err)=>{
+      console.log(err)
+    }
+  })
+}
+
 async function getExpertPhoneData() {
   const { data } = await caseAPI.getExpertPhone()
   expertPhone.value = data
@@ -82,16 +96,10 @@ onMounted(() => {
         <view class="login-section" @click="toLogin">
           <image class="default-avatar" :src="appConfig.defaultAvatar" />
           <view class="login-text">
-            <view class="welcome-text">
-              欢迎使用
-            </view>
-            <view class="login-tip">
-              登录后享受更多服务
-            </view>
+            <view class="welcome-text">欢迎使用</view>
+            <view class="login-tip">登录后享受更多服务</view>
           </view>
-          <view class="login-btn" @click="toLogin">
-            立即登录
-          </view>
+          <view class="login-btn" @click="toLogin">立即登录</view>
         </view>
       </view>
 
