@@ -6,12 +6,28 @@ import * as InviteAPI from '@/apis/invite'
 import UpgradeTip from './components/UpgradeTip.vue'
 import { REMARK } from '@/enums/remark'
 import BaseItem from '@/components/BaseCard/BaseItem.vue'
+import router from '@/utils/router'
 
+const INVITE_TYPE = {
+  MEMBER: 0,
+  GROUP: 1,
+}
 const ypScrollViewRef = ref()
 const ypScrollViewRef2 = ref()
 const userStore = useUserStore()
-let id = userStore.id
+let isFilter = INVITE_TYPE.MEMBER
 const remark = computed(() => userStore.remark)
+const query = defineProps({
+  //userId
+  id: {
+    type: String,
+  },
+  //是否限制跳转
+  limit: {
+    type: Number,
+    default: 0,
+  },
+})
 const pageParams = ref({
   pageNum: 1,
   pageSize: 4,
@@ -22,17 +38,26 @@ const pageParams2 = ref({
 })
 const currentTab = ref(0)
 const count = ref({})
-const isSelf =ref(true)
+const id = computed(() => {
+  if (query.id === '') {
+    return userStore.id
+  }
+  return query.id
+})
+const isSelf = computed(() => {
+  return id.value === userStore.id
+})
 
 async function getInviteListData() {
+  //只有自己才能获取升级信息
   if (isSelf.value) {
     getUpgardMSgData()
   }
-  return InviteAPI.getInviteListById({ ...pageParams.value, userId: id })
+  return InviteAPI.getInviteListById({ ...pageParams.value, userId: id.value, isFilter })
 }
 
 function handleWatchMember(member) {
-  uni.showToast({ title: `已查看邀请成员：${member.name}`, icon: 'success' })
+  router.push('/pages/invite/list', { id: member.id, limit: 1 })
 }
 
 function handleUpgrade(member) {
@@ -45,36 +70,20 @@ async function getUpgardMSgData() {
 }
 
 async function getGroupListData() {
-  return {
-    rows: [
-      {
-        id: 1,
-        name: '枫叶联社1',
-        count: 10,
-      },
-      {
-        id: 2,
-        name: '枫叶联社2',
-        count: 20,
-      },
-    ],
-    total: 2,
-  }
+  return InviteAPI.getInviteListById({ ...pageParams.value, userId: id.value, isFilter })
 }
 
 function handleTabChange({ index }) {
   if (index === 0) {
+    isFilter = INVITE_TYPE.MEMBER
     ypScrollViewRef.value?.getData()
   } else if (index === 1) {
+    isFilter = INVITE_TYPE.GROUP
     ypScrollViewRef2.value?.getData()
   }
 }
 
-onLoad((query) => {
-  if (query.id) {
-    id = query.id
-    isSelf.value = false
-  }
+onLoad(() => {
   nextTick(() => {
     ypScrollViewRef.value?.getData()
   })
@@ -97,7 +106,7 @@ onLoad((query) => {
           <template #default="{ list }">
             <view class="px-4">
               <!-- 升级提示区域 -->
-              <UpgradeTip :remark="remark" :count="count" v-if="isSelf"/>
+              <UpgradeTip :remark="remark" :count="count" v-if="isSelf" />
               <!-- 邀请列表 -->
               <BaseCard v-for="(item, index) in list" :key="item.id || index">
                 <template #index>
@@ -121,7 +130,7 @@ onLoad((query) => {
                 <template #actions>
                   <view class="flex gap-2 mt-4">
                     <wd-button
-                      v-if="item.count > 0"
+                      v-if="item.count > 0 && !limit"
                       type="primary"
                       size="small"
                       plain
@@ -130,7 +139,7 @@ onLoad((query) => {
                       查看邀请成员
                     </wd-button>
                     <wd-button
-                      v-if="item.remark === REMARK.BaoMin"
+                      v-if="item.remark === REMARK.BaoMin && !limit"
                       type="success"
                       size="small"
                       plain
@@ -156,7 +165,7 @@ onLoad((query) => {
                 </template>
                 <view class="flex items-center gap-2 mb-2">
                   <text class="text-[32rpx] text-[#333] font-bold">
-                    {{ item.name }}
+                    {{ item.membersClubName || '暂无团队名称' }}
                   </text>
                 </view>
                 <BaseItem icon="icon-chengyuan" label="成员数量" :value="item.count" />

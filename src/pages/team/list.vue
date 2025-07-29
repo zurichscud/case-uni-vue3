@@ -5,7 +5,9 @@ import { useMessage } from 'wot-design-uni'
 import BaseItem from '@/components/BaseCard/BaseItem.vue'
 import * as TeamAPI from '@/apis/team'
 import router from '@/utils/router'
+import { useUserStore } from '@/stores'
 
+const userStore = useUserStore()
 const TEAM_TYPE = {
   DIRECT: 0, // 直辖
   NON_DIRECT: 1, // 非直辖
@@ -42,10 +44,11 @@ async function getTeamListData() {
   }
 }
 
-// 查看已报案案件
+// 查看邀请列表
 function toInviteList(id: any) {
   if (id) {
-    router.push('/pages/invite/list', { id })
+    const limit = id === userStore.id ? 0 : 1
+    router.push('/pages/invite/list', { id, limit })
   } else {
     uni.showToast({
       title: 'id不能为空',
@@ -54,10 +57,11 @@ function toInviteList(id: any) {
   }
 }
 
-// 查看已签约案件
+// 查看案件列表
 function toCaseList(id: any) {
   if (id) {
-    router.push('/pages/case/list', { id })
+    const limit = id === userStore.id ? 0 : 1
+    router.push('/pages/case/list', { id, limit })
   } else {
     uni.showToast({
       title: 'id不能为空',
@@ -137,7 +141,7 @@ onMounted(() => {
 
             <template #default>
               <view class="flex items-center gap-2">
-                <view>{{ item.branch || '未知分社名称' }}</view>
+                <view>{{ item.branch || '未知团队名称' }}</view>
                 <wd-tag type="primary" plain v-if="item.type === TEAM_TYPE.DIRECT">直辖</wd-tag>
                 <wd-tag type="success" plain v-else-if="item.type === TEAM_TYPE.NON_DIRECT">
                   非直辖
@@ -147,7 +151,7 @@ onMounted(() => {
               <BaseItem icon="icon-ren" label="成员数量" :value="item.userNum" />
               <BaseItem icon="icon-shijian" label="成立时间" :value="item.gmtCreate" />
               <!-- <BaseItem icon="icon-tijiao" label="案件数量" :value="item.listNum" /> -->
-              <BaseItem icon="icon-qianyue" label="已签约案件数量" :value="item.listNum" />
+              <BaseItem icon="icon-qianyue" label="案件数量" :value="item.listNum" />
             </template>
 
             <template #actions>

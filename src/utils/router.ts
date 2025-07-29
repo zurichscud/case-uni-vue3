@@ -64,7 +64,7 @@ function _go(
       }
     }
   }
-
+  //如果传入对象
   if (isObject(path) && !isString(path)) {
     const routeObj = path as RouteObject
     page = routeObj.url
