@@ -40,9 +40,14 @@ function handleLogout() {
   })
 }
 
-function handleChooseAvatar({detail}) {
+async function handleChooseAvatar({ detail }) {
   console.log(detail)
-  uploadFile()
+  const { data } = await uploadFile(detail.avatarUrl)
+  await UserAPI.updateUserInfo({
+    id: userStore.id,
+    photo: data,
+  })
+  getUserInfo()
 }
 
 function handleDev() {
