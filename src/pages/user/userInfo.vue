@@ -4,6 +4,7 @@ import { useUserStore } from '@/stores'
 import { useMessage } from 'wot-design-uni'
 import { IS_DEV } from '@/utils/env'
 import * as UserAPI from '@/apis/user'
+import { uploadFile } from '@/utils/http'
 
 const message = useMessage()
 const userStore = useUserStore()
@@ -39,14 +40,9 @@ function handleLogout() {
   })
 }
 
-function changeUserImg() {
-  uni.chooseImage({
-    count: 1,
-    sourceType: ['album', 'camera'],
-    success: (res) => {
-      console.log(res)
-    },
-  })
+function handleChooseAvatar({detail}) {
+  console.log(detail)
+  uploadFile()
 }
 
 function handleDev() {
@@ -63,6 +59,7 @@ function handleOpenSetting() {
   })
 }
 onMounted(() => {
+  getUserInfo()
 })
 </script>
 
@@ -70,17 +67,20 @@ onMounted(() => {
   <view class="editPersonal">
     <view class="content">
       <view class="list">
-        <view class="li flex_between_x" @click="changeUserImg">
-          <text class="title_size">头像</text>
-          <view class="right">
-            <image class="userImg" :src="userStore.photo" mode="aspectFill"></image>
-            <image
-              src="https://app.y9net.cn/images/imgs/project_iclaim/index/img_go.png"
-              style="vertical-align: middle"
-              mode=""
-            ></image>
+        <OpenType open-type="chooseAvatar" @chooseavatar="handleChooseAvatar">
+          <view class="li flex_between_x">
+            <text class="title_size">头像</text>
+            <view class="right">
+              <image class="userImg" :src="userStore.photo" mode="aspectFill"></image>
+              <image
+                src="https://app.y9net.cn/images/imgs/project_iclaim/index/img_go.png"
+                style="vertical-align: middle"
+                mode=""
+              ></image>
+            </view>
           </view>
-        </view>
+        </OpenType>
+
         <view class="li flex_between_x" @click="handleInput">
           <text class="title_size">昵称</text>
           <view class="right">
@@ -109,7 +109,6 @@ onMounted(() => {
           </view>
         </view>
       </view>
-
       <view class="btn_style" @click="handleLogout">
         <image src="../../static/img36.png" class="img_size" mode=""></image>
         退出登录
