@@ -63,14 +63,6 @@
     {
       "path": "pages/index/components/typical-case",
       "type": "page"
-    },
-    {
-      "path": "pages/index/submit/poster",
-      "type": "page",
-      "name": "poster",
-      "style": {
-        "navigationBarTitleText": "提交案件"
-      }
     }
   ],
   "easycom": {
@@ -154,6 +146,14 @@
           }
         },
         {
+          "path": "poster",
+          "type": "page",
+          "name": "poster",
+          "style": {
+            "navigationBarTitleText": "提交案件"
+          }
+        },
+        {
           "path": "components/StepsPopup",
           "type": "page"
         }
@@ -166,8 +166,10 @@
           "path": "chatroom",
           "type": "page",
           "name": "chatroom",
+          "layout": "default",
+          "auth": true,
           "style": {
-            "navigationBarTitleText": "工作室"
+            "navigationBarTitleText": "提交案件"
           }
         },
         {

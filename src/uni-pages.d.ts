@@ -12,11 +12,11 @@ interface NavigateToOptions {
        "/pages/index/article/more" |
        "/pages/index/components/SharePoster" |
        "/pages/index/components/typical-case" |
-       "/pages/index/submit/poster" |
        "/pages/AI/chat" |
        "/pages/AI/components/Feedback" |
        "/pages/AI/components/HistoryDrawer" |
        "/pages/case/list" |
+       "/pages/case/poster" |
        "/pages/case/components/StepsPopup" |
        "/pages/chat/chatroom" |
        "/pages/chat/files" |

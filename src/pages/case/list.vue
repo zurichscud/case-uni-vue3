@@ -44,7 +44,7 @@ onLoad((query) => {
 </script>
 
 <template>
-  <view class="case-list-container">
+  <view class="h-screen">
     <!-- 案件列表 -->
     <YpScrollView :query="getCaseListData" ref="ypScrollViewRef" v-model:page="pageParams">
       <template #default="{ list }">
@@ -99,10 +99,6 @@ onLoad((query) => {
 </template>
 
 <style scoped lang="scss">
-.case-list-container {
-  height: 100vh;
-}
-
 .number {
   font-family: 'SF Mono', 'Consolas', 'monospace';
 }

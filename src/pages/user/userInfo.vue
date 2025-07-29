@@ -45,6 +45,12 @@ function changeUserImg() {
     icon: 'none',
   })
 }
+
+function handleDev() {
+  uni.navigateTo({
+    url: '/pages/chat/chatroom',
+  })
+}
 </script>
 
 <template>
@@ -85,7 +91,7 @@ function changeUserImg() {
         <image src="../../static/img36.png" class="img_size" mode=""></image>
         退出登录
       </view>
-      <view v-if="IS_DEV" class="btn_style">
+      <view v-if="IS_DEV" class="btn_style" @click="handleDev">
         <image src="../../static/img36.png" class="img_size" mode=""></image>
         定向
       </view>
