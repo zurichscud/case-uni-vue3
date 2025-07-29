@@ -34,8 +34,7 @@ function generateQRCode() {
           resolve()
         },
       })
-    }
-    else {
+    } else {
       resolve()
     }
   })
@@ -95,8 +94,7 @@ async function savePosterToAlbum() {
         },
       })
     }
-  }
-  catch (error) {
+  } catch (error) {
     uni.hideLoading()
     console.error('生成海报失败', error)
     uni.showToast({
@@ -106,9 +104,7 @@ async function savePosterToAlbum() {
   }
 }
 
-function generatePosterImage() {
-
-}
+function generatePosterImage() {}
 </script>
 
 <template>
@@ -129,26 +125,16 @@ function generatePosterImage() {
             <!-- 头部logo和标题 -->
             <view class="poster-header">
               <view class="poster-logo">
-                <text class="poster-title">
-                  理赔公社
-                </text>
-                <text class="poster-subtitle">
-                  专业理赔服务平台
-                </text>
+                <text class="poster-title">理赔公社</text>
+                <text class="poster-subtitle">专业理赔服务平台</text>
               </view>
             </view>
 
             <!-- 邀请文案 -->
             <view class="poster-invite">
-              <text class="invite-main">
-                邀请您加入理赔公社
-              </text>
-              <text class="invite-sub">
-                汇集行业保险理赔实战专家
-              </text>
-              <text class="invite-desc">
-                专业团队为您提供理赔咨询服务
-              </text>
+              <text class="invite-main">邀请您加入理赔公社</text>
+              <text class="invite-sub">汇集行业保险理赔实战专家</text>
+              <text class="invite-desc">专业团队为您提供理赔咨询服务</text>
             </view>
 
             <!-- 二维码区域 -->
@@ -168,16 +154,14 @@ function generatePosterImage() {
                   v-show="false"
                 />
               </view>
-              <text class="qr-tip">
-                长按识别二维码加入我们
-              </text>
+              <text class="qr-tip">长按识别二维码加入我们</text>
             </view>
           </view>
         </view>
       </view>
 
       <!-- 操作按钮 -->
-      <view class="poster-actions">
+      <view class="poster-actions" v-if="false">
         <view class="poster-btn save-btn" @tap="savePosterToAlbum">
           <text>💾</text>
           <text>保存到相册</text>

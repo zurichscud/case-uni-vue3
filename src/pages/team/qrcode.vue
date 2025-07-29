@@ -3,7 +3,7 @@ import { ref, onMounted } from 'vue'
 // @ts-expect-error - uni_modules 组件缺少类型声明
 import uQrcode from '@/uni_modules/Sansnn-uQRCode/components/u-qrcode/u-qrcode.vue'
 import { useUserStore } from '@/stores'
-import logo from '@/static/读书.png'
+import appConfig from '@/config/app'
 import { subscribeTemplate, shareOptions } from '@/config/wechat'
 
 const userStore = useUserStore()
@@ -11,9 +11,9 @@ const uqrcodeRef = ref()
 // 二维码配置
 const qrOptions = ref({
   margin: 16,
-  foregroundImageSrc: logo,
+  foregroundImageSrc: userStore.photo||appConfig.logo,
   backgroundColor: '#FFFFFF',
-  foregroundColor: '#4285f4',
+  foregroundColor: '#1b39b1',
   correctLevel: 'M',
   auto: true,
 })

@@ -7,6 +7,7 @@ import router from '@/utils/router'
 
 const { login } = useUserStore()
 const isAgree = ref(false)
+const loading = ref(false)
 
 // e的code无效
 async function getPhoneNumber(res) {
@@ -32,6 +33,7 @@ async function getPhoneNumber(res) {
     })
   }
   try {
+    loading.value = true
     const { data } = await UserAPI.getDecryptPhone({
       code,
     })
@@ -42,6 +44,8 @@ async function getPhoneNumber(res) {
   }
   catch (error) {
     console.log(error)
+  } finally {
+    loading.value = false
   }
 }
 </script>
@@ -65,6 +69,7 @@ async function getPhoneNumber(res) {
       <view class="login_wx">
         <wd-button
           open-type="getPhoneNumber"
+          :loading="loading"
           @getphonenumber="getPhoneNumber"
           block
           size="large"

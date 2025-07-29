@@ -1,6 +1,6 @@
 <!-- 个人资料编辑 -->
 <script setup>
-import { useUserStore } from '@/stores'
+import { useUserStore,useAppStore } from '@/stores'
 import { useMessage } from 'wot-design-uni'
 import { IS_DEV } from '@/utils/env'
 import * as UserAPI from '@/apis/user'
@@ -8,6 +8,7 @@ import { uploadFile } from '@/utils/http'
 
 const message = useMessage()
 const userStore = useUserStore()
+const appStore = useAppStore()
 const { logout, getUserInfo } = userStore
 
 async function handleInput() {
@@ -105,6 +106,18 @@ onMounted(() => {
         </view>
         <view class="li flex_between_x" @click="handleOpenSetting">
           <text class="title_size">设置</text>
+          <view class="right">
+            <image
+              src="https://app.y9net.cn/images/imgs/project_iclaim/index/img_go.png"
+              mode=""
+            ></image>
+          </view>
+        </view>
+        <view class="li flex_between_x" @click="handleOpenVersion">
+          <text class="title_size">版本号</text>
+          <text style="font-size: 36rpx; white-space: nowrap">
+            {{ appStore.wxVersion }}
+          </text>
           <view class="right">
             <image
               src="https://app.y9net.cn/images/imgs/project_iclaim/index/img_go.png"

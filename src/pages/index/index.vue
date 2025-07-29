@@ -9,6 +9,7 @@ import img from '@/static/home/弈寻.png'
 import { useUserStore } from '@/stores'
 import router from '@/utils/router'
 import appConfig from '@/config/app'
+import { shareOptions } from '@/config/wechat'
 
 const slogans = appConfig.slogans
 const sloganDuration = appConfig.sloganDuration
@@ -29,10 +30,7 @@ let scrollTimer = null
 
 // 海报相关数据
 const qrCodeUrl = computed(() => {
-  if (!isLogin.value) {
-    return appConfig.share.path
-  }
-  return userStore.id
+  return String(userStore.id)
 })
 
 // 处理分享功能
@@ -101,6 +99,7 @@ async function getArticleListData() {
   articleList.value = rows
 }
 
+onShareAppMessage(() => shareOptions)
 
 onShow(() => {})
 
