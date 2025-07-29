@@ -169,7 +169,7 @@
           "layout": "default",
           "auth": true,
           "style": {
-            "navigationBarTitleText": "提交案件"
+            "navigationBarTitleText": "智能晓弈"
           }
         },
         {
@@ -228,8 +228,7 @@
           "dev": true,
           "auth": true,
           "style": {
-            "navigationBarTitleText": "邀请二维码",
-            "navigationStyle": "custom"
+            "navigationBarTitleText": "邀请二维码"
           }
         }
       ]

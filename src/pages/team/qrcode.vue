@@ -18,44 +18,22 @@ const qrOptions = ref({
   auto: true,
 })
 
-// 分享功能
-function handleShare() {
-  uni.showActionSheet({
-    itemList: ['分享到微信好友', '分享到朋友圈'],
-    success: (res) => {
-      switch (res.tapIndex) {
-        case 0:
-          shareToFriend()
-          break
-        case 1:
-          shareToTimeline()
-          break
-      }
-    },
-  })
-}
 
 // 分享到好友
 function shareToFriend() {
-  uni.requestSubscribeMessage({
-    tmplIds: subscribeTemplate,
-    success: (res) => {
-      console.log(res)
-    },
-    fail: ({ errMsg, errCode }) => {
-      console.log(errMsg, errCode)
-      uni.showToast({
-        title: '订阅失败',
-        icon: 'none',
-      })
-    },
-  })
-  console.log('不支持')
-}
-
-// 分享到朋友圈
-function shareToTimeline() {
-  console.log('不支持')
+  // uni.requestSubscribeMessage({
+  //   tmplIds: subscribeTemplate,
+  //   success: (res) => {
+  //     console.log(res)
+  //   },
+  //   fail: ({ errMsg, errCode }) => {
+  //     console.log(errMsg, errCode)
+  //     uni.showToast({
+  //       title: '订阅失败',
+  //       icon: 'none',
+  //     })
+  //   },
+  // })
 }
 
 // 下载/保存二维码
@@ -108,7 +86,7 @@ onShareAppMessage(() => shareOptions)
 
     <!-- 底部按钮 -->
     <view class="p-4 flex flex-col gap-4">
-      <wd-button type="primary" size="large" custom-class="share-btn" @click="handleShare">
+      <wd-button type="primary" size="large" open-type="share" custom-class="share-btn">
         <wd-icon
           name="share"
           size="16px"
@@ -162,8 +140,7 @@ onShareAppMessage(() => shareOptions)
   "dev": true,
   "auth": true,
   "style": {
-    "navigationBarTitleText": "邀请二维码",
-    "navigationStyle": "custom"
+    "navigationBarTitleText": "邀请二维码"
   }
 }
 </route>

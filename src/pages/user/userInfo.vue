@@ -41,7 +41,6 @@ function handleLogout() {
 }
 
 async function handleChooseAvatar({ detail }) {
-  console.log(detail)
   const { data } = await uploadFile(detail.avatarUrl)
   await UserAPI.updateUserInfo({
     id: userStore.id,

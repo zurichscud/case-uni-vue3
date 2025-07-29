@@ -121,7 +121,7 @@ scroll-view {
   "layout": "default",
   "auth": true,
   "style": {
-    "navigationBarTitleText": "提交案件"
+    "navigationBarTitleText": "智能晓弈"
   }
 }
 </route>
