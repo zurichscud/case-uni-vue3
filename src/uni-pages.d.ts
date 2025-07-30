@@ -35,6 +35,7 @@ interface NavigateToOptions {
        "/pages/login/login" |
        "/pages/login/phoneLogin" |
        "/pages/login/components/Agreement" |
+       "/pages/lpgs/apply copy" |
        "/pages/lpgs/apply" |
        "/pages/lpgs/processing" |
        "/pages/lpgs/reward" |

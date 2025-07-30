@@ -6,7 +6,7 @@ dayjs.extend(relativeTime)
 dayjs.locale('zh-cn')
 
 // 格式化时间
-export function formatTime(timeStr: string, format: string = 'YYYY-MM-DD') {
+export function formatRecentTime(timeStr: string, format: string = 'YYYY-MM-DD') {
   if (!timeStr) {
     return ''
   }
@@ -31,4 +31,11 @@ export function formatTime(timeStr: string, format: string = 'YYYY-MM-DD') {
   else {
     return msgTime.format(format)
   }
+}
+
+export function formatTime(timeStr: string, format: string = 'YYYY-MM-DD HH:mm:ss') {
+  if (!timeStr) {
+    return ''
+  }
+  return dayjs(timeStr).format(format)
 }

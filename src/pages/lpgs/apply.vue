@@ -1,126 +1,147 @@
 <template>
-  <view>
-    <view class="boxuser">
-      <view class="title">请上传证明</view>
-      <view class="imginfo">
-        请上传岗位证、职业资格证、获奖证明等能证明现在或曾经从事过保险行业的证明
+  <view class="h-screen px-3 box-border">
+    <wd-gap></wd-gap>
+    <wd-steps :active="active" align-center>
+      <wd-step icon="edit-1" title="填写资料" />
+      <wd-step icon="clock" title="审核中" />
+      <wd-step icon="check1" title="审核结果" />
+    </wd-steps>
+    <wd-gap height="30"></wd-gap>
+    <!--表单 -->
+    <view v-if="active !== 2">
+      <view class="flex flex-col gap-4 my-6">
+        <TnTitle title="现任职岗位/职业" mode="vLine" />
+        <TnInput v-model="formData.profession" placeholder="请输入现任职岗位/职业" />
       </view>
-      <view class="loadImg" @click="selectApplyImage" v-if="!applyImg">
-        <image class="img_show" src="../../static/xiangji.png" mode=""></image>
+      <view class="flex flex-col gap-2 my-6">
+        <TnTitle title="现服务企业" mode="vLine" />
+        <TnInput v-model="formData.company" placeholder="请输入现服务企业" />
       </view>
-      <view style="position: relative" @click="previewImage" v-if="!!applyImg">
-        <image :src="applyImg.url" class="loadPhoto" mode="aspectFill"></image>
-        <view class="boxX" @click.stop="handleRemoveImg">
-          <image src="../../static/close.png" mode="" class="box_img"></image>
-        </view>
+      <view class="flex flex-col gap-2 my-6">
+        <TnTitle title="证明材料" mode="vLine" />
+        <wd-notice-bar
+          text="请上传岗位证、职业资格证、获奖证明等能证明现在或曾经从事过保险行业的证明"
+          prefix="warn-bold"
+        />
+        <TnImageUpload
+          v-model="imageList"
+          :custom-upload-handler="uploadImage"
+          :limit="1"
+          :show-error-tips="false"
+        />
       </view>
-      <view class="">
-        <view class="imginfo">
-          <image
-            style="
-              width: 32rpx;
-              height: 32rpx;
-              vertical-align: middle;
-              position: relative;
-              top: -5rpx;
-            "
-            src="../../static/alert.png"
-            mode=""
-          ></image>
-          上传图片只用于认证
-        </view>
+      <view class="text-center text-xs text-gray-500 mb-2" v-if="lastSubmitTime">
+        上次提交时间：{{ lastSubmitTime }}
       </view>
-      <view class="btnonImg" :class="[applyImg && !isUpload ? 'active' : '']" @click="onloadImg">
-        下一步
+      <wd-button size="large" block type="primary" @click="handleSubmit">
+        {{ submitBtnText }}
+      </wd-button>
+    </view>
+    <!-- 审核结果 -->
+    <view v-else>
+      <view class="flex flex-col items-center justify-center">
+        <image :src="noPass" style="width: 500rpx; height: 500rpx" mode="scaleToFill" />
+        <view class="text-center text-xl text-gray-500 mb-8">审核不通过</view>
+        <view class="text-center text-xs text-gray-500 mb-2">驳回理由：</view>
+        <view class="text-center text-xs text-gray-500 mb-8">{{ formData.failureReason }}</view>
+        <wd-button  block type="primary" @click="handleReSubmit">
+          重新申请
+        </wd-button>
       </view>
     </view>
   </view>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { useUserStore } from '@/stores'
 import * as LPGSAPI from '@/apis/lpgs'
 import { uploadFile } from '@/utils/http'
+import TnTitle from '@tuniao/tnui-vue3-uniapp/components/title/src/title.vue'
+import TnInput from '@tuniao/tnui-vue3-uniapp/components/input/src/input.vue'
+import TnImageUpload from '@tuniao/tnui-vue3-uniapp/components/image-upload/src/image-upload.vue'
+import type { ImageUploadFile } from '@tuniao/tnui-vue3-uniapp'
+import noPass from '@/static/no-pass.png'
 
+const active = ref(0)
 const userStore = useUserStore()
-const applyImg = ref({
-  url: null,
-  type: 0, //0本地图片，1远程图片
+const id = ref<number>()
+const lastSubmitTime = ref<string>()
+const formData = ref({
+  profession: '',
+  company: '',
+  failureReason: '',
 })
-const id = ref(null)
-const isUpload = ref(false)
+const imageList = ref<string[]>([])
+const submitBtnText = computed(() => {
+  if (active.value === 0) {
+    return '提交'
+  } else {
+    return '修改'
+  }
+})
 
+//获取上一次的申请记录
 async function getApplyData() {
   const { data } = await LPGSAPI.getApplyDataByUserId({
-    userId: userStore.id,
+    userId: userStore.id!,
   })
   id.value = data.id //记录id
-  applyImg.value = {
-    url: data.photoUrl,
-    type: 1,
+  imageList.value = [data.photoUrl]
+  formData.value = {
+    ...data,
   }
-}
-
-//预览审核照片
-function previewImage() {
-  uni.previewImage({
-    urls: [applyImg.value.url],
-  })
-}
-
-//删除审核照片
-function handleRemoveImg() {
-  applyImg.value = {
-    url: null,
-    type: 0,
-  }
-}
-
-function selectApplyImage() {
-  uni.chooseMedia({
-    count: 1, //默认9
-    sizeType: ['original'], //可以指定是原图还是压缩图，默认二者都有
-    success(res) {
-      console.log(res.tempFiles[0].tempFilePath)
-      applyImg.value.url = res.tempFiles[0].tempFilePath
-      applyImg.value.type = 0
-      isUpload.value = false
-    },
-    fail(res) {
-      console.log(res, '失败')
-    },
-  })
-}
-
-async function onloadImg() {
-  if (applyImg.value && !isUpload.value) {
-    console.log('[ applyImg.value ]-87', applyImg.value)
-    uni.showLoading({
-      title: '图片上传中',
-    })
-    isUpload.value = true
-    if (applyImg.value.type === 0) {
-      const { data } = await uploadFile(tempFilePath)
-      applyImg.value = {
-        url: data,
-        type: 1,
-      }
-    }
-    await LPGSAPI.applyUpgard({
-      photoUrl: applyImg.value.url,
-      userId: userStore.id,
-      id: id.value,
-    })
-    uni.hideLoading()
-    uni.navigateTo({
-      url: '/pages/lpgs/processing',
-    })
+  lastSubmitTime.value = data.submitTime
+  if (data.status === 0) {
+    active.value = 1
   } else {
+    active.value = 2
+  }
+}
+
+//重新申请
+async function handleReSubmit() {
+  active.value = 0
+}
+
+//自定义上传函数
+async function uploadImage(file: ImageUploadFile) {
+  const { data } = await uploadFile((file as UniApp.ChooseImageSuccessCallbackResultFile).path)
+  return data
+}
+
+async function handleSubmit() {
+  if (!imageList.value[0]) {
     uni.showToast({
-      title: '请选择上传图片',
+      title: '请上传证明材料',
       icon: 'none',
     })
+    return
   }
+  if (!formData.value.profession) {
+    uni.showToast({
+      title: '请输入现任职岗位/职业',
+      icon: 'none',
+    })
+    return
+  }
+  if (!formData.value.company) {
+    uni.showToast({
+      title: '请输入现服务企业',
+      icon: 'none',
+    })
+    return
+  }
+  await LPGSAPI.applyUpgard({
+    photoUrl: imageList.value[0],
+    userId: userStore.id!,
+    id: id.value,
+    profession: formData.value.profession,
+    company: formData.value.company,
+  })
+  uni.showToast({
+    title: '提交成功',
+    icon: 'success',
+  })
 }
 
 onMounted(() => {
@@ -128,92 +149,7 @@ onMounted(() => {
 })
 </script>
 
-<style lang="scss" scoped>
-.boxuser {
-  color: #999999;
-  text-align: center;
-
-  .title {
-    font-size: 72rpx;
-    color: #333333;
-    margin-top: 80rpx;
-    margin-bottom: 30rpx;
-    font-family: PingFang SC-中黑体, PingFang SC;
-  }
-
-  .loadPhoto {
-    width: 526rpx;
-    height: 726rpx;
-    margin: 0 auto;
-    border-radius: 20rpx;
-    margin-top: 80rpx;
-    margin-bottom: 100rpx;
-  }
-
-  .loadImg {
-    width: 526rpx;
-    height: 726rpx;
-    background-color: #f4f4f4;
-    margin: 0 auto;
-    border-radius: 20rpx;
-    margin-top: 80rpx;
-    margin-bottom: 100rpx;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    .img_show {
-      width: 138rpx;
-      height: 112rpx;
-    }
-  }
-
-  .boxX {
-    width: 38px;
-    height: 38px;
-    background: rgba(0, 0, 0, 0.33);
-    border-radius: 50%;
-    box-shadow: 0px 4px 10px 0px rgba(0, 0, 0, 0.08);
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 145rpx;
-    margin: 0 auto;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    .box_img {
-      width: 32rpx;
-      height: 32rpx;
-    }
-  }
-
-  .btnonImg {
-    width: 580rpx;
-    height: 88rpx;
-    line-height: 88rpx;
-    background-color: white;
-    background-color: #cacaca;
-    border-radius: 200rpx;
-    margin: 0 auto;
-    color: white;
-    box-shadow: 0px 4px 10px 0px #cbcbcb;
-  }
-
-  .active {
-    background: #3f9cff !important;
-    box-shadow: 0px 4px 10px 0px rgba(63, 156, 255, 0.3) !important;
-  }
-
-  .imginfo {
-    width: 526rpx;
-    font-size: 28rpx;
-    margin: 0 auto;
-    margin-bottom: 30rpx;
-  }
-}
-</style>
+<style lang="scss" scoped></style>
 
 <route lang="json">
 {

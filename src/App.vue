@@ -12,4 +12,6 @@ onLaunch(() => {
 })
 </script>
 
-<style lang="scss"></style>
+<style lang="scss">
+@import '@tuniao/tn-style/dist/uniapp/index.css';
+</style>

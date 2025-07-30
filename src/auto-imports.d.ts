@@ -47,7 +47,13 @@ declare global {
   const eagerComputed: typeof import('@vueuse/core')['eagerComputed']
   const effectScope: typeof import('vue')['effectScope']
   const extendRef: typeof import('@vueuse/core')['extendRef']
+  const for: typeof import('./utils/date')['for']
+  const forma: typeof import('./utils/date')['forma']
+  const format: typeof import('./utils/date')['format']
+  const formatRecentTime: typeof import('./utils/date')['formatRecentTime']
   const formatTime: typeof import('./utils/date')['formatTime']
+  const formatTime2: typeof import('./utils/date')['formatTime2']
+  const formate: typeof import('./utils/date')['formate']
   const getActivePinia: typeof import('pinia')['getActivePinia']
   const getCurrentInstance: typeof import('vue')['getCurrentInstance']
   const getCurrentPath: typeof import('./utils/index')['getCurrentPath']
@@ -402,6 +408,7 @@ declare module 'vue' {
     readonly eagerComputed: UnwrapRef<typeof import('@vueuse/core')['eagerComputed']>
     readonly effectScope: UnwrapRef<typeof import('vue')['effectScope']>
     readonly extendRef: UnwrapRef<typeof import('@vueuse/core')['extendRef']>
+    readonly formatRecentTime: UnwrapRef<typeof import('./utils/date')['formatRecentTime']>
     readonly formatTime: UnwrapRef<typeof import('./utils/date')['formatTime']>
     readonly getActivePinia: UnwrapRef<typeof import('pinia')['getActivePinia']>
     readonly getCurrentInstance: UnwrapRef<typeof import('vue')['getCurrentInstance']>

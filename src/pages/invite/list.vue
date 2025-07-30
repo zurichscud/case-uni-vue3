@@ -3,6 +3,7 @@ import { ref, onMounted } from 'vue'
 import { formatTime } from '@/utils/date'
 import { useUserStore } from '@/stores'
 import * as InviteAPI from '@/apis/invite'
+import * as LPGSAPI from '@/apis/lpgs'
 import UpgradeTip from './components/UpgradeTip.vue'
 import { REMARK } from '@/enums/remark'
 import BaseItem from '@/components/BaseCard/BaseItem.vue'
@@ -60,8 +61,10 @@ function handleWatchMember(member) {
   router.push('/pages/invite/list', { id: member.id, limit: 1 })
 }
 
-function handleUpgrade(member) {
-  uni.showToast({ title: `已请求升级：${member.name}`, icon: 'success' })
+async function handleInvite(member) {
+  await LPGSAPI.remindBaoMin({ userId: member.id })
+  uni.showToast({ title: `已邀请${member.nickName}成为社员`, icon: 'success' })
+  ypScrollViewRef.value?.getData()
 }
 
 async function getUpgardMSgData() {
@@ -139,11 +142,11 @@ onLoad(() => {
                       查看邀请成员
                     </wd-button>
                     <wd-button
-                      v-if="item.remark === REMARK.BaoMin && !limit"
+                      v-if="item.isRemind === 0 && !limit"
                       type="success"
                       size="small"
                       plain
-                      @click.stop="handleUpgrade(item)"
+                      @click.stop="handleInvite(item)"
                     >
                       邀请成为社员
                     </wd-button>

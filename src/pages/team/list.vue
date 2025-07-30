@@ -108,7 +108,7 @@ onMounted(() => {
           <!-- 团队信息 -->
           <view class="flex flex-col items-center justify-center">
             <view class="flex items-center justify-center">
-              <text class="text-gray-900 text-[45rpx] font-bold text-center">
+              <text class="text-gray-900 text-[40rpx] font-bold text-center">
                 {{ teamInfo.name }}
               </text>
               <text class="iconfont icon-zhongmingming ml-2 text-gray-500" @tap="handleEditName" />

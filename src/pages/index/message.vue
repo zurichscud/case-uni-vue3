@@ -3,7 +3,7 @@ import { ref, computed } from 'vue'
 import { onShow } from '@dcloudio/uni-app'
 import * as MessageAPI from '@/apis/message'
 import { useUserStore } from '@/stores'
-import { formatTime } from '@/utils/date'
+import { formatRecentTime } from '@/utils/date'
 
 const userStore = useUserStore()
 const pageParams = ref({
@@ -65,7 +65,7 @@ onShow(() => {
 
                 <view class="message-footer">
                   <text class="message-time">
-                    {{ formatTime(item.gmtCreate) }}
+                    {{ formatRecentTime(item.gmtCreate) }}
                   </text>
                 </view>
               </view>
