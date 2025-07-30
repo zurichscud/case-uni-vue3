@@ -34,8 +34,6 @@ declare module 'vue' {
     WdCheckbox: typeof import('wot-design-uni/components/wd-checkbox/wd-checkbox.vue')['default']
     WdConfigProvider: typeof import('wot-design-uni/components/wd-config-provider/wd-config-provider.vue')['default']
     WdDivider: typeof import('wot-design-uni/components/wd-divider/wd-divider.vue')['default']
-    WdDropMenu: typeof import('wot-design-uni/components/wd-drop-menu/wd-drop-menu.vue')['default']
-    WdDropMenuItem: typeof import('wot-design-uni/components/wd-drop-menu-item/wd-drop-menu-item.vue')['default']
     WdGap: typeof import('wot-design-uni/components/wd-gap/wd-gap.vue')['default']
     WdGrid: typeof import('wot-design-uni/components/wd-grid/wd-grid.vue')['default']
     WdGridItem: typeof import('wot-design-uni/components/wd-grid-item/wd-grid-item.vue')['default']

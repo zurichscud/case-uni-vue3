@@ -16,22 +16,23 @@ const pageParams = ref({
   pageSize: 4,
 })
 const selected = ref(0)
-const option = [
-  { label: '未签约案件', value: 0 },
-  { label: '已签约案件', value: 1 },
-]
+const option = ref([
+  { label: '未签约案件', value: 0, bageProps: { modelValue: 0, right: '-8px' } },
+  { label: '已签约案件', value: 1, bageProps: { modelValue: 0, right: '-8px' } },
+])
 
 async function handleWatchProgress({ caseId }) {
   const { rows } = await CaseAPI.getCaseProcess(caseId)
   stepsPopupRef.value.open(caseId, rows)
 }
 
-function handleChange() {
+function handleTabChange() {
   ypScrollViewRef.value?.getData()
 }
 
 async function getCaseListData() {
   // isFilter:0 未签约 1 已签约
+  console.log(selected.value);
   return CaseAPI.getCaseList({ ...pageParams.value, userId: id, isFilter: selected.value })
 }
 
@@ -48,15 +49,19 @@ onLoad((query) => {
 
 <template>
   <view class="h-screen">
-    <wd-sticky z-index="9999">
-      <view class="w-screen border-b h-[5vh]">
-        <wd-drop-menu>
-          <wd-drop-menu-item v-model="selected" :options="option" @change="handleChange" />
-        </wd-drop-menu>
+    <wd-sticky>
+      <view class="w-screen h-[5vh]">
+        <wd-tabs v-model="selected" animated @change="handleTabChange">
+          <wd-tab
+            v-for="item in option"
+            :title="item.label"
+            :key="item.value"
+            :badge-props="item.bageProps"
+          />
+        </wd-tabs>
       </view>
     </wd-sticky>
-
-    <!-- 案件列表 -->
+    {{ selected }}
     <view class="h-[94vh]">
       <YpScrollView :query="getCaseListData" ref="ypScrollViewRef" v-model:page="pageParams">
         <template #default="{ list }">

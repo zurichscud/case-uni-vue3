@@ -1,3 +1,9 @@
+<script setup lang="ts">
+defineProps<{
+  customClass?: string
+}>()
+</script>
+
 <template>
   <view class="base-card" :class="customClass">
     <view v-if="$slots.index" class="base-card-index">
@@ -14,12 +20,6 @@
     </view>
   </view>
 </template>
-
-<script setup lang="ts">
-defineProps<{
-  customClass?: string
-}>()
-</script>
 
 <style scoped lang="scss">
 .base-card {
@@ -41,10 +41,9 @@ defineProps<{
     height: 140rpx;
     background: linear-gradient(
       135deg,
-      rgba(63, 156, 255, 0.15) 0%,
-      rgba(82, 196, 26, 0.12) 30%,
-      rgba(255, 193, 7, 0.1) 60%,
-      rgba(220, 53, 69, 0.08) 100%
+      rgba(66, 133, 244, 0.15) 0%,
+      rgba(28, 53, 208, 0.12) 50%,
+      rgba(13, 26, 107, 0.1) 100%
     );
     border-radius: 0 16rpx 0 140rpx;
     z-index: 1;
