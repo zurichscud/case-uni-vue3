@@ -50,28 +50,6 @@ defineProps<{
     box-shadow: inset 0 0 20rpx rgba(255, 255, 255, 0.3);
   }
 
-  &::after {
-    content: '';
-    position: absolute;
-    top: 8rpx;
-    right: 8rpx;
-    width: 60rpx;
-    height: 60rpx;
-    background: radial-gradient(
-      circle,
-      rgba(255, 255, 255, 0.8) 0%,
-      rgba(255, 255, 255, 0.4) 50%,
-      transparent 100%
-    );
-    border-radius: 50%;
-    z-index: 2;
-    animation: shimmer 3s ease-in-out infinite;
-  }
-
-  &:active {
-    transform: scale(0.98);
-    background: #f8f9fa;
-  }
 }
 .base-card-index {
   position: absolute;

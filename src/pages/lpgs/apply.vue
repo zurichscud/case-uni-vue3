@@ -1,6 +1,6 @@
 <template>
   <view class="h-screen px-3 box-border">
-    <wd-gap></wd-gap>
+    <wd-gap height="30"></wd-gap>
     <wd-steps :active="active" align-center>
       <wd-step icon="edit-1" title="填写资料" />
       <wd-step icon="clock" title="审核中" />
