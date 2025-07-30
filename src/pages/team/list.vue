@@ -150,8 +150,8 @@ onMounted(() => {
 
               <BaseItem icon="icon-ren" label="成员数量" :value="item.userNum" />
               <BaseItem icon="icon-shijian" label="成立时间" :value="item.gmtCreate" />
-              <!-- <BaseItem icon="icon-tijiao" label="案件数量" :value="item.listNum" /> -->
-              <BaseItem icon="icon-qianyue" label="案件数量" :value="item.listNum" />
+              <BaseItem icon="icon-weiqianyue" label="未签约案件数量" :value="item.noSignCaseNum" />
+              <BaseItem icon="icon-qianyue" label="已签约案件数量" :value="item.signCaseNum" />
             </template>
 
             <template #actions>

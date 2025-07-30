@@ -293,16 +293,6 @@
       "root": "pages/lpgs",
       "pages": [
         {
-          "path": "apply copy",
-          "type": "page",
-          "name": "lpgsApply",
-          "layout": "default",
-          "auth": true,
-          "style": {
-            "navigationBarTitleText": "申请入社"
-          }
-        },
-        {
           "path": "apply",
           "type": "page",
           "name": "lpgsApply",

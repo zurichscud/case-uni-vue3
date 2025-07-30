@@ -94,7 +94,7 @@ onLoad(() => {
 </script>
 
 <template>
-  <view class="invite-list">
+  <view class="h-screen">
     <wd-tabs
       v-model="currentTab"
       auto-line-width
@@ -182,9 +182,6 @@ onLoad(() => {
 </template>
 
 <style scoped lang="scss">
-.invite-list {
-  height: 100vh;
-}
 </style>
 
 <route lang="json">

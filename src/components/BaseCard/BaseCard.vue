@@ -31,7 +31,7 @@ defineProps<{
   position: relative;
   overflow: hidden;
   transition: all 0.3s ease;
-  
+
   &::before {
     content: '';
     position: absolute;
@@ -79,7 +79,7 @@ defineProps<{
   top: 40rpx;
   right: 40rpx;
   font-size: 32rpx;
-  color: #a1a0a0;
+  color: #0d1a6b;
   font-weight: 600;
   line-height: 1;
 }
