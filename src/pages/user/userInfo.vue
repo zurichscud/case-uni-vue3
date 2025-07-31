@@ -1,10 +1,12 @@
 <!-- 个人资料编辑 -->
 <script setup>
-import { useUserStore,useAppStore } from '@/stores'
+import { useUserStore, useAppStore } from '@/stores'
 import { useMessage } from 'wot-design-uni'
 import { IS_DEV } from '@/utils/env'
 import * as UserAPI from '@/apis/user'
 import { uploadFile } from '@/utils/http'
+import TnListItem from '@tuniao/tnui-vue3-uniapp/components/list/src/list-item.vue'
+import TnAvatar from '@tuniao/tnui-vue3-uniapp/components/avatar/src/avatar.vue'
 
 const message = useMessage()
 const userStore = useUserStore()
@@ -25,6 +27,10 @@ async function handleInput() {
   await UserAPI.updateUserInfo({
     id: userStore.id,
     nickName: input,
+  })
+  uni.showToast({
+    title: '昵称修改成功',
+    icon: 'success',
   })
   getUserInfo()
 }
@@ -52,7 +58,7 @@ async function handleChooseAvatar({ detail }) {
 
 function handleDev() {
   uni.navigateTo({
-    url: '/pages/chat/chatroom',
+    url: `/pages/invite/inviteYou?name=${userStore.nickName}`,
   })
 }
 
@@ -60,6 +66,26 @@ function handleOpenSetting() {
   uni.openSetting({
     success: (res) => {
       console.log(res)
+    },
+  })
+}
+
+function handleClearCache() {
+  uni.showModal({
+    title: '提示',
+    content: '确定清空缓存吗？',
+    success: ({ confirm }) => {
+      if (confirm) {
+        uni.clearStorageSync()
+        userStore.resetInfo()
+        uni.showToast({
+          title: '缓存已清空',
+          icon: 'success',
+        })
+      }
+      setTimeout(() => {
+        router.push('/pages/index/user')
+      }, 1000)
     },
   })
 }
@@ -72,177 +98,99 @@ onMounted(() => {
   <view class="editPersonal">
     <view class="content">
       <view class="list">
-        <OpenType open-type="chooseAvatar" @chooseavatar="handleChooseAvatar">
-          <view class="li flex_between_x">
-            <text class="title_size">头像</text>
-            <view class="right">
-              <image class="userImg" :src="userStore.photo" mode="aspectFill"></image>
-              <image
-                src="https://app.y9net.cn/images/imgs/project_iclaim/index/img_go.png"
-                style="vertical-align: middle"
-                mode=""
-              ></image>
-            </view>
+        <TnListItem bottom-border bottom-border-indent>
+          <button
+            class="button-clear-style flex items-center"
+            open-type="chooseAvatar"
+            @chooseavatar="handleChooseAvatar"
+          >
+            <view class="flex-1">头像</view>
+            <TnAvatar :url="userStore.photo" />
+            <text class="iconfont icon-jiantou_liebiaoxiangyou"></text>
+          </button>
+        </TnListItem>
+        <TnListItem bottom-border bottom-border-indent @click="handleInput">
+          <view class="flex items-center">
+            <text class="flex-1">昵称</text>
+            <text>{{ userStore.nickName }}</text>
+            <text class="iconfont icon-jiantou_liebiaoxiangyou"></text>
           </view>
-        </OpenType>
+        </TnListItem>
+        <!-- 手机号 -->
+        <TnListItem bottom-border bottom-border-indent>
+          <view class="flex items-center">
+            <text class="flex-1">手机号</text>
+            <text>{{ userStore.mobile }}</text>
+            <text class="iconfont icon-jiantou_liebiaoxiangyou"></text>
+          </view>
+        </TnListItem>
+        <!-- 设置 -->
+        <TnListItem bottom-border bottom-border-indent @click="handleOpenSetting">
+          <view class="flex items-center">
+            <text class="flex-1">设置</text>
+            <text class="iconfont icon-jiantou_liebiaoxiangyou"></text>
+          </view>
+        </TnListItem>
+        <!-- 清空缓存 -->
+        <TnListItem bottom-border bottom-border-indent @click="handleClearCache">
+          <view class="flex items-center">
+            <text class="flex-1">清空缓存</text>
+            <text class="iconfont icon-jiantou_liebiaoxiangyou"></text>
+          </view>
+        </TnListItem>
+        <!-- 版本号 -->
+        <TnListItem bottom-border bottom-border-indent>
+          <view class="flex items-center">
+            <text class="flex-1">版本号</text>
+            <text>{{ appStore.wxVersion }}</text>
+            <text class="iconfont icon-jiantou_liebiaoxiangyou"></text>
+          </view>
+        </TnListItem>
 
-        <view class="li flex_between_x" @click="handleInput">
-          <text class="title_size">昵称</text>
-          <view class="right">
-            <text style="font-size: 36rpx; white-space: nowrap">
-              {{ userStore.nickName }}
-            </text>
-            <image
-              src="https://app.y9net.cn/images/imgs/project_iclaim/index/img_go.png"
-              mode=""
-            ></image>
-          </view>
-        </view>
-        <view class="li flex_between_x">
-          <text class="title_size">手机号</text>
-          <text style="font-size: 36rpx">
-            {{ userStore.mobile }}
-          </text>
-        </view>
-        <view class="li flex_between_x" @click="handleOpenSetting">
-          <text class="title_size">设置</text>
-          <view class="right">
-            <image
-              src="https://app.y9net.cn/images/imgs/project_iclaim/index/img_go.png"
-              mode=""
-            ></image>
-          </view>
-        </view>
-        <view class="li flex_between_x" @click="handleOpenVersion">
-          <text class="title_size">版本号</text>
-          <text style="font-size: 36rpx; white-space: nowrap">
-            {{ appStore.wxVersion }}
-          </text>
-          <view class="right">
-            <image
-              src="https://app.y9net.cn/images/imgs/project_iclaim/index/img_go.png"
-              mode=""
-            ></image>
-          </view>
+        <!-- 退出登录 -->
+        <view class="px-2 mt-4 mb-4">
+          <wd-button block type="error" size="large" icon="logout" @click="handleLogout">
+            退出登录
+          </wd-button>
         </view>
       </view>
-      <view class="btn_style" @click="handleLogout">
-        <image src="../../static/img36.png" class="img_size" mode=""></image>
-        退出登录
-      </view>
-      <view v-if="IS_DEV" class="btn_style" @click="handleDev">
-        <image src="../../static/img36.png" class="img_size" mode=""></image>
-        定向
-      </view>
+      <wd-button v-if="IS_DEV" block type="primary" size="large" @click="handleDev">定向</wd-button>
+      <wd-message-box />
     </view>
-    <wd-message-box />
   </view>
 </template>
 
 <style lang="scss" scoped>
-page {
-  background-color: #f4f4f4;
+.button-clear-style {
+  background-color: transparent;
+  padding: 0;
+  margin: 0;
+  font-size: inherit;
+  line-height: inherit;
+  border-radius: inherit;
+  color: inherit;
+  text-align: start;
 }
-.btn_flex {
-  display: flex;
-  width: 100%;
-  justify-content: space-between;
-  margin-top: 40rpx;
-  font-size: 28rpx;
+
+.icon-jiantou_liebiaoxiangyou {
+  font-size: 44rpx;
+  color: #666666;
 }
-.btnName {
-  border-radius: 20rpx;
-  width: 244rpx;
-  height: 78rpx;
-  line-height: 78rpx;
-}
-.btnName1 {
-  background-image: linear-gradient(to right, #1174fe, #74caff);
-  color: white;
-}
-.btnName2 {
-  border: 1px solid #3f9cff;
-  color: #3f9cff;
-  background-color: white;
-}
-.btn_style {
-  border: none;
-  box-shadow: 0px 3px 22px 0px rgba(0, 0, 0, 0.05);
-  margin-top: 5vh;
-  background-color: white;
-  border-radius: 20rpx;
-  padding: 30rpx 0;
-  font-size: 36rpx;
-  text-align: center;
-}
-.img_size {
-  width: 36rpx;
-  height: 36rpx;
-  vertical-align: middle;
-  margin-right: 30rpx;
-}
-.flex_between_x {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 32rpx 0;
-}
-.list {
-  padding: 0 32rpx;
-}
-.title_size {
-  font-size: 36rpx;
-  font-weight: normal;
-}
-.inputN {
-  text-align: left;
-  background: #ffffff;
-  border-radius: 60rpx;
-  height: 88rpx;
-  width: 600rpx;
-  margin-top: 40rpx;
-}
+
 .editPersonal {
   .content {
-    background: #fff;
+    background: #f4f4f4;
+    height: 100vh;
     padding: 34rpx 32rpx;
     .top {
       padding: 40rpx 32rpx;
     }
-  }
-  .userImg {
-    width: 108rpx !important;
-    height: 108rpx !important;
-    vertical-align: middle;
-    border-radius: 50%;
   }
   .list {
     background: #fff;
     box-shadow: 0px 3px 22px 0px rgba(0, 0, 0, 0.05);
     border-radius: 20rpx;
     overflow: hidden;
-    .li {
-      height: 48rpx;
-      line-height: 48rpx;
-      border-bottom: 2rpx solid #eeeeee;
-      image {
-        width: 12rpx;
-        height: 18rpx;
-        margin-left: 30rpx;
-      }
-    }
-    .li:first-child {
-      height: 100rpx;
-      line-height: 100rpx;
-    }
-    .li:last-child {
-      border-bottom: none;
-    }
-    .right,
-    .li text:last-child {
-      color: #b6b6b6;
-      font-size: 28rpx;
-    }
   }
 }
 </style>

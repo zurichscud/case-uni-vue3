@@ -8,7 +8,7 @@
     </wd-steps>
     <wd-gap height="30"></wd-gap>
     <!--表单 -->
-    <view v-if="active !== 2">
+    <view v-if="active === 0">
       <view class="flex flex-col gap-4 my-6">
         <TnTitle title="现任职岗位/职业" mode="vLine" />
         <TnInput v-model="formData.profession" placeholder="请输入现任职岗位/职业" />
@@ -37,6 +37,13 @@
         {{ submitBtnText }}
       </wd-button>
     </view>
+    <!-- 审核中 -->
+     <view v-else-if="active === 1">
+      <view class="flex flex-col items-center justify-center">
+        <image :src="applying" style="width: 500rpx; height: 500rpx" mode="scaleToFill" />
+        <view class="text-center text-xl text-gray-500 mb-8">审核中</view>
+      </view>
+     </view>
     <!-- 审核结果 -->
     <view v-else>
       <view class="flex flex-col items-center justify-center">
@@ -61,6 +68,7 @@ import TnInput from '@tuniao/tnui-vue3-uniapp/components/input/src/input.vue'
 import TnImageUpload from '@tuniao/tnui-vue3-uniapp/components/image-upload/src/image-upload.vue'
 import type { ImageUploadFile } from '@tuniao/tnui-vue3-uniapp'
 import noPass from '@/static/no-pass.png'
+import applying from '@/static/applying.png'
 
 const active = ref(0)
 const userStore = useUserStore()
@@ -142,6 +150,7 @@ async function handleSubmit() {
     title: '提交成功',
     icon: 'success',
   })
+  active.value=1
 }
 
 onMounted(() => {

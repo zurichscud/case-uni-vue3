@@ -99,7 +99,13 @@ async function getArticleListData() {
   articleList.value = rows
 }
 
-onShareAppMessage(() => shareOptions)
+onShareAppMessage(() => {
+  return {
+      title: '快来和我一起加入理赔公社吧',
+      path: `/pages/invite/inviteYou?name=${userStore.nickName}`,
+      imageUrl: 'https://app.y9net.cn/data/01/33/wKgBNmNrSeSAbR2TAAEp5UKyBy8155.png',
+  }
+})
 
 onShow(() => {})
 

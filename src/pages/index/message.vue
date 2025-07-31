@@ -33,7 +33,7 @@ onShow(() => {
 
 <template>
   <view class="message-container">
-    <NoLogin v-if="!isLogin" />
+    <NoLogin text="登录后可查看您的消息" v-if="!isLogin" />
     <!-- 消息列表容器 -->
     <view class="h-[95vh]" v-else>
       <YpScrollView :query="getMessageListData" v-model:page="pageParams" ref="ypScrollViewRef">

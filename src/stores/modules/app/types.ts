@@ -1,4 +1,5 @@
 export interface AppStore {
   version: string
-  wxVersion:string
+  wxVersion: string
+  envVersion: string
 }

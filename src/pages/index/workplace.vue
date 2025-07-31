@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import router from '@/utils/router'
+import { useUserStore } from '@/stores'
+import { REMARK } from '@/enums/remark'
 
 // 定义菜单项类型
 interface MenuItem {
@@ -21,13 +23,14 @@ interface Menus {
   policy: MenuSection
   article: MenuSection
 }
-
+const userStore = useUserStore()
+const isLogin = computed(() => userStore.isLogin)
 const menus: Menus = {
   case: {
     title: '案件',
     list: [
       {
-        icon: 'icon-read',
+        icon: '/static/workplace/case.png',
         text: '全部案件',
         url: '/pages/case/list',
       },
@@ -38,17 +41,17 @@ const menus: Menus = {
     list: [
       {
         text: '我的团队',
-        icon: 'icon-team',
+        icon: '/static/workplace/team.png',
         url: '/pages/team/list',
       },
       {
         text: '邀请记录',
-        icon: 'icon-paper',
+        icon: '/static/workplace/invite.png',
         url: '/pages/invite/list',
       },
       {
         text: '邀请二维码',
-        icon: 'icon-erweima',
+        icon: '/static/workplace/qrcode.png',
         url: '/pages/team/qrcode',
       },
     ],
@@ -58,17 +61,22 @@ const menus: Menus = {
     list: [
       {
         text: '社员奖励政策',
-        icon: 'icon-yuangongjiangli',
+        icon: '/static/workplace/file.png',
         url: '/pages/policy/sheyuan',
       },
       {
         text: '分社社长政策',
-        icon: 'icon-jiangli',
+        icon: '/static/workplace/file.png',
+        url: '/pages/policy/fengshe',
+      },
+      {
+        text: '联社社长政策',
+        icon: '/static/workplace/file.png',
         url: '/pages/policy/fengshe',
       },
       {
         text: '晋升办法',
-        icon: 'icon-jinsheng',
+        icon: '/static/workplace/up.png',
         url: '/pages/policy/upgrade',
       },
     ],
@@ -78,21 +86,29 @@ const menus: Menus = {
     list: [
       {
         text: '赔案快报',
-        icon: 'icon-newspaper',
+        icon: '/static/workplace/news.png',
         url: '/pages/public/webview?url=https://mp.weixin.qq.com/s/PMXUwjwkiwRKID-DA9eEIQ&title=赔案快报',
       },
     ],
   },
 }
 
-function handleItemClick(url: string) {
+function handleItemClick(url: string, text: string) {
+  if (text === '邀请二维码' && userStore.remark === REMARK.BaoMin) {
+    uni.showToast({
+      title: '请先成为社员',
+      icon: 'none',
+    })
+    return
+  }
   router.push(url)
 }
 </script>
 
 <template>
   <view>
-    <view v-for="menu in menus" :key="menu.title">
+    <NoLogin text="登录后可查看您的工作室" v-if="!isLogin" />
+    <view v-else v-for="menu in menus" :key="menu.title">
       <!-- 标题 -->
       <view class="section-title">
         {{ menu.title }}
@@ -104,10 +120,10 @@ function handleItemClick(url: string) {
           :key="item.text"
           :text="item.text"
           use-icon-slot
-          @itemclick="handleItemClick(item.url)"
+          @itemclick="handleItemClick(item.url,item.text)"
         >
           <template #icon>
-            <i class="iconfont" :class="item.icon"></i>
+            <image :src="item.icon" style="width: 50rpx; height: 50rpx" mode="scaleToFill" />
           </template>
         </wd-grid-item>
       </wd-grid>

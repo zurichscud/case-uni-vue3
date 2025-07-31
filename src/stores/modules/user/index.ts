@@ -56,7 +56,7 @@ export const useUserStore = defineStore('user', {
         id: data.id,
         nickName: data.nickName,
         mobile: data.mobile,
-        photo: data.photo,
+        photo: data.photo || appConfig.defaultAvatar,
         remark: data.remark,
         token: data.token,
       })
@@ -74,7 +74,7 @@ export const useUserStore = defineStore('user', {
     logout() {
       this.resetInfo()
       uni.reLaunch({
-        url: '/pages/index/index',
+        url: '/pages/index/user',
       })
     },
   },

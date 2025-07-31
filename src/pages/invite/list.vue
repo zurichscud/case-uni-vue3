@@ -5,6 +5,7 @@ import { useUserStore } from '@/stores'
 import * as InviteAPI from '@/apis/invite'
 import * as LPGSAPI from '@/apis/lpgs'
 import UpgradeTip from './components/UpgradeTip.vue'
+import InviteStatistics from './components/InviteStatistics.vue'
 import { REMARK } from '@/enums/remark'
 import BaseItem from '@/components/BaseCard/BaseItem.vue'
 import router from '@/utils/router'
@@ -70,6 +71,7 @@ async function handleInvite(member) {
 async function getUpgardMSgData() {
   const { data } = await InviteAPI.getUpgardMSg()
   count.value = data.count
+  console.log('[ count.value ]-74', count.value)
 }
 
 async function getGroupListData() {
@@ -108,6 +110,12 @@ onLoad(() => {
         <YpScrollView :query="getInviteListData" ref="ypScrollViewRef" v-model:page="pageParams">
           <template #default="{ list }">
             <view class="px-4">
+              <!-- 统计 -->
+              <InviteStatistics
+                :she-yuan="count.sheyuanCount"
+                :bao-min="count.baominCount"
+                :fen-she="count.fensheCount"
+              />
               <!-- 升级提示区域 -->
               <UpgradeTip :remark="remark" :count="count" v-if="isSelf" />
               <!-- 邀请列表 -->
@@ -158,7 +166,7 @@ onLoad(() => {
         </YpScrollView>
       </wd-tab>
       <!-- 组织 -->
-      <wd-tab title="组织">
+      <wd-tab title="育成">
         <YpScrollView :query="getGroupListData" ref="ypScrollViewRef2" v-model:page="pageParams2">
           <template #default="{ list }">
             <view class="px-4">
@@ -181,8 +189,7 @@ onLoad(() => {
   </view>
 </template>
 
-<style scoped lang="scss">
-</style>
+<style scoped lang="scss"></style>
 
 <route lang="json">
 {

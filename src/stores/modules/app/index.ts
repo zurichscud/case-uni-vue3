@@ -5,8 +5,13 @@ export const useAppStore = defineStore('app', {
   state: (): AppStore => ({
     version: '4.1.3',
     wxVersion: '',
+    envVersion: '',
   }),
-  getters: {},
+  getters: {
+    env(): string {
+      return this.envVersion
+    },
+  },
   actions: {
     setApp(info: any) {
       this.$patch(info)

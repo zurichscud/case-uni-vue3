@@ -31,6 +31,7 @@ interface NavigateToOptions {
        "/pages/team/qrcode" |
        "/pages/invite/inviteYou" |
        "/pages/invite/list" |
+       "/pages/invite/components/InviteStatistics" |
        "/pages/invite/components/UpgradeTip" |
        "/pages/login/login" |
        "/pages/login/phoneLogin" |

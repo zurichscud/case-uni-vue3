@@ -29,6 +29,7 @@ async function handleWatchProgress({ caseId }) {
 
 function handleTabChange({ index }) {
   isFilter.value = index
+  pageParams.value.pageNum = 1
   ypScrollViewRef.value?.getData()
 }
 

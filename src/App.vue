@@ -7,7 +7,12 @@ onLaunch(() => {
   // #ifdef MP-WEIXIN
   const { miniProgram } = uni.getAccountInfoSync()
   //version:线上小程序版本号（仅在正式版小程序上支持）
-  appStore.setWxVersion(miniProgram.version)
+  appStore.setApp({
+    wxVersion: miniProgram.version,
+    envVersion: miniProgram.envVersion,
+  })
+  console.log(appStore.envVersion);
+
   // #endif
 })
 </script>

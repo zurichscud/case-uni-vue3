@@ -1,7 +1,7 @@
 <template>
   <view class="none">
-    <image class="noneImg" src="/src/static/暂无数据.png"></image>
-    <view class="noneText">请登录账号后查看～</view>
+    <image class="noneImg" src="/src/static/welcome.png"></image>
+    <view class="noneText">{{ text }}</view>
     <view class="w-30 mx-auto mt-4">
       <wd-button type="primary" block @click="router.push('/pages/login/login')">
         立即登录
@@ -15,6 +15,10 @@ defineProps({
   name: String,
   btn: String,
   src: String,
+  text: {
+    type: String,
+    default: '请登录账号后查看～',
+  },
 })
 </script>
 

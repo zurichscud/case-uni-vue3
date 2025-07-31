@@ -212,3 +212,16 @@ uni-app {
   color: #3f9cff;
   text-decoration: underline;
 }
+
+/* 去除原生button样式 start */
+.button-clear-style {
+  background-color: transparent;
+  padding: 0;
+  margin: 0;
+  font-size: inherit;
+  line-height: inherit;
+  border-radius: inherit;
+  color: inherit;
+  text-align: start;
+}
+/* 去除原生button样式 end */

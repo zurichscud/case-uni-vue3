@@ -258,6 +258,10 @@
           }
         },
         {
+          "path": "components/InviteStatistics",
+          "type": "page"
+        },
+        {
           "path": "components/UpgradeTip",
           "type": "page"
         }

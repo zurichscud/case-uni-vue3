@@ -28,20 +28,15 @@ defineProps({
     </template>
     <!-- 社员 -->
     <template v-else-if="remark === REMARK.SheYuan">
-      <text>
-        <text>您目前社员数量：</text>
-        <text class="summary-num">{{ count.sheyuanCount }}位</text>
+      <!-- 升级条件 -->
+      <view class="summary-highlight" v-if="count.lackPersonCount1">
+        再邀请{{ count.lackPersonCount1 }}位人员。
+      </view>
+      <view v-if="count.lackPersonCount2 || count.lackCaseCount">或者</view>
+      <text v-if="count.lackCaseCount">再提交 {{ count.lackCaseCount }}个案件</text>
+      <text v-if="count.lackPersonCount2" class="summary-highlight">
+        再邀请{{ count.lackPersonCount2 }}位人员
       </text>
-      <template v-if="count.baominCount">
-      ，保民
-      <text class="summary-num">{{ count.baominCount }}位</text>
-      </template>
-      <template v-if="count.liansheCount">
-        ，联社社长
-        <text class="summary-num">{{ count.liansheCount }}位</text>
-      </template>
-      ，再邀请
-      <text class="summary-highlight">{{ count.lackCount }}位社员</text>
       就可以成为分社社长
     </template>
     <!-- 分社社长 -->
@@ -49,7 +44,7 @@ defineProps({
       <text>您目前分社数量：</text>
       <text class="summary-num">{{ count.fensheCount }}个</text>
       ，再有
-      <text class="summary-highlight">{{ count.lackCount }}个分社</text>
+      <text class="summary-highlight">{{ count.lackPersonCount1 }}个分社</text>
       就可以成为联社社长
     </template>
     <!--  -->
