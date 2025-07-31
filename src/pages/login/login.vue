@@ -9,16 +9,7 @@ const { login } = useUserStore()
 const isAgree = ref(false)
 const loading = ref(false)
 
-// e的code无效
-async function getPhoneNumber(res) {
-  const { code, errMsg } = res
-  // 用户取消授权
-  if (errMsg !== 'getPhoneNumber:ok') {
-    return uni.showToast({
-      title: '用户取消授权',
-      icon: 'none',
-    })
-  }
+function handleUnAgreeLogin() {
   // 未同意协议
   if (!isAgree.value) {
     return uni.showModal({
@@ -32,6 +23,19 @@ async function getPhoneNumber(res) {
       },
     })
   }
+}
+
+// e的code无效
+async function getPhoneNumber(res) {
+  const { code, errMsg } = res
+  // 用户取消授权
+  if (errMsg !== 'getPhoneNumber:ok') {
+    return uni.showToast({
+      title: '用户取消授权',
+      icon: 'none',
+    })
+  }
+
   try {
     loading.value = true
     const { data } = await UserAPI.getDecryptPhone({
@@ -41,8 +45,7 @@ async function getPhoneNumber(res) {
       source: SOURCE.WECHAT,
       mobile: data,
     })
-  }
-  catch (error) {
+  } catch (error) {
     console.log(error)
   } finally {
     loading.value = false
@@ -59,15 +62,15 @@ async function getPhoneNumber(res) {
           mode="widthFix"
           src="https://app.y9net.cn/data/01/33/wKgBNmNrRUaAQIbIAAEk8PcicTA220.png"
         ></image>
-        <view class="subT">
-          专业 便捷 公允 价值
-        </view>
-        <view class="login_title">
-          欢迎来到理赔公社
-        </view>
+        <view class="subT">专业 便捷 公允 价值</view>
+        <view class="login_title">欢迎来到理赔公社</view>
       </view>
       <view class="login_wx">
+        <wd-button v-if="!isAgree" block size="large" @click="handleUnAgreeLogin">
+          手机号快捷登录
+        </wd-button>
         <wd-button
+          v-else
           open-type="getPhoneNumber"
           :loading="loading"
           @getphonenumber="getPhoneNumber"
@@ -83,18 +86,14 @@ async function getPhoneNumber(res) {
     <!-- 其他方式登录 -->
     <view class="mb-10">
       <wd-divider>
-        <text class="text-[24rpx]">
-          其他登录方式
-        </text>
+        <text class="text-[24rpx]">其他登录方式</text>
       </wd-divider>
       <!-- 方式 -->
       <view class="flex items-center justify-center flex-col gap-2">
         <view class="other-login-btn" @click="router.push('/pages/login/phoneLogin')">
           <i class="iconfont icon-duanxinshezhi text-green-500" style="font-size: 32rpx"></i>
         </view>
-        <view class="text-[24rpx] text-gray-500">
-          短信验证登录
-        </view>
+        <view class="text-[24rpx] text-gray-500">短信验证登录</view>
       </view>
       <view class="text-[22rpx] text-gray-400 mt-4 text-center">
         未注册的用户将直接为您创建理赔公社账号

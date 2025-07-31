@@ -25,7 +25,6 @@ declare module 'vue' {
     MarkdownRenderer: typeof import('./components/MarkdownRenderer/index.vue')['default']
     MenuCell: typeof import('./components/MenuCell.vue')['default']
     NoLogin: typeof import('./components/NoLogin.vue')['default']
-    None: typeof import('./components/none.vue')['default']
     OpenType: typeof import('./components/OpenType.vue')['default']
     PrivacyPopup: typeof import('./components/PrivacyPopup.vue')['default']
     PromptBtm: typeof import('./components/promptBtm.vue')['default']
