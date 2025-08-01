@@ -1,5 +1,11 @@
 import { defineStore } from 'pinia'
-import type { AppStore } from './types'
+import type { AppStore, EnvVersion } from './types'
+
+const ENV: Record<EnvVersion, string> = {
+  develop: '开发版',
+  trial: '体验版',
+  release: '正式版',
+}
 
 export const useAppStore = defineStore('app', {
   state: (): AppStore => ({
@@ -9,7 +15,7 @@ export const useAppStore = defineStore('app', {
   }),
   getters: {
     env(): string {
-      return this.envVersion
+      return ENV[this.envVersion as EnvVersion] || ''
     },
   },
   actions: {

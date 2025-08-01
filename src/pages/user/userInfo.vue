@@ -62,12 +62,15 @@ function handleDev() {
   })
 }
 
-function handleOpenSetting() {
-  uni.openSetting({
-    success: (res) => {
-      console.log(res)
-    },
+function handlePhone() {
+  uni.showToast({
+    title: '手机号暂不支持更换',
+    icon: 'none',
   })
+}
+
+function handleOpenSetting() {
+  uni.openSetting()
 }
 
 function handleClearCache() {
@@ -82,13 +85,14 @@ function handleClearCache() {
           title: '缓存已清空',
           icon: 'success',
         })
+        setTimeout(() => {
+          router.push('/pages/index/user')
+        }, 1000)
       }
-      setTimeout(() => {
-        router.push('/pages/index/user')
-      }, 1000)
     },
   })
 }
+
 onMounted(() => {
   getUserInfo()
 })
@@ -117,7 +121,7 @@ onMounted(() => {
           </view>
         </TnListItem>
         <!-- 手机号 -->
-        <TnListItem bottom-border bottom-border-indent>
+        <TnListItem bottom-border bottom-border-indent @click="handlePhone">
           <view class="flex items-center">
             <text class="flex-1">手机号</text>
             <text>{{ userStore.mobile }}</text>
@@ -127,7 +131,7 @@ onMounted(() => {
         <!-- 设置 -->
         <TnListItem bottom-border bottom-border-indent @click="handleOpenSetting">
           <view class="flex items-center">
-            <text class="flex-1">设置</text>
+            <text class="flex-1">授权设置</text>
             <text class="iconfont icon-jiantou_liebiaoxiangyou"></text>
           </view>
         </TnListItem>
@@ -142,7 +146,7 @@ onMounted(() => {
         <TnListItem bottom-border bottom-border-indent>
           <view class="flex items-center">
             <text class="flex-1">版本号</text>
-            <text>{{ appStore.wxVersion }}</text>
+            <text>{{ appStore.env + appStore.wxVersion }}</text>
             <text class="iconfont icon-jiantou_liebiaoxiangyou"></text>
           </view>
         </TnListItem>

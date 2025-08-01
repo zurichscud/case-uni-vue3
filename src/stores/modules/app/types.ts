@@ -1,5 +1,7 @@
+export type EnvVersion = 'develop' | 'trial' | 'release'
+
 export interface AppStore {
   version: string
   wxVersion: string
-  envVersion: string
+  envVersion: EnvVersion | ''
 }
