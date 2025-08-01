@@ -11,7 +11,7 @@ interface NavigateToOptions {
        "/pages/index/article/detail" |
        "/pages/index/article/more" |
        "/pages/index/components/SharePoster" |
-       "/pages/index/components/typical-case" |
+       "/pages/index/components/TypicalCase" |
        "/pages/AI/chat" |
        "/pages/AI/components/Feedback" |
        "/pages/AI/components/HistoryDrawer" |
@@ -37,8 +37,6 @@ interface NavigateToOptions {
        "/pages/login/phoneLogin" |
        "/pages/login/components/Agreement" |
        "/pages/lpgs/apply" |
-       "/pages/lpgs/processing" |
-       "/pages/lpgs/reward" |
        "/pages/mcd/mcd-detail" |
        "/pages/mcd/mcd-list" |
        "/pages/mcd/ranking" |

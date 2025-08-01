@@ -61,7 +61,7 @@
       "type": "page"
     },
     {
-      "path": "pages/index/components/typical-case",
+      "path": "pages/index/components/TypicalCase",
       "type": "page"
     }
   ],
@@ -305,14 +305,6 @@
           "style": {
             "navigationBarTitleText": "申请入社"
           }
-        },
-        {
-          "path": "processing",
-          "type": "page"
-        },
-        {
-          "path": "reward",
-          "type": "page"
         }
       ]
     },

@@ -25,7 +25,7 @@
 <script setup>
 import { ref } from 'vue'
 import { onLoad } from '@dcloudio/uni-app'
-import typicalCase from '../components/typical-case.vue'
+import typicalCase from '../components/TypicalCase.vue'
 import * as ArticleAPI from '@/apis/article'
 
 const dataList = ref([])

@@ -2,7 +2,7 @@
 <script setup>
 import { computed, onMounted, onUnmounted, ref } from 'vue'
 import { onLoad, onShareAppMessage, onShow } from '@dcloudio/uni-app'
-import typicalCase from './components/typical-case.vue'
+import typicalCase from './components/TypicalCase.vue'
 import SharePoster from './components/SharePoster.vue'
 import * as ArticleAPI from '@/apis/article'
 import img from '@/static/home/弈寻.png'
