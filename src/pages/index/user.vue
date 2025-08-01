@@ -46,6 +46,8 @@ function toApply() {
       icon: 'none',
     })
   }
+  console.log(remark.value !== REMARK.BaoMin);
+
   if (remark.value !== REMARK.BaoMin) {
     return uni.showToast({
       title: '您已经是社员了哦～',

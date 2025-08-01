@@ -105,64 +105,66 @@ onLoad(() => {
     >
       <!-- 人员 -->
       <wd-tab title="人员">
-        <YpScrollView :query="getInviteListData" ref="ypScrollViewRef" v-model:page="pageParams">
-          <template #default="{ list }">
-            <view class="px-4">
-              <!-- 统计 -->
-              <InviteStatistics
-                v-if="list.length > 0"
-                :she-yuan="count.sheyuanCount"
-                :bao-min="count.baominCount"
-                :fen-she="count.fensheCount"
-              />
-              <!-- 升级提示区域 -->
-              <UpgradeTip :remark="remark" :count="count" v-if="isSelf" />
-              <!-- 邀请列表 -->
-              <BaseCard v-for="(item, index) in list" :key="item.id || index">
-                <template #index>
-                  {{ index + 1 }}
-                </template>
-                <view class="mb-2">
-                  <view class="flex items-center gap-2 mb-2">
-                    <text class="text-[32rpx] text-[#333] font-bold">
-                      {{ item.nickName }}
-                    </text>
-                    <yp-tag :status="4" :text="item.remarkName || '未知身份'" />
-                  </view>
-                </view>
-                <BaseItem icon="icon-dianhuahaoma" label="手机号码" :value="item.mobile" />
-                <BaseItem
-                  icon="icon-shijian"
-                  label="登记时间"
-                  :value="formatTime(item.gmtCreate, 'YYYY-MM-DD HH:mm')"
+        <view >
+          <YpScrollView :query="getInviteListData" ref="ypScrollViewRef" v-model:page="pageParams">
+            <template #default="{ list }">
+              <view class="px-4">
+                <!-- 统计 -->
+                <InviteStatistics
+                  v-if="list.length > 0"
+                  :she-yuan="count.sheyuanCount"
+                  :bao-min="count.baominCount"
+                  :fen-she="count.fensheCount"
                 />
-                <BaseItem icon="icon-chengyuan" label="邀请成员数量" :value="item.count" />
-                <template #actions>
-                  <view class="flex gap-2 mt-4">
-                    <wd-button
-                      v-if="item.count > 0 && !limit"
-                      type="primary"
-                      size="small"
-                      plain
-                      @click.stop="handleWatchMember(item)"
-                    >
-                      查看邀请成员
-                    </wd-button>
-                    <wd-button
-                      v-if="item.isRemind === 0 && !limit"
-                      type="success"
-                      size="small"
-                      plain
-                      @click.stop="handleInvite(item)"
-                    >
-                      邀请成为社员
-                    </wd-button>
+                <!-- 升级提示区域 -->
+                <UpgradeTip :remark="remark" :count="count" v-if="isSelf" />
+                <!-- 邀请列表 -->
+                <BaseCard v-for="(item, index) in list" :key="item.id || index">
+                  <template #index>
+                    {{ index + 1 }}
+                  </template>
+                  <view class="mb-2">
+                    <view class="flex items-center gap-2 mb-2">
+                      <text class="text-[32rpx] text-[#333] font-bold">
+                        {{ item.nickName }}
+                      </text>
+                      <yp-tag :status="4" :text="item.remarkName || '未知身份'" />
+                    </view>
                   </view>
-                </template>
-              </BaseCard>
-            </view>
-          </template>
-        </YpScrollView>
+                  <BaseItem icon="icon-dianhuahaoma" label="手机号码" :value="item.mobile" />
+                  <BaseItem
+                    icon="icon-shijian"
+                    label="登记时间"
+                    :value="formatTime(item.gmtCreate, 'YYYY-MM-DD HH:mm')"
+                  />
+                  <BaseItem icon="icon-chengyuan" label="邀请成员数量" :value="item.count" />
+                  <template #actions>
+                    <view class="flex gap-2 mt-4">
+                      <wd-button
+                        v-if="item.count > 0 && !limit"
+                        type="primary"
+                        size="small"
+                        plain
+                        @click.stop="handleWatchMember(item)"
+                      >
+                        查看邀请成员
+                      </wd-button>
+                      <wd-button
+                        v-if="item.isRemind === 0 && !limit"
+                        type="success"
+                        size="small"
+                        plain
+                        @click.stop="handleInvite(item)"
+                      >
+                        邀请成为社员
+                      </wd-button>
+                    </view>
+                  </template>
+                </BaseCard>
+              </view>
+            </template>
+          </YpScrollView>
+        </view>
       </wd-tab>
       <!-- 组织 -->
       <wd-tab title="育成">

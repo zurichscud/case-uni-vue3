@@ -22,8 +22,7 @@ const imageList = ref<string[]>([])
 const submitBtnText = computed(() => {
   if (active.value === 0) {
     return '提交'
-  }
-  else {
+  } else {
     return '修改'
   }
 })
@@ -33,17 +32,19 @@ async function getApplyData() {
   const { data } = await LPGSAPI.getApplyDataByUserId({
     userId: userStore.id!,
   })
-  id.value = data.id // 记录id
-  imageList.value = [data.photoUrl]
-  formData.value = {
-    ...data,
-  }
-  lastSubmitTime.value = data.submitTime
-  if (data.status === 0) {
-    active.value = 1
-  }
-  else {
-    active.value = 2
+  //如果没有提交记录，则data=null
+  if (data) {
+    id.value = data.id // 记录id
+    imageList.value = [data.photoUrl]
+    formData.value = {
+      ...data,
+    }
+    lastSubmitTime.value = data.submitTime
+    if (data.status === 0) {
+      active.value = 1
+    } else {
+      active.value = 2
+    }
   }
 }
 
@@ -143,27 +144,19 @@ onMounted(() => {
     <view v-else-if="active === 1">
       <view class="flex flex-col items-center justify-center">
         <image :src="applying" style="width: 500rpx; height: 500rpx" mode="scaleToFill" />
-        <view class="text-center text-xl text-gray-500 mb-8">
-          审核中
-        </view>
+        <view class="text-center text-xl text-gray-500 mb-8">审核中</view>
       </view>
     </view>
     <!-- 审核结果 -->
     <view v-else>
       <view class="flex flex-col items-center justify-center">
         <image :src="noPass" style="width: 500rpx; height: 500rpx" mode="scaleToFill" />
-        <view class="text-center text-xl text-gray-500 mb-8">
-          审核不通过
-        </view>
-        <view class="text-center text-xs text-gray-500 mb-2">
-          驳回理由：
-        </view>
+        <view class="text-center text-xl text-gray-500 mb-8">审核不通过</view>
+        <view class="text-center text-xs text-gray-500 mb-2">驳回理由：</view>
         <view class="text-center text-xs text-gray-500 mb-8">
           {{ formData.failureReason }}
         </view>
-        <wd-button block type="primary" @click="handleReSubmit">
-          重新申请
-        </wd-button>
+        <wd-button block type="primary" @click="handleReSubmit">重新申请</wd-button>
       </view>
     </view>
   </view>

@@ -50,7 +50,7 @@ export const useUserStore = defineStore('user', {
       })
     },
     // 登录
-    async login(loginForm: LoginParams, redirect: string) {
+    async login(loginForm: LoginParams, redirect: string = '/pages/index/index') {
       const { data } = await UserAPI.login(loginForm)
       this.setUser({
         id: data.id,

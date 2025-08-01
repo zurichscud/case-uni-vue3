@@ -11,7 +11,6 @@ const loading = ref(false) //登录加载
 const query = defineProps({
   redirect: {
     type: String,
-    default: '/pages/index/index',
   },
 })
 

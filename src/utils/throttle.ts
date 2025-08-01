@@ -3,7 +3,7 @@ let flag: boolean = false
 
 /**
  * 节流原理：在一定时间内，只能触发一次
- *
+ *存在问题，如果两个函数都使用该进行节流，则都会收到影响
  * @param {Function} func 要执行的回调函数
  * @param {number} wait 延时的时间
  * @param {boolean} immediate 是否立即执行

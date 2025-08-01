@@ -94,12 +94,13 @@ const menus: Menus = {
 }
 
 function handleItemClick(url: string, text: string) {
-  if (text === '邀请二维码' && userStore.remark === REMARK.BaoMin) {
-    uni.showToast({
-      title: '请先成为社员',
-      icon: 'none',
-    })
-    return
+  if (userStore.remark === REMARK.BaoMin) {
+    if (text === '邀请二维码' || text === '邀请记录') {
+      return uni.showToast({
+        title: '请先成为社员',
+        icon: 'none',
+      })
+    }
   }
   router.push(url)
 }
@@ -120,7 +121,7 @@ function handleItemClick(url: string, text: string) {
           :key="item.text"
           :text="item.text"
           use-icon-slot
-          @itemclick="handleItemClick(item.url,item.text)"
+          @itemclick="handleItemClick(item.url, item.text)"
         >
           <template #icon>
             <image :src="item.icon" style="width: 50rpx; height: 50rpx" mode="scaleToFill" />

@@ -35,8 +35,12 @@ function handleTabChange({ index }) {
 
 async function getCaseListData() {
   // isFilter:0 未签约 1 已签约
-  console.log(currentTab.value,'currentTab')
-  const res= await CaseAPI.getCaseList({ ...pageParams.value, userId: id, isFilter: isFilter.value })
+  console.log(currentTab.value, 'currentTab')
+  const res = await CaseAPI.getCaseList({
+    ...pageParams.value,
+    userId: id,
+    isFilter: isFilter.value,
+  })
   // option.value[isFilter.value].bageProps.modelValue = res.total
   return res
 }
@@ -56,7 +60,7 @@ onLoad((query) => {
   <view class="h-screen">
     <wd-sticky>
       <view class="w-screen h-[5vh]">
-        <wd-tabs animated @change="handleTabChange" v-model="currentTab">
+        <wd-tabs animated @change="handleTabChange" v-model="currentTab" auto-line-width>
           <wd-tab
             v-for="item in option"
             :title="item.label"

@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import throttle from '@/utils/throttle'
 
 interface MenuItem {
   name: string
@@ -16,9 +15,10 @@ defineProps<Props>()
 
 function handleClick(item: MenuItem): void {
   if (item.handle) {
-    throttle(item.handle)
+    item.handle()
   }
 }
+
 </script>
 
 <template>
