@@ -50,7 +50,7 @@ export const useUserStore = defineStore('user', {
       })
     },
     // 登录
-    async login(loginForm: LoginParams) {
+    async login(loginForm: LoginParams, redirect: string) {
       const { data } = await UserAPI.login(loginForm)
       this.setUser({
         id: data.id,
@@ -66,7 +66,7 @@ export const useUserStore = defineStore('user', {
       })
       setTimeout(() => {
         uni.reLaunch({
-          url: '/pages/index/index',
+          url: redirect,
         })
       }, 1000)
     },

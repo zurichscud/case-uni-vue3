@@ -6,8 +6,14 @@ import Agreement from './components/Agreement.vue'
 import router from '@/utils/router'
 
 const { login } = useUserStore()
-const isAgree = ref(false)
-const loading = ref(false)
+const isAgree = ref(false) //用户是否同意协议
+const loading = ref(false) //登录加载
+const query = defineProps({
+  redirect: {
+    type: String,
+    default: '/pages/index/index',
+  },
+})
 
 function handleUnAgreeLogin() {
   // 未同意协议
@@ -41,10 +47,13 @@ async function getPhoneNumber(res) {
     const { data } = await UserAPI.getDecryptPhone({
       code,
     })
-    await login({
-      source: SOURCE.WECHAT,
-      mobile: data,
-    })
+    await login(
+      {
+        source: SOURCE.WECHAT,
+        mobile: data,
+      },
+      query.redirect,
+    )
   } catch (error) {
     console.log(error)
   } finally {

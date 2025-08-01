@@ -35,7 +35,7 @@ const menus = ref([
 ])
 
 function toLogin() {
-  router.push('/pages/login/login')
+  router.push('/pages/login/login',{redirect:'/pages/index/user'})
 }
 
 //申请成为社员
