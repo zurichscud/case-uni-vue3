@@ -1,11 +1,12 @@
 import { useUserStore } from '@/stores'
-import appConfig from '@/config/app'
+import { shareOptions } from '@/config/wechat'
+
 interface ShareOptions {
   title?: string
   path?: string
   imageUrl?: string
 }
-  const shareConfig = appConfig.share
+  const shareConfig = shareOptions
 /**
  * 分享hooks - 封装小程序分享逻辑
  * @param options 分享配置选项

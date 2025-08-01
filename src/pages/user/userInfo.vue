@@ -3,6 +3,7 @@
 import { useUserStore, useAppStore } from '@/stores'
 import { useMessage } from 'wot-design-uni'
 import { IS_DEV } from '@/utils/env'
+import appConfig from '@/config/app'
 import * as UserAPI from '@/apis/user'
 import { uploadImage } from '@/utils/http'
 import TnListItem from '@tuniao/tnui-vue3-uniapp/components/list/src/list-item.vue'
@@ -157,6 +158,28 @@ onMounted(() => {
             <text class="iconfont icon-jiantou_liebiaoxiangyou"></text>
           </view>
         </TnListItem>
+        <!-- 服务条款 -->
+        <TnListItem
+          bottom-border
+          bottom-border-indent
+          @click="router.push('/pages/public/agreement/serviceText')"
+        >
+          <view class="flex items-center">
+            <text class="flex-1">服务条款</text>
+            <text class="iconfont icon-jiantou_liebiaoxiangyou"></text>
+          </view>
+        </TnListItem>
+        <!-- 隐私政策 -->
+        <TnListItem
+          bottom-border
+          bottom-border-indent
+          @click="router.push('/pages/public/agreement/privacyText')"
+        >
+          <view class="flex items-center">
+            <text class="flex-1">隐私政策</text>
+            <text class="iconfont icon-jiantou_liebiaoxiangyou"></text>
+          </view>
+        </TnListItem>
         <!-- 版本号 -->
         <TnListItem bottom-border bottom-border-indent>
           <view class="flex items-center">
@@ -180,8 +203,6 @@ onMounted(() => {
 </template>
 
 <style lang="scss" scoped>
-
-
 .icon-jiantou_liebiaoxiangyou {
   font-size: 44rpx;
   color: #666666;

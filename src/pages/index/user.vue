@@ -3,14 +3,12 @@ import { ref, computed } from 'vue'
 import { useUserStore } from '@/stores'
 import appConfig from '@/config/app'
 import router from '@/utils/router'
-import * as caseAPI from '@/apis/case'
 import { REMARK } from '@/enums/remark'
 
 const userStore = useUserStore()
 const isLogin = computed(() => userStore.isLogin)
 const remark = computed(() => userStore.remark)
 const remarkText = computed(() => userStore.remarkText)
-const expertPhone = ref(null)
 const menus = ref([
   [
     {
@@ -40,6 +38,7 @@ function toLogin() {
   router.push('/pages/login/login')
 }
 
+//申请成为社员
 function toApply() {
   if (!isLogin.value) {
     return uni.showToast({
@@ -56,32 +55,23 @@ function toApply() {
   router.push('/pages/lpgs/apply')
 }
 
+//联系我们
 function makePhone() {
-  if (!expertPhone.value) {
-    return
-  }
   uni.makePhoneCall({
-    phoneNumber: expertPhone.value,
+    phoneNumber: appConfig.expertPhone,
   })
 }
 
+//跳转公众号
 function toGZH() {
   wx.openOfficialAccountProfile({
-    username: 'y919975373019',
+    username: 'gh_03cf09237796',
     fail: (err) => {
       console.log(err)
     },
   })
 }
 
-async function getExpertPhoneData() {
-  const { data } = await caseAPI.getExpertPhone()
-  expertPhone.value = data
-}
-
-onMounted(() => {
-  getExpertPhoneData()
-})
 </script>
 
 <template>

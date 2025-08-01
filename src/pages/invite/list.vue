@@ -6,7 +6,6 @@ import * as InviteAPI from '@/apis/invite'
 import * as LPGSAPI from '@/apis/lpgs'
 import UpgradeTip from './components/UpgradeTip.vue'
 import InviteStatistics from './components/InviteStatistics.vue'
-import { REMARK } from '@/enums/remark'
 import BaseItem from '@/components/BaseCard/BaseItem.vue'
 import router from '@/utils/router'
 
@@ -71,7 +70,6 @@ async function handleInvite(member) {
 async function getUpgardMSgData() {
   const { data } = await InviteAPI.getUpgardMSg()
   count.value = data.count
-  console.log('[ count.value ]-74', count.value)
 }
 
 async function getGroupListData() {
@@ -112,6 +110,7 @@ onLoad(() => {
             <view class="px-4">
               <!-- 统计 -->
               <InviteStatistics
+                v-if="list.length > 0"
                 :she-yuan="count.sheyuanCount"
                 :bao-min="count.baominCount"
                 :fen-she="count.fensheCount"

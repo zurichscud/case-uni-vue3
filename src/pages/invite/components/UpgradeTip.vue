@@ -28,11 +28,10 @@ defineProps({
     </template>
     <!-- 社员 -->
     <template v-else-if="remark === REMARK.SheYuan">
-      <!-- 升级条件 -->
       <view class="summary-highlight" v-if="count.lackPersonCount1">
-        再邀请{{ count.lackPersonCount1 }}位人员。
+        再邀请{{ count.lackPersonCount1 }}位人员
       </view>
-      <view v-if="count.lackPersonCount2 || count.lackCaseCount">或者</view>
+      <text v-if="count.lackPersonCount2 || count.lackCaseCount">或者</text>
       <text v-if="count.lackCaseCount">再提交 {{ count.lackCaseCount }}个案件</text>
       <text v-if="count.lackPersonCount2" class="summary-highlight">
         再邀请{{ count.lackPersonCount2 }}位人员
@@ -61,9 +60,6 @@ defineProps({
   font-size: 28rpx;
   color: #333;
   box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.04);
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
 }
 .summary-num {
   color: #1976d2;

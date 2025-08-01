@@ -1,14 +1,22 @@
-<script setup>
-defineProps({
-  list: {
-    type: Array,
-    default: () => [],
-  },
-})
+<script setup lang="ts">
+import throttle from '@/utils/throttle'
 
-function handleClick(item) {
+interface MenuItem {
+  name: string
+  icon?: string
+  handle?: () => void
+  openType?: string
+}
+
+interface Props {
+  list: MenuItem[][]
+}
+
+defineProps<Props>()
+
+function handleClick(item: MenuItem): void {
   if (item.handle) {
-    item.handle()
+    throttle(item.handle)
   }
 }
 </script>
@@ -20,7 +28,9 @@ function handleClick(item) {
         <view class="item-content flex items-center justify-between px-8">
           <view class="flex items-center">
             <text class="iconfont user-icon" :class="item.icon"></text>
-            <text class="ml-4">{{ item.name }}</text>
+            <text class="ml-4">
+              {{ item.name }}
+            </text>
           </view>
           <text class="iconfont icon-jiantou_liebiaoxiangyou arrow-icon"></text>
         </view>
