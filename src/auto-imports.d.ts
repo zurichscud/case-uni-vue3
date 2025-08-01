@@ -9,8 +9,10 @@ declare global {
   const Apis: typeof import('./api/index')['Apis']
   const CommonUtil: typeof import('wot-design-uni')['CommonUtil']
   const EffectScope: typeof import('vue')['EffectScope']
+  const IMG_EXT: typeof import('./utils/http')['IMG_EXT']
   const IS_DEV: typeof import('./utils/env')['IS_DEV']
   const IS_PROD: typeof import('./utils/env')['IS_PROD']
+  const ImageExt: typeof import('./utils/http')['ImageExt']
   const acceptHMRUpdate: typeof import('pinia')['acceptHMRUpdate']
   const alovaInstance: typeof import('./api/index')['alovaInstance']
   const api: typeof import('./api/index')['default']
@@ -169,6 +171,7 @@ declare global {
   const until: typeof import('@vueuse/core')['until']
   const updateQueryParams: typeof import('./utils/url')['updateQueryParams']
   const uploadFile: typeof import('./utils/http')['uploadFile']
+  const uploadImage: typeof import('./utils/http')['uploadImage']
   const useActiveElement: typeof import('@vueuse/core')['useActiveElement']
   const useAnimate: typeof import('@vueuse/core')['useAnimate']
   const useArrayDifference: typeof import('@vueuse/core')['useArrayDifference']
@@ -372,6 +375,7 @@ declare module 'vue' {
     readonly Apis: UnwrapRef<typeof import('./api/index')['Apis']>
     readonly CommonUtil: UnwrapRef<typeof import('wot-design-uni')['CommonUtil']>
     readonly EffectScope: UnwrapRef<typeof import('vue')['EffectScope']>
+    readonly IMG_EXT: UnwrapRef<typeof import('./utils/http')['IMG_EXT']>
     readonly IS_DEV: UnwrapRef<typeof import('./utils/env')['IS_DEV']>
     readonly IS_PROD: UnwrapRef<typeof import('./utils/env')['IS_PROD']>
     readonly acceptHMRUpdate: UnwrapRef<typeof import('pinia')['acceptHMRUpdate']>
@@ -524,7 +528,7 @@ declare module 'vue' {
     readonly unrefElement: UnwrapRef<typeof import('@vueuse/core')['unrefElement']>
     readonly until: UnwrapRef<typeof import('@vueuse/core')['until']>
     readonly updateQueryParams: UnwrapRef<typeof import('./utils/url')['updateQueryParams']>
-    readonly uploadFile: UnwrapRef<typeof import('./utils/http')['uploadFile']>
+    readonly uploadImage: UnwrapRef<typeof import('./utils/http')['uploadImage']>
     readonly useActiveElement: UnwrapRef<typeof import('@vueuse/core')['useActiveElement']>
     readonly useAnimate: UnwrapRef<typeof import('@vueuse/core')['useAnimate']>
     readonly useArrayDifference: UnwrapRef<typeof import('@vueuse/core')['useArrayDifference']>

@@ -392,10 +392,6 @@
       "root": "pages/user",
       "pages": [
         {
-          "path": "inviteList",
-          "type": "page"
-        },
-        {
           "path": "userInfo",
           "type": "page",
           "name": "userInfo",

@@ -50,7 +50,6 @@ interface NavigateToOptions {
        "/pages/public/y9net" |
        "/pages/public/agreement/privacyText" |
        "/pages/public/agreement/serviceText" |
-       "/pages/user/inviteList" |
        "/pages/user/userInfo" |
        "/pages/policy/fengshe" |
        "/pages/policy/sheyuan" |

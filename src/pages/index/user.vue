@@ -29,10 +29,10 @@ const menus = ref([
       openType: 'feedback',
     },
     {
-      name:'关注微信',
-      icon:'icon-weixin',
-      handle:toGZH
-    }
+      name: '关注微信',
+      icon: 'icon-weixin',
+      handle: toGZH,
+    },
   ],
 ])
 
@@ -67,10 +67,10 @@ function makePhone() {
 
 function toGZH() {
   wx.openOfficialAccountProfile({
-    username:'y919975373019',
-    fail:(err)=>{
+    username: 'y919975373019',
+    fail: (err) => {
       console.log(err)
-    }
+    },
   })
 }
 
@@ -80,9 +80,7 @@ async function getExpertPhoneData() {
 }
 
 onMounted(() => {
-  if (isLogin.value) {
-    getExpertPhoneData()
-  }
+  getExpertPhoneData()
 })
 </script>
 

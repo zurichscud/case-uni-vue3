@@ -4,7 +4,7 @@ import { useUserStore, useAppStore } from '@/stores'
 import { useMessage } from 'wot-design-uni'
 import { IS_DEV } from '@/utils/env'
 import * as UserAPI from '@/apis/user'
-import { uploadFile } from '@/utils/http'
+import { uploadImage } from '@/utils/http'
 import TnListItem from '@tuniao/tnui-vue3-uniapp/components/list/src/list-item.vue'
 import TnAvatar from '@tuniao/tnui-vue3-uniapp/components/avatar/src/avatar.vue'
 
@@ -13,14 +13,21 @@ const userStore = useUserStore()
 const appStore = useAppStore()
 const { logout, getUserInfo } = userStore
 
+//修改昵称
 async function handleInput() {
   const { value: input } = await message.prompt({
     title: '请输入新昵称',
-    inputValue: '',
+    inputValue: userStore.nickName,
   })
   if (input === '') {
     return uni.showToast({
       title: '昵称不能为空',
+      icon: 'error',
+    })
+  }
+  if (input.length > 10) {
+    return uni.showToast({
+      title: '昵称不能超过10个字符',
       icon: 'error',
     })
   }
@@ -35,6 +42,7 @@ async function handleInput() {
   getUserInfo()
 }
 
+//退出登录
 function handleLogout() {
   uni.showModal({
     title: '提示',
@@ -47,8 +55,9 @@ function handleLogout() {
   })
 }
 
+//选择头像
 async function handleChooseAvatar({ detail }) {
-  const { data } = await uploadFile(detail.avatarUrl)
+  const { data } = await uploadImage(detail.avatarUrl)
   await UserAPI.updateUserInfo({
     id: userStore.id,
     photo: data,
@@ -56,12 +65,7 @@ async function handleChooseAvatar({ detail }) {
   getUserInfo()
 }
 
-function handleDev() {
-  uni.navigateTo({
-    url: `/pages/invite/inviteYou?name=${userStore.nickName}`,
-  })
-}
-
+//手机号
 function handlePhone() {
   uni.showToast({
     title: '手机号暂不支持更换',
@@ -69,10 +73,12 @@ function handlePhone() {
   })
 }
 
+//打开授权设置
 function handleOpenSetting() {
   uni.openSetting()
 }
 
+//清空缓存
 function handleClearCache() {
   uni.showModal({
     title: '提示',
@@ -90,6 +96,12 @@ function handleClearCache() {
         }, 1000)
       }
     },
+  })
+}
+
+function handleDev() {
+  uni.navigateTo({
+    url: `/pages/invite/inviteYou?name=${userStore.nickName}`,
   })
 }
 
@@ -153,7 +165,6 @@ onMounted(() => {
             <text class="iconfont icon-jiantou_liebiaoxiangyou"></text>
           </view>
         </TnListItem>
-
         <!-- 退出登录 -->
         <view class="px-2 mt-4 mb-4">
           <wd-button block type="error" size="large" icon="logout" @click="handleLogout">
@@ -162,6 +173,7 @@ onMounted(() => {
         </view>
       </view>
       <wd-button v-if="IS_DEV" block type="primary" size="large" @click="handleDev">定向</wd-button>
+      <!-- 修改昵称弹窗 -->
       <wd-message-box />
     </view>
   </view>

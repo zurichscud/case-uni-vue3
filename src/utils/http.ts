@@ -105,9 +105,9 @@ const http = new Request({
   timeout: 10000,
   method: 'GET',
   header: {
-    Accept: '*/*',
+    'Accept': '*/*',
     'Content-Type': 'application/json',
-    source: 'weixin',
+    'source': 'weixin',
   },
   custom: options,
 })
@@ -155,9 +155,9 @@ http.interceptors.response.use(
     }
     // 自定义处理【showSuccess 成功提示】：如果需要显示成功提示，则显示成功提示
     if (
-      response.config.custom?.showSuccess &&
-      response.config.custom.successMsg !== '' &&
-      response.data.code === 200
+      response.config.custom?.showSuccess
+      && response.config.custom.successMsg !== ''
+      && response.data.code === 200
     ) {
       uni.showToast({
         title: response.config.custom.successMsg,
@@ -205,7 +205,7 @@ function handle401Error(): void {
   const userStore = useUserStore()
   userStore.resetInfo()
 
-  //如果在workplace则不会跳转，原因是router做了节流，点击tabbar时触发了一次，这里的跳转不会再触发
+  // 如果在workplace则不会跳转，原因是router做了节流，点击tabbar时触发了一次，这里的跳转不会再触发
   router.push('/pages/login/login')
 }
 
@@ -213,7 +213,19 @@ export default (config: any) => {
   return http.middleware(config)
 }
 
-export async function uploadFile(path: string) {
+export const IMG_EXT = ['jpg', 'jpeg', 'png', 'bmp']
+
+export async function uploadImage(path: string) {
+  // 校验图片格式
+  const extension = path.split('.').pop()?.toLowerCase()
+  if (!extension || !IMG_EXT.includes(extension)) {
+    uni.showToast({
+      title: `不支持的图片格式，仅支持：${IMG_EXT.join(', ')}`,
+      icon: 'none',
+    })
+    throw new Error(`不支持的图片格式，仅支持：${IMG_EXT.join(', ')}`)
+  }
+
   const userStore = useUserStore()
   const { data } = await uni.uploadFile({
     url: `${import.meta.env.VITE_BASE_URL}iclaim/user/photoUpload2`,

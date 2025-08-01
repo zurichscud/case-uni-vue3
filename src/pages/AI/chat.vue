@@ -9,7 +9,7 @@ import * as AIAPI from '@/apis/ai'
 import { useUserStore } from '@/stores'
 import { END_TEXT, AI_AVATAR, AI_INTRODUCTION, AI_HELLO } from './data'
 import { SSEHandler, imgsToMarkdown } from './utils'
-import { uploadFile } from '@/utils/http'
+import { uploadImage } from '@/utils/http'
 
 const userStore = useUserStore()
 const keyboardHeight = ref(0)
@@ -656,7 +656,7 @@ function handleNewChat() {
 }
 
 // 上传图片
-async function uploadImage(sourceType) {
+async function handleUpload(sourceType) {
   try {
     const res = await uni.chooseImage({
       count: 1,
@@ -664,7 +664,7 @@ async function uploadImage(sourceType) {
       sizeType: ['compressed'], // 压缩图片
     })
     uploadVisible.value = false
-    const { data } = await uploadFile(res.tempFilePaths[0])
+    const { data } = await uploadImage(res.tempFilePaths[0])
     images.value.push(data)
   }
   catch (error) {
@@ -814,7 +814,7 @@ onUnload(() => {
                 </MarkdownRenderer>
               </view>
               <!-- 引用文献 -->
-               <!-- TODO：存在BUG，会先出现引用文献 -->
+              <!-- TODO：存在BUG，会先出现引用文献 -->
               <view class="reference" v-if="item.msg.references && item.msg.references.length">
                 <view class="reference-title">
                   引用文献
@@ -936,7 +936,7 @@ onUnload(() => {
 
       <!-- 图片上传选项（拍照/相册） -->
       <view class="upload_btn" :style="{ height: uploadVisible ? 260 + 'rpx' : 0 }">
-        <view class="item photo" @click="uploadImage('camera')">
+        <view class="item photo" @click="handleUpload('camera')">
           <view class="btn">
             <text class="iconfont icon-paizhao"></text>
           </view>
@@ -944,7 +944,7 @@ onUnload(() => {
             拍照
           </view>
         </view>
-        <view class="item photobook" @click="uploadImage('album')">
+        <view class="item photobook" @click="handleUpload('album')">
           <view class="btn">
             <text class="iconfont icon-xiangce"></text>
           </view>
@@ -1414,8 +1414,6 @@ scroll-view,
           color: #999;
         }
       }
-
-
 
       .send_btn {
         background: #6190e8;
