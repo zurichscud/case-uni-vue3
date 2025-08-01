@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import type { AppStore, EnvVersion } from './types'
+import appConfig from '@/config/app'
 
 const ENV: Record<EnvVersion, string> = {
   develop: '开发版',
@@ -9,7 +10,7 @@ const ENV: Record<EnvVersion, string> = {
 
 export const useAppStore = defineStore('app', {
   state: (): AppStore => ({
-    version: '4.1.3',
+    version: appConfig.version,
     wxVersion: '',
     envVersion: '',
   }),

@@ -102,17 +102,19 @@ onMounted(() => {
   <view class="editPersonal">
     <view class="content">
       <view class="list">
-        <TnListItem bottom-border bottom-border-indent>
-          <button
-            class="button-clear-style flex items-center"
-            open-type="chooseAvatar"
-            @chooseavatar="handleChooseAvatar"
-          >
-            <view class="flex-1">头像</view>
-            <TnAvatar :url="userStore.photo" />
-            <text class="iconfont icon-jiantou_liebiaoxiangyou"></text>
-          </button>
-        </TnListItem>
+        <button
+          class="button-clear-style"
+          open-type="chooseAvatar"
+          @chooseavatar="handleChooseAvatar"
+        >
+          <TnListItem bottom-border bottom-border-indent>
+            <view class="flex items-center">
+              <view class="flex-1">头像</view>
+              <TnAvatar :url="userStore.photo" />
+              <text class="iconfont icon-jiantou_liebiaoxiangyou"></text>
+            </view>
+          </TnListItem>
+        </button>
         <!-- 昵称 -->
         <TnListItem bottom-border bottom-border-indent @click="handleInput">
           <view class="flex items-center">
@@ -166,16 +168,7 @@ onMounted(() => {
 </template>
 
 <style lang="scss" scoped>
-.button-clear-style {
-  background-color: transparent;
-  padding: 0;
-  margin: 0;
-  font-size: inherit;
-  line-height: inherit;
-  border-radius: inherit;
-  color: inherit;
-  text-align: start;
-}
+
 
 .icon-jiantou_liebiaoxiangyou {
   font-size: 44rpx;

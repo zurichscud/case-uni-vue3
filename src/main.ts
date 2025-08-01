@@ -4,8 +4,7 @@ import App from './App.vue'
 import 'uno.css'
 import './api'
 import { persistPlugin } from './stores/persist'
-import './style/iconfont.css'
-import './style/font.scss'
+
 
 const pinia = createPinia()
 pinia.use(persistPlugin)

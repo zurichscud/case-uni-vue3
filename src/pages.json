@@ -403,14 +403,6 @@
           "style": {
             "navigationBarTitleText": "个人信息"
           }
-        },
-        {
-          "path": "components/invitepersonal",
-          "type": "page"
-        },
-        {
-          "path": "components/teaminvite",
-          "type": "page"
         }
       ]
     },

@@ -52,8 +52,6 @@ interface NavigateToOptions {
        "/pages/public/agreement/serviceText" |
        "/pages/user/inviteList" |
        "/pages/user/userInfo" |
-       "/pages/user/components/invitepersonal" |
-       "/pages/user/components/teaminvite" |
        "/pages/policy/fengshe" |
        "/pages/policy/sheyuan" |
        "/pages/policy/upgrade";

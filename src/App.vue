@@ -19,4 +19,7 @@ onLaunch(() => {
 
 <style lang="scss">
 @import '@tuniao/tn-style/dist/uniapp/index.css';
+@import '@/style/index.scss';
+@import '@/style/iconfont.css';
+@import '@/style/font.scss';
 </style>
