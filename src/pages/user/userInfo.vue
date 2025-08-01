@@ -113,6 +113,7 @@ onMounted(() => {
             <text class="iconfont icon-jiantou_liebiaoxiangyou"></text>
           </button>
         </TnListItem>
+        <!-- 昵称 -->
         <TnListItem bottom-border bottom-border-indent @click="handleInput">
           <view class="flex items-center">
             <text class="flex-1">昵称</text>
