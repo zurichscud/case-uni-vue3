@@ -57,21 +57,21 @@ const menus: Menus = {
     ],
   },
   policy: {
-    title: '政策',
+    title: '奖励与晋升',
     list: [
       {
-        text: '社员奖励政策',
-        icon: '/static/workplace/file.png',
+        text: '社员政策',
+        icon: '/static/workplace/sheyuan.png',
         url: '/pages/policy/sheyuan',
       },
       {
         text: '分社社长政策',
-        icon: '/static/workplace/file.png',
+        icon: '/static/workplace/fengshe.png',
         url: '/pages/policy/fengshe',
       },
       {
         text: '联社社长政策',
-        icon: '/static/workplace/file.png',
+        icon: '/static/workplace/lianshe.png',
         url: '/pages/policy/fengshe',
       },
       {
