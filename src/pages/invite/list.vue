@@ -117,7 +117,7 @@ onLoad(() => {
                   :fen-she="count.fensheCount"
                 />
                 <!-- 升级提示区域 -->
-                <UpgradeTip :remark="remark" :count="count" v-if="isSelf" />
+                <!-- <UpgradeTip :remark="remark" :count="count" v-if="isSelf" /> -->
                 <!-- 邀请列表 -->
                 <BaseCard v-for="(item, index) in list" :key="item.id || index">
                   <template #index>

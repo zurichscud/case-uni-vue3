@@ -40,13 +40,10 @@ defineProps({
     </template>
     <!-- 分社社长 -->
     <template v-else-if="remark === REMARK.FenSheZhang">
-      <text>您目前分社数量：</text>
-      <text class="summary-num">{{ count.fensheCount }}个</text>
-      ，再有
-      <text class="summary-highlight">{{ count.lackPersonCount1 }}个分社</text>
-      就可以成为联社社长
+      <text v-if="count.lackPersonCount1" class="summary-highlight">
+        再有{{ count.lackPersonCount1 }}个分社，就可以成为联社社长
+      </text>
     </template>
-    <!--  -->
     <template v-else>未知身份</template>
   </view>
 </template>

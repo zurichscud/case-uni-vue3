@@ -7,6 +7,7 @@ import * as UserAPI from '@/apis/user'
 import { uploadImage } from '@/utils/http'
 import TnListItem from '@tuniao/tnui-vue3-uniapp/components/list/src/list-item.vue'
 import TnAvatar from '@tuniao/tnui-vue3-uniapp/components/avatar/src/avatar.vue'
+import { subscribeTemplate } from '@/config/wechat'
 
 const message = useMessage()
 const userStore = useUserStore()
@@ -107,6 +108,19 @@ function handleDev() {
   uni.navigateTo({
     url: `/pages/invite/inviteYou?name=${userStore.nickName}`,
   })
+  // uni.requestSubscribeMessage({
+  //   tmplIds: subscribeTemplate,
+  //   success: (res) => {
+  //     console.log(res)
+  //   },
+  //   fail: ({ errMsg, errCode }) => {
+  //     console.log(errMsg, errCode)
+  //     uni.showToast({
+  //       title: '订阅失败',
+  //       icon: 'none',
+  //     })
+  //   },
+  // })
 }
 
 onMounted(() => {
