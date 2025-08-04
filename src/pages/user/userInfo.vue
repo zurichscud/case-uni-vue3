@@ -3,7 +3,6 @@
 import { useUserStore, useAppStore } from '@/stores'
 import { useMessage } from 'wot-design-uni'
 import { IS_DEV } from '@/utils/env'
-import appConfig from '@/config/app'
 import * as UserAPI from '@/apis/user'
 import { uploadImage } from '@/utils/http'
 import TnListItem from '@tuniao/tnui-vue3-uniapp/components/list/src/list-item.vue'
@@ -62,6 +61,10 @@ async function handleChooseAvatar({ detail }) {
   await UserAPI.updateUserInfo({
     id: userStore.id,
     photo: data,
+  })
+  uni.showToast({
+    title: '修改成功',
+    icon: 'success',
   })
   getUserInfo()
 }

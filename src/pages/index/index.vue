@@ -9,8 +9,12 @@ import img from '@/static/home/弈寻.png'
 import { useUserStore } from '@/stores'
 import router from '@/utils/router'
 import appConfig from '@/config/app'
-import { shareOptions } from '@/config/wechat'
+import TnSwiper from '@tuniao/tnui-vue3-uniapp/components/swiper/src/swiper.vue'
 
+const currentSwiperIndex = ref(0)
+
+// 轮播图数据
+const swiperData = [img]
 const slogans = appConfig.slogans
 const sloganDuration = appConfig.sloganDuration
 const shareVisible = ref(false)
@@ -101,9 +105,9 @@ async function getArticleListData() {
 
 onShareAppMessage(() => {
   return {
-      title: '快来和我一起加入理赔公社吧',
-      path: `/pages/invite/inviteYou?name=${userStore.nickName}`,
-      imageUrl: 'https://app.y9net.cn/data/01/33/wKgBNmNrSeSAbR2TAAEp5UKyBy8155.png',
+    title: '快来和我一起加入理赔公社吧',
+    path: `/pages/invite/inviteYou?name=${userStore.nickName}`,
+    imageUrl: 'https://app.y9net.cn/data/01/33/wKgBNmNrSeSAbR2TAAEp5UKyBy8155.png',
   }
 })
 
@@ -162,25 +166,19 @@ onUnmounted(() => {
 
     <!-- 主要内容区域 -->
     <view class="index_box">
-      <swiper class="swiper" autoplay="true" circular="true" current="idindex">
-        <swiper-item>
-          <image
-            show-menu-by-longpress="true"
-            lazy-load
-            mode="aspectFit"
-            @click="router.push('/pages/AI/chat')"
-            :src="img"
-          />
-        </swiper-item>
-      </swiper>
-
-      <!-- <wd-swiper
-        :list="swiperList"
-        autoplay
-        v-model:current="current"
-        :indicator="{ type: 'dots-bar' }"
-        @click="handleClick"
-      ></wd-swiper> -->
+      <TnSwiper
+        v-model="currentSwiperIndex"
+        :data="swiperData"
+        width="100%"
+        height="200"
+        @item-click="router.push('/pages/AI/chat')"
+      >
+        <template #default="{ data }">
+          <view class="swiper-data">
+            <image class="image" :src="data" mode="aspectFill" />
+          </view>
+        </template>
+      </TnSwiper>
 
       <!-- 典型案例区域 -->
       <view class="" style="margin-top: 30rpx">
@@ -266,6 +264,16 @@ page {
 
 <!-- 组件样式 -->
 <style lang="scss" scoped>
+.swiper-data {
+  width: 100%;
+  height: 100%;
+  border-radius: 30rpx;
+
+  .image {
+    width: 100%;
+    border-radius: inherit;
+  }
+}
 /* 标题区域样式 */
 .view_title {
   display: flex;
@@ -325,7 +333,7 @@ page {
 .index_box {
   position: relative;
   box-sizing: border-box;
-  padding: 0 40rpx;
+  padding: 40rpx 40rpx ;
   border-top-left-radius: 40rpx;
   border-top-right-radius: 40rpx;
   background-color: white;
