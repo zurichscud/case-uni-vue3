@@ -51,7 +51,10 @@ interface NavigateToOptions {
        "/pages/user/userInfo" |
        "/pages/policy/fengshe" |
        "/pages/policy/sheyuan" |
-       "/pages/policy/upgrade";
+       "/pages/policy/upgrade" |
+       "/pages/news/detail" |
+       "/pages/news/list" |
+       "/pages/news/components/NewsCard";
 }
 interface RedirectToOptions extends NavigateToOptions {}
 

@@ -87,7 +87,7 @@ const menus: Menus = {
       {
         text: '赔案快报',
         icon: '/static/workplace/news.png',
-        url: '/pages/public/webview?url=https://mp.weixin.qq.com/s/PMXUwjwkiwRKID-DA9eEIQ&title=赔案快报',
+        url: '/pages/news/list',
       },
     ],
   },

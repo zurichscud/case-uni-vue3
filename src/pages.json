@@ -425,6 +425,31 @@
           }
         }
       ]
+    },
+    {
+      "root": "pages/news",
+      "pages": [
+        {
+          "path": "detail",
+          "type": "page",
+          "name": "quickNewsDetail",
+          "style": {
+            "navigationBarTitleText": "赔案快报"
+          }
+        },
+        {
+          "path": "list",
+          "type": "page",
+          "name": "quickNews",
+          "style": {
+            "navigationBarTitleText": "赔案快报"
+          }
+        },
+        {
+          "path": "components/NewsCard",
+          "type": "page"
+        }
+      ]
     }
   ]
 }

@@ -36,6 +36,7 @@ export default async () => {
           'src/pages/user',
           'src/pages/workplace',
           'src/pages/policy',
+          'src/pages/news',
         ],
       }),
       uniReadPages({

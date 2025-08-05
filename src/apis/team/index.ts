@@ -6,3 +6,11 @@ export function getTeamList() {
     method: 'GET',
   })
 }
+
+
+export function getMyQrcode() {
+  return http({
+    url: 'app/poster/qrcode',
+    method: 'GET',
+  })
+}

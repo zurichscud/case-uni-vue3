@@ -6,7 +6,12 @@ import QrcodePoster from '@/components/zhangyu-qrcode-poster/zhangyu-qrcode-post
 import { useUserStore } from '@/stores'
 import appConfig from '@/config/app'
 import { subscribeTemplate, shareOptions } from '@/config/wechat'
+import * as TeamAPI from '@/apis/team'
+import { base64ToPath } from '@/utils/image'
+import jsonData from './data.json'
 
+const img = ref<string>('')
+const scene = ref('')
 const userStore = useUserStore()
 const uqrcodeRef = ref()
 const posterRef = ref()
@@ -57,7 +62,21 @@ function handleSave() {
     })
   }
 }
+
+async function getMyQrcodeData() {
+  const { data } = await TeamAPI.getMyQrcode()
+  // console.log('[ data ]-65', jsonData)
+  img.value = data.qrcode
+}
+
 onShareAppMessage(() => shareOptions)
+
+onLoad((query) => {
+  // scene.value = decodeURIComponent(query.scene)
+  // console.log('[ scene.value ]-64', scene.value)
+  // console.log(query)
+  getMyQrcodeData()
+})
 </script>
 
 <template>
@@ -68,14 +87,15 @@ onShareAppMessage(() => shareOptions)
       <view
         class="w-[400rpx] h-[400rpx] bg-white rounded-4 flex items-center justify-center shadow-sm"
       >
-        <uQrcode
+        <!-- <uQrcode
           ref="uqrcodeRef"
           canvas-id="invite-qrcode"
           :value="userStore.id"
           :options="qrOptions"
           size="400"
           size-unit="rpx"
-        />
+        /> -->
+        <image :src="img" width="400rpx" mode="scaleToFill" />
       </view>
 
       <!-- 用户信息 -->
@@ -83,6 +103,7 @@ onShareAppMessage(() => shareOptions)
         <text class="font-medium text-5 leading-7.5 text-[#2D2D2D] text-center">
           {{ userStore.nickName }}
         </text>
+        {{ scene || '无' }}
       </view>
     </view>
 
