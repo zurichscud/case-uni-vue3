@@ -1,0 +1,19 @@
+{
+    "id": "zhangyuhao-poster",
+    "name": "小程序生成海报，图片合成",
+    "displayName": "小程序生成海报，图片合成",
+    "version": "1.1.6",
+    "description": "小程序生成海报，图片合成",
+    "keywords": [
+        "海报",
+        "图片合成",
+        "商品海报",
+        "朋友圈海报"
+    ],
+    "dcloudext": {
+        "category": [
+            "前端组件",
+            "通用组件"
+        ]
+    }
+}

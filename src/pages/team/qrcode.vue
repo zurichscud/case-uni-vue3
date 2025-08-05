@@ -2,22 +2,23 @@
 import { ref, onMounted } from 'vue'
 // @ts-expect-error - uni_modules 组件缺少类型声明
 import uQrcode from '@/uni_modules/Sansnn-uQRCode/components/u-qrcode/u-qrcode.vue'
+import QrcodePoster from '@/components/zhangyu-qrcode-poster/zhangyu-qrcode-poster.vue'
 import { useUserStore } from '@/stores'
 import appConfig from '@/config/app'
 import { subscribeTemplate, shareOptions } from '@/config/wechat'
 
 const userStore = useUserStore()
 const uqrcodeRef = ref()
+const posterRef = ref()
 // 二维码配置
 const qrOptions = ref({
   margin: 16,
-  foregroundImageSrc: userStore.photo||appConfig.logo,
+  foregroundImageSrc: userStore.photo || appConfig.logo,
   backgroundColor: '#FFFFFF',
   foregroundColor: '#1b39b1',
   correctLevel: 'M',
   auto: true,
 })
-
 
 // 分享到好友
 function shareToFriend() {
@@ -34,6 +35,14 @@ function shareToFriend() {
   //     })
   //   },
   // })
+  uqrcodeRef.value.toTempFilePath({
+    success: ({tempFilePath}) => {
+      posterRef.value.showCanvas(tempFilePath)
+    },
+    fail: (err) => {
+      console.log(err)
+    },
+  })
 }
 
 // 下载/保存二维码
@@ -86,7 +95,7 @@ onShareAppMessage(() => shareOptions)
 
     <!-- 底部按钮 -->
     <view class="p-4 flex flex-col gap-4">
-      <wd-button type="primary" size="large" open-type="share" custom-class="share-btn">
+      <wd-button type="primary" size="large" custom-class="share-btn" @click="shareToFriend">
         <wd-icon
           name="share"
           size="16px"
@@ -106,6 +115,7 @@ onShareAppMessage(() => shareOptions)
         保存
       </wd-button>
     </view>
+    <qrcode-poster ref="posterRef" tip="扫描二维码加入我的团队"></qrcode-poster>
   </view>
 </template>
 

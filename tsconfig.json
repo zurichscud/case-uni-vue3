@@ -25,5 +25,5 @@
     "src/**/*.d.ts",
     "src/**/*.tsx",
     "src/**/*.vue"
-  ]
+, "src/components/zhangyu-qrcode-poster/zhangyu-qrcode-poster.vue.bak"  ]
 }
