@@ -35,14 +35,7 @@ function shareToFriend() {
   //     })
   //   },
   // })
-  uqrcodeRef.value.toTempFilePath({
-    success: ({tempFilePath}) => {
-      posterRef.value.showCanvas(tempFilePath)
-    },
-    fail: (err) => {
-      console.log(err)
-    },
-  })
+  posterRef.value.showCanvas('https://app.y9net.cn/data/01/47/wKgBNmZVTgCAHxQ8AAJGY8sYbNQ37.jpeg')
 }
 
 // 下载/保存二维码
