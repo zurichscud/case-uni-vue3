@@ -1,6 +1,7 @@
 <script setup>
 import { useUserStore } from '@/stores'
 import * as InviteAPI from '@/apis/invite'
+import router from '@/utils/router'
 
 const userStore = useUserStore()
 const isLogin = computed(() => userStore.isLogin)
@@ -74,7 +75,9 @@ function handleContinue() {
           title: '加入成功',
           icon: 'success',
           success: () => {
-            router.place('/pages/index/index')
+            setTimeout(() => {  
+              router.redirect('/pages/index/index')
+            }, 1000)
           },
         })
       }

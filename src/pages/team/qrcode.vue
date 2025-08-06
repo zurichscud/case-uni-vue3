@@ -6,7 +6,6 @@ import * as TeamAPI from '@/apis/team'
 import { base64ToPath } from '@/utils/image'
 
 const img = ref<string>('')
-const userStore = useUserStore()
 const loading = ref(false)
 const saveLoading = ref(false)
 
@@ -89,27 +88,6 @@ onLoad(() => {
 </template>
 
 <style scoped>
-/* 自定义按钮样式 - 使用 CSS 变量覆盖组件样式 */
-/* :deep(.share-btn),
-:deep(.download-btn) {
-  width: 100% !important;
-  height: 56px !important;
-  border-radius: 8px !important;
-  background-color: #ffffff !important;
-  border: 1px solid #ececec !important;
-  color: #2d2d2d !important;
-  font-family: 'Montserrat', sans-serif !important;
-  font-weight: 500 !important;
-  font-size: 14px !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-}
-
-:deep(.share-btn:active),
-:deep(.download-btn:active) {
-  opacity: 0.8;
-} */
 </style>
 
 <route lang="json">
