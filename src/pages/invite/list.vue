@@ -17,7 +17,6 @@ const ypScrollViewRef = ref()
 const ypScrollViewRef2 = ref()
 const userStore = useUserStore()
 let isFilter = INVITE_TYPE.MEMBER
-const remark = computed(() => userStore.remark)
 const query = defineProps({
   //userId
   id: {

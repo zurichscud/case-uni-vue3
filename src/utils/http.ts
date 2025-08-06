@@ -6,7 +6,7 @@ import router from '@/utils/router'
 type ToastIcon = 'success' | 'loading' | 'error' | 'none' | 'fail' | 'exception'
 
 // 定义错误码类型
-type ErrorCode = 1 | 2 | 400 | 401 | 403 | 404 | 408 | 429 | 500 | 501 | 502 | 503 | 504 | 505
+type ErrorCode = 1 | 2 | 3 | 400 | 401 | 403 | 404 | 408 | 429 | 500 | 501 | 502 | 503 | 504 | 505
 
 // 定义请求配置类型
 interface RequestConfig {
@@ -87,6 +87,7 @@ function showErrorToast(message: string, icon: ToastIcon = 'none'): void {
 const ERROR_CODE_MAP: Record<ErrorCode, string> = {
   1: '验证码有误',
   2: '您已有团队，无法再加入其他团队',
+  3: '您不能加入自己的团队',
   400: '请求错误',
   401: '登录已过期，请重新登录',
   403: '拒绝访问',

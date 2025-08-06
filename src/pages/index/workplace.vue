@@ -2,6 +2,7 @@
 import router from '@/utils/router'
 import { useUserStore } from '@/stores'
 import { REMARK } from '@/enums/remark'
+import { subscribeTemplate } from '@/config/wechat'
 
 // 定义菜单项类型
 interface MenuItem {
@@ -93,6 +94,23 @@ const menus: Menus = {
   },
 }
 
+function subscribe() {
+  //只能被点击触发
+  uni.requestSubscribeMessage({
+    tmplIds: subscribeTemplate,
+    success: (res) => {
+      console.log(res)
+    },
+    fail: ({ errMsg, errCode }) => {
+      console.log(errMsg, errCode)
+      uni.showToast({
+        title: '订阅失败',
+        icon: 'none',
+      })
+    },
+  })
+}
+
 function handleItemClick(url: string, text: string) {
   if (userStore.remark === REMARK.BaoMin) {
     if (text === '邀请二维码' || text === '邀请记录') {
@@ -101,6 +119,9 @@ function handleItemClick(url: string, text: string) {
         icon: 'none',
       })
     }
+  }
+  if (text === '我的团队') {
+    subscribe()
   }
   router.push(url)
 }

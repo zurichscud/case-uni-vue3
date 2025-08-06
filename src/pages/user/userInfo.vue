@@ -105,7 +105,7 @@ function handleClearCache() {
 }
 
 function handleDev() {
-  router.push('/pages/invite/inviteYou')
+  router.push('/pages/invite/demo')
 }
 
 onMounted(() => {

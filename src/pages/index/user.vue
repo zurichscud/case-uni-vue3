@@ -4,7 +4,7 @@ import { useUserStore } from '@/stores'
 import appConfig from '@/config/app'
 import router from '@/utils/router'
 import { REMARK } from '@/enums/remark'
-import { GZH } from '@/config/wechat'
+import { GZH,subscribeTemplate } from '@/config/wechat'
 
 const userStore = useUserStore()
 const isLogin = computed(() => userStore.isLogin)
@@ -75,24 +75,6 @@ function toGZH() {
   })
 }
 
-function subscribe() {
-    uni.requestSubscribeMessage({
-    tmplIds: subscribeTemplate,
-    success: (res) => {
-      console.log(res)
-    },
-    fail: ({ errMsg, errCode }) => {
-      console.log(errMsg, errCode)
-      uni.showToast({
-        title: '订阅失败',
-        icon: 'none',
-      })
-    },
-  })
-}
-onLoad(() => {
-  subscribe()
-})
 </script>
 
 <template>

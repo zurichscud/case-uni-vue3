@@ -10,8 +10,6 @@ const userStore = useUserStore()
 const loading = ref(false)
 const saveLoading = ref(false)
 
-// 分享到好友
-function shareToFriend() {}
 
 // 下载/保存二维码
 async function handleSave() {
@@ -39,6 +37,12 @@ async function getMyQrcodeData() {
   loading.value = false
 }
 
+function handlePreview() {
+  uni.previewImage({
+    urls: [img.value],
+  })
+}
+
 onShareAppMessage(() => shareOptions)
 
 onLoad(() => {
@@ -56,7 +60,7 @@ onLoad(() => {
           <wd-loading />
           <text>二维码生成中...</text>
         </view>
-        <image v-else :src="img" width="400rpx" mode="scaleToFill" />
+        <image v-else :src="img" width="400rpx" mode="scaleToFill" @click="handlePreview" />
       </view>
 
       <!-- 用户信息 -->
@@ -71,14 +75,14 @@ onLoad(() => {
     <view class="px-4 pb-8 flex flex-col gap-4 ">
       <wd-button
         type="primary"
+        icon="download"
         block
         size="large"
         custom-class="download-btn"
         :loading="saveLoading"
         @click="handleSave"
       >
-        <wd-icon name="download" size="20px" custom-style="margin-right: 8px;"></wd-icon>
-        <text class="text-xl">保存</text>
+        <view >保存</view>
       </wd-button>
     </view>
   </view>

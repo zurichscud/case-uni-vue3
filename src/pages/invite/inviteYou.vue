@@ -6,7 +6,6 @@ const userStore = useUserStore()
 const isLogin = computed(() => userStore.isLogin)
 const pid = ref(null)
 
-
 function getPidByScene(scene) {
   // scene 格式: "pid=xxxx"
   if (!scene) {
@@ -26,14 +25,14 @@ function getPidByScene(scene) {
     console.log('[ getPidByScene ] pid:', pid)
 
     if (pid) {
-      // 这里可以存储 pid 到 store 或者组件状态中
-      // 例如: userStore.setInvitePid(pid)
       return pid
-    } else {
+    }
+    else {
       console.warn('[ getPidByScene ] 未找到有效的 pid')
       return null
     }
-  } catch (error) {
+  }
+  catch (error) {
     console.error('[ getPidByScene ] 解析 scene 失败:', error)
     return null
   }
@@ -64,13 +63,6 @@ function handleContinue() {
     })
     return
   }
-  if (pid.value === userStore.id) {
-    uni.showToast({
-      title: '您不能加入自己的团队',
-      icon: 'none',
-    })
-    return
-  }
   uni.showModal({
     title: '提示',
     content: `确定加入${pid.value}的团队吗？`,
@@ -91,12 +83,13 @@ function handleContinue() {
 }
 onLoad((query) => {
   console.log('[ query ]-10', query) // pid%3Dxxxx
-  //如果存在scene，说明是扫码的
+  // 如果存在scene，说明是扫码的
   if (query.scene) {
     const decodeScene = decodeURIComponent(query.scene) // pid=xxxx
     pid.value = getPidByScene(decodeScene)
     uni.setStorageSync('pid', pid.value)
-  } else {
+  }
+  else {
     pid.value = uni.getStorageSync('pid')
   }
 })
@@ -140,11 +133,11 @@ onLoad((query) => {
       <!-- 继续按钮 -->
       <view class="flex justify-center px-23">
         <view
-          class="w-48 h-11 bg-gradient-to-br from-[#FD749B] to-[#281AC8] rounded shadow-lg flex justify-center items-center cursor-pointer transition-all duration-300 hover:transform hover:-translate-y-0.5 hover:shadow-xl active:transform active:translate-y-0 active:shadow-md relative overflow-hidden"
+          class="w-48 h-11 bg-gradient-to-br from-[#FD749B] to-[#281AC8] rounded shadow-lg flex justify-center items-center"
           @click="handleContinue"
         >
           <text
-            class="font-['Poppins'] font-bold text-4 leading-6 text-[#FFFBF7] tracking-wide relative z-1"
+            class="font-['Poppins'] font-bold text-4 leading-6 text-[#FFFBF7] tracking-wide"
           >
             加入他的团队
           </text>
@@ -167,25 +160,6 @@ onLoad((query) => {
   @supports not (background-clip: text) {
     color: #281ac8;
   }
-}
-
-/* 按钮波纹效果 */
-.w-48.h-11::before {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 0;
-  height: 0;
-  background: rgba(255, 255, 255, 0.2);
-  border-radius: 50%;
-  transform: translate(-50%, -50%);
-  transition: width 0.6s, height 0.6s;
-}
-
-.w-48.h-11:active::before {
-  width: 300px;
-  height: 300px;
 }
 </style>
 

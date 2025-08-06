@@ -73,6 +73,7 @@ const codeCountdown = ref(0)
 const loginLoading = ref(false)
 const timer = ref(null)
 const isAgree = ref(false)
+const redirect = ref('')
 
 const isValidMobile = computed(() => {
   const mobileReg = /^1[3-9]\d{9}$/
@@ -139,12 +140,21 @@ async function handleLogin() {
       },
     })
   }
-  login({
-    source: SOURCE.SMS,
-    mobile: mobile.value,
-    vcode: verifyCode.value,
-  })
+  login(
+    {
+      source: SOURCE.SMS,
+      mobile: mobile.value,
+      vcode: verifyCode.value,
+    },
+    redirect.value,
+  )
 }
+onLoad((query) => {
+  console.log('[ query ]-150', query)
+  if (query.redirect) {
+    redirect.value = query.redirect
+  }
+})
 </script>
 
 <style lang="scss" scoped>

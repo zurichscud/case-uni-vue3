@@ -1,7 +1,4 @@
-export const subscribeTemplate = [
-  '_3Lp9487qqs1dZJ7oobm-v-boxFrrSoZAoz44Ny7lr4',
-  'M9wS7GW4BVgO75BtnoF2Gg5Q2kPCdQuGcRd9-A5yusA',
-]
+export const subscribeTemplate = ['BMcD_-DHA9nuMZIMOxfdIjevH-pxnsEfTTzB4cNosYI']
 
 export const shareOptions = {
   title: '快来和我一起加入理赔公社吧',
