@@ -247,7 +247,7 @@
           "layout": "default",
           "auth": true,
           "style": {
-            "navigationBarTitleText": "邀请加入理赔公社"
+            "navigationBarTitleText": "邀请加入"
           }
         },
         {
@@ -260,10 +260,6 @@
           "style": {
             "navigationBarTitleText": "邀请列表"
           }
-        },
-        {
-          "path": "onboarding",
-          "type": "page"
         },
         {
           "path": "components/InviteStatistics",

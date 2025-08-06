@@ -120,7 +120,6 @@ function _go(
     })
     return
   }
-
   uni.navigateTo({
     url,
     fail: (e) => {
@@ -145,7 +144,6 @@ function paramsToQuery(params: Record<string, string | number | boolean>): strin
   for (const key in params) {
     query.push(`${key}=${params[key]}`)
   }
-
   return query.join('&')
 }
 

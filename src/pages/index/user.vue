@@ -4,6 +4,7 @@ import { useUserStore } from '@/stores'
 import appConfig from '@/config/app'
 import router from '@/utils/router'
 import { REMARK } from '@/enums/remark'
+import { GZH } from '@/config/wechat'
 
 const userStore = useUserStore()
 const isLogin = computed(() => userStore.isLogin)
@@ -35,7 +36,7 @@ const menus = ref([
 ])
 
 function toLogin() {
-  router.push('/pages/login/login',{redirect:'/pages/index/user'})
+  router.push('/pages/login/login', { redirect: '/pages/index/user' })
 }
 
 //申请成为社员
@@ -46,7 +47,7 @@ function toApply() {
       icon: 'none',
     })
   }
-  console.log(remark.value !== REMARK.BaoMin);
+  console.log(remark.value !== REMARK.BaoMin)
 
   if (remark.value !== REMARK.BaoMin) {
     return uni.showToast({
@@ -67,13 +68,31 @@ function makePhone() {
 //跳转公众号
 function toGZH() {
   wx.openOfficialAccountProfile({
-    username: 'gh_03cf09237796',
+    username: GZH,
     fail: (err) => {
       console.log(err)
     },
   })
 }
 
+function subscribe() {
+    uni.requestSubscribeMessage({
+    tmplIds: subscribeTemplate,
+    success: (res) => {
+      console.log(res)
+    },
+    fail: ({ errMsg, errCode }) => {
+      console.log(errMsg, errCode)
+      uni.showToast({
+        title: '订阅失败',
+        icon: 'none',
+      })
+    },
+  })
+}
+onLoad(() => {
+  subscribe()
+})
 </script>
 
 <template>

@@ -8,3 +8,5 @@ export const shareOptions = {
   path: '/pages/index/index',
   imageUrl: 'https://app.y9net.cn/data/01/33/wKgBNmNrSeSAbR2TAAEp5UKyBy8155.png',
 }
+
+export const GZH = 'gh_03cf09237796'

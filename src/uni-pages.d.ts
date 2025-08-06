@@ -32,7 +32,6 @@ interface NavigateToOptions {
        "/pages/invite/demo" |
        "/pages/invite/inviteYou" |
        "/pages/invite/list" |
-       "/pages/invite/onboarding" |
        "/pages/invite/components/InviteStatistics" |
        "/pages/invite/components/UpgradeTip" |
        "/pages/login/login" |

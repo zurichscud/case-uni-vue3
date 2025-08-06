@@ -16,9 +16,18 @@ export function getInviteListById(data: InviteListByIdParams) {
 }
 
 //获取升级信息
-export function getUpgardMSg(){
+export function getUpgardMSg() {
   return http({
     url: 'lpgsUser/getMyUsersNum',
     method: 'GET',
+  })
+}
+
+//加入推荐人的团队
+export function addGroup(params: { pid: number }) {
+  return http({
+    url: 'lpgsUser/joinInvite',
+    method: 'POST',
+    params,
   })
 }

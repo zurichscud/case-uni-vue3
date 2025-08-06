@@ -1,141 +1,92 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-// @ts-expect-error - uni_modules 组件缺少类型声明
-import uQrcode from '@/uni_modules/Sansnn-uQRCode/components/u-qrcode/u-qrcode.vue'
-import QrcodePoster from '@/components/zhangyu-qrcode-poster/zhangyu-qrcode-poster.vue'
 import { useUserStore } from '@/stores'
-import appConfig from '@/config/app'
 import { subscribeTemplate, shareOptions } from '@/config/wechat'
 import * as TeamAPI from '@/apis/team'
 import { base64ToPath } from '@/utils/image'
-import jsonData from './data.json'
 
 const img = ref<string>('')
-const scene = ref('')
 const userStore = useUserStore()
-const uqrcodeRef = ref()
-const posterRef = ref()
-// 二维码配置
-const qrOptions = ref({
-  margin: 16,
-  foregroundImageSrc: userStore.photo || appConfig.logo,
-  backgroundColor: '#FFFFFF',
-  foregroundColor: '#1b39b1',
-  correctLevel: 'M',
-  auto: true,
-})
+const loading = ref(false)
+const saveLoading = ref(false)
 
 // 分享到好友
-function shareToFriend() {
-  // uni.requestSubscribeMessage({
-  //   tmplIds: subscribeTemplate,
-  //   success: (res) => {
-  //     console.log(res)
-  //   },
-  //   fail: ({ errMsg, errCode }) => {
-  //     console.log(errMsg, errCode)
-  //     uni.showToast({
-  //       title: '订阅失败',
-  //       icon: 'none',
-  //     })
-  //   },
-  // })
-  posterRef.value.showCanvas('https://app.y9net.cn/data/01/47/wKgBNmZVTgCAHxQ8AAJGY8sYbNQ37.jpeg')
-}
+function shareToFriend() {}
 
 // 下载/保存二维码
-function handleSave() {
-  if (uqrcodeRef.value) {
-    uqrcodeRef.value.save({
-      success: () => {
-        uni.showToast({
-          title: '保存成功',
-          icon: 'success',
-        })
-      },
-      fail: () => {
-        uni.showToast({
-          title: '保存失败',
-          icon: 'error',
-        })
-      },
-    })
+async function handleSave() {
+  if (!img.value) {
+    uni.showToast({ title: '二维码生成中...' })
+    return
+  }
+  try {
+    saveLoading.value = true
+    const tempPath = await base64ToPath(img.value)
+    await uni.saveImageToPhotosAlbum({ filePath: tempPath })
+    uni.showToast({ title: '保存成功' })
+  } catch (error) {
+    console.log(error)
+    uni.showToast({ title: '保存失败', icon: 'none' })
+  } finally {
+    saveLoading.value = false
   }
 }
 
 async function getMyQrcodeData() {
+  loading.value = true
   const { data } = await TeamAPI.getMyQrcode()
-  // console.log('[ data ]-65', jsonData)
   img.value = data.qrcode
+  loading.value = false
 }
 
 onShareAppMessage(() => shareOptions)
 
-onLoad((query) => {
-  // scene.value = decodeURIComponent(query.scene)
-  // console.log('[ scene.value ]-64', scene.value)
-  // console.log(query)
+onLoad(() => {
   getMyQrcodeData()
 })
 </script>
 
 <template>
-  <view class="min-h-screen bg-white flex flex-col">
+  <view class="min-h-screen bg-white flex flex-col main">
     <!-- 主要内容 -->
-    <view class="flex-1 flex flex-col items-center justify-center pt-12.5 px-15 gap-8">
+    <view class="flex-1 flex flex-col items-center justify-center pt-12 px-15 gap-8">
       <!-- 二维码容器 -->
-      <view
-        class="w-[400rpx] h-[400rpx] bg-white rounded-4 flex items-center justify-center shadow-sm"
-      >
-        <!-- <uQrcode
-          ref="uqrcodeRef"
-          canvas-id="invite-qrcode"
-          :value="userStore.id"
-          :options="qrOptions"
-          size="400"
-          size-unit="rpx"
-        /> -->
-        <image :src="img" width="400rpx" mode="scaleToFill" />
+      <view class="w-[400rpx] h-[400rpx] rounded-4 flex items-center justify-center">
+        <view class="flex flex-col items-center justify-center gap-4" v-if="loading">
+          <wd-loading />
+          <text>二维码生成中...</text>
+        </view>
+        <image v-else :src="img" width="400rpx" mode="scaleToFill" />
       </view>
 
       <!-- 用户信息 -->
       <view class="flex flex-col items-center gap-4">
-        <text class="font-medium text-5 leading-7.5 text-[#2D2D2D] text-center">
-          {{ userStore.nickName }}
+        <text class="font-medium text-base leading-7.5 text-gray-400 text-center">
+          扫描我的二维码加入我的团队
         </text>
-        {{ scene || '无' }}
       </view>
     </view>
 
     <!-- 底部按钮 -->
-    <view class="p-4 flex flex-col gap-4">
-      <wd-button type="primary" size="large" custom-class="share-btn" @click="shareToFriend">
-        <wd-icon
-          name="share"
-          size="16px"
-          color="#05BE71"
-          custom-style="margin-right: 8px;"
-        ></wd-icon>
-        分享
-      </wd-button>
-
-      <wd-button type="primary" size="large" custom-class="download-btn" @click="handleSave">
-        <wd-icon
-          name="download"
-          size="16px"
-          color="#05BE71"
-          custom-style="margin-right: 8px;"
-        ></wd-icon>
-        保存
+    <view class="px-4 pb-8 flex flex-col gap-4 ">
+      <wd-button
+        type="primary"
+        block
+        size="large"
+        custom-class="download-btn"
+        :loading="saveLoading"
+        @click="handleSave"
+      >
+        <wd-icon name="download" size="20px" custom-style="margin-right: 8px;"></wd-icon>
+        <text class="text-xl">保存</text>
       </wd-button>
     </view>
-    <qrcode-poster ref="posterRef" tip="扫描二维码加入我的团队"></qrcode-poster>
   </view>
 </template>
 
 <style scoped>
 /* 自定义按钮样式 - 使用 CSS 变量覆盖组件样式 */
-:deep(.share-btn),
+/* :deep(.share-btn),
 :deep(.download-btn) {
   width: 100% !important;
   height: 56px !important;
@@ -154,7 +105,7 @@ onLoad((query) => {
 :deep(.share-btn:active),
 :deep(.download-btn:active) {
   opacity: 0.8;
-}
+} */
 </style>
 
 <route lang="json">

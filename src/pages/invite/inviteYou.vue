@@ -1,14 +1,193 @@
 <script setup>
-import { ref } from 'vue'
+import { useUserStore } from '@/stores'
+import * as InviteAPI from '@/apis/invite'
+
+const userStore = useUserStore()
+const isLogin = computed(() => userStore.isLogin)
+const pid = ref(null)
 
 
+function getPidByScene(scene) {
+  // scene 格式: "pid=xxxx"
+  if (!scene) {
+    return null
+  }
+  try {
+    // 解析 scene 参数，提取 pid
+    const params = scene.split('&').reduce((acc, param) => {
+      const [key, value] = param.split('=')
+      if (key && value) {
+        acc[key] = value
+      }
+      return acc
+    }, {})
+
+    const pid = params.pid
+    console.log('[ getPidByScene ] pid:', pid)
+
+    if (pid) {
+      // 这里可以存储 pid 到 store 或者组件状态中
+      // 例如: userStore.setInvitePid(pid)
+      return pid
+    } else {
+      console.warn('[ getPidByScene ] 未找到有效的 pid')
+      return null
+    }
+  } catch (error) {
+    console.error('[ getPidByScene ] 解析 scene 失败:', error)
+    return null
+  }
+}
+
+async function addGroup() {
+  const res = await InviteAPI.addGroup({ pid: pid.value })
+  console.log('[ res ] >', res)
+}
+
+function handleContinue() {
+  if (!pid.value) {
+    uni.showToast({
+      title: '您没有可以加入的团队',
+      icon: 'none',
+    })
+    return
+  }
+  if (!isLogin.value) {
+    uni.showModal({
+      title: '提示',
+      content: '您需要先登录才能加入他的团队',
+      success: ({ confirm }) => {
+        if (confirm) {
+          router.push('/pages/login/login', { redirect: `/pages/invite/inviteYou` })
+        }
+      },
+    })
+    return
+  }
+  if (pid.value === userStore.id) {
+    uni.showToast({
+      title: '您不能加入自己的团队',
+      icon: 'none',
+    })
+    return
+  }
+  uni.showModal({
+    title: '提示',
+    content: `确定加入${pid.value}的团队吗？`,
+    success: async ({ confirm }) => {
+      if (confirm) {
+        await addGroup()
+        uni.removeStorageSync('pid')
+        uni.showToast({
+          title: '加入成功',
+          icon: 'success',
+          success: () => {
+            router.place('/pages/index/index')
+          },
+        })
+      }
+    },
+  })
+}
+onLoad((query) => {
+  console.log('[ query ]-10', query) // pid%3Dxxxx
+  //如果存在scene，说明是扫码的
+  if (query.scene) {
+    const decodeScene = decodeURIComponent(query.scene) // pid=xxxx
+    pid.value = getPidByScene(decodeScene)
+    uni.setStorageSync('pid', pid.value)
+  } else {
+    pid.value = uni.getStorageSync('pid')
+  }
+})
 </script>
 
 <template>
-  <view>分享海报</view>
+  <view class="w-full h-screen bg-[#FFFBF7] flex flex-col overflow-hidden">
+    <!-- 主体内容 -->
+    <view class="flex-1 flex flex-col pb-16 relative">
+      <!-- 插画区域 -->
+      <view class="flex-1 flex justify-center items-center px-13 pt-10 pb-5">
+        <image
+          class="w-68 h-53 max-w-full max-h-full"
+          src="/static/onboarding/mobile_payments.svg"
+          mode="aspectFit"
+        />
+      </view>
+
+      <!-- 文案区域 -->
+      <view class="px-13 pb-10">
+        <view class="mb-8">
+          <text
+            class="block w-68 font-['Poppins'] font-bold text-6 leading-9 text-center gradient-text"
+          >
+            {{ pid }}
+          </text>
+          <text
+            class="block w-68 font-['Poppins'] font-bold text-6 leading-9 text-center gradient-text"
+          >
+            邀请你加入他的团队
+          </text>
+        </view>
+
+        <view>
+          <!-- <text class="block w-71 font-['Poppins'] font-normal text-4 leading-5.5 text-center text-[#333333]">
+            提示文字
+          </text> -->
+        </view>
+      </view>
+
+      <!-- 继续按钮 -->
+      <view class="flex justify-center px-23">
+        <view
+          class="w-48 h-11 bg-gradient-to-br from-[#FD749B] to-[#281AC8] rounded shadow-lg flex justify-center items-center cursor-pointer transition-all duration-300 hover:transform hover:-translate-y-0.5 hover:shadow-xl active:transform active:translate-y-0 active:shadow-md relative overflow-hidden"
+          @click="handleContinue"
+        >
+          <text
+            class="font-['Poppins'] font-bold text-4 leading-6 text-[#FFFBF7] tracking-wide relative z-1"
+          >
+            加入他的团队
+          </text>
+        </view>
+      </view>
+    </view>
+  </view>
 </template>
 
-<style scoped lang="scss"></style>
+<style lang="scss" scoped>
+/* 渐变文字效果 */
+.gradient-text {
+  background: linear-gradient(135deg, #fd749b 0%, #281ac8 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+
+  /* 降级处理 */
+  @supports not (background-clip: text) {
+    color: #281ac8;
+  }
+}
+
+/* 按钮波纹效果 */
+.w-48.h-11::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: width 0.6s, height 0.6s;
+}
+
+.w-48.h-11:active::before {
+  width: 300px;
+  height: 300px;
+}
+</style>
 
 <route lang="json">
 {
@@ -16,7 +195,7 @@ import { ref } from 'vue'
   "layout": "default",
   "auth": true,
   "style": {
-    "navigationBarTitleText": "邀请加入理赔公社"
+    "navigationBarTitleText": "邀请加入"
   }
 }
 </route>

@@ -98,7 +98,7 @@ async function getPhoneNumber(res) {
       </wd-divider>
       <!-- 方式 -->
       <view class="flex items-center justify-center flex-col gap-2">
-        <view class="other-login-btn" @click="router.push('/pages/login/phoneLogin')">
+        <view class="other-login-btn" @click="router.push('/pages/login/phoneLogin', { redirect })">
           <i class="iconfont icon-duanxinshezhi text-green-500" style="font-size: 32rpx"></i>
         </view>
         <view class="text-[24rpx] text-gray-500">短信验证登录</view>

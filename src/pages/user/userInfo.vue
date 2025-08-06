@@ -105,23 +105,7 @@ function handleClearCache() {
 }
 
 function handleDev() {
-  // uni.navigateTo({
-  //   url: `/pages/invite/inviteYou?name=${userStore.nickName}`,
-  // })
-  router.push('/pages/invite/onboarding')
-  // uni.requestSubscribeMessage({
-  //   tmplIds: subscribeTemplate,
-  //   success: (res) => {
-  //     console.log(res)
-  //   },
-  //   fail: ({ errMsg, errCode }) => {
-  //     console.log(errMsg, errCode)
-  //     uni.showToast({
-  //       title: '订阅失败',
-  //       icon: 'none',
-  //     })
-  //   },
-  // })
+  router.push('/pages/invite/inviteYou')
 }
 
 onMounted(() => {
