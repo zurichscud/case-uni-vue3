@@ -105,9 +105,10 @@ function handleClearCache() {
 }
 
 function handleDev() {
-  uni.navigateTo({
-    url: `/pages/invite/inviteYou?name=${userStore.nickName}`,
-  })
+  // uni.navigateTo({
+  //   url: `/pages/invite/inviteYou?name=${userStore.nickName}`,
+  // })
+  router.push('/pages/invite/onboarding')
   // uni.requestSubscribeMessage({
   //   tmplIds: subscribeTemplate,
   //   success: (res) => {

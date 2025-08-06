@@ -237,6 +237,10 @@
       "root": "pages/invite",
       "pages": [
         {
+          "path": "demo",
+          "type": "page"
+        },
+        {
           "path": "inviteYou",
           "type": "page",
           "name": "inviteYou",
@@ -256,6 +260,10 @@
           "style": {
             "navigationBarTitleText": "邀请列表"
           }
+        },
+        {
+          "path": "onboarding",
+          "type": "page"
         },
         {
           "path": "components/InviteStatistics",
