@@ -102,14 +102,14 @@ onLoad((query) => {
 </script>
 
 <template>
-  <view class="w-full h-screen bg-[#FFFBF7] flex flex-col overflow-hidden">
+  <view class="w-full h-screen bg-white flex flex-col overflow-hidden">
     <!-- 主体内容 -->
     <view class="flex-1 flex flex-col pb-16 relative">
       <!-- 插画区域 -->
       <view class="flex-1 flex justify-center items-center px-13 pt-10 pb-5">
         <image
-          class="w-68 h-53 max-w-full max-h-full"
-          src="/static/onboarding/mobile_payments.svg"
+          class="w-68 "
+          src="/static/team.png"
           mode="aspectFit"
         />
       </view>
