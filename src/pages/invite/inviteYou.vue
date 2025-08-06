@@ -75,7 +75,7 @@ function handleContinue() {
           title: '加入成功',
           icon: 'success',
           success: () => {
-            setTimeout(() => {  
+            setTimeout(() => {
               router.redirect('/pages/index/index')
             }, 1000)
           },
@@ -90,6 +90,9 @@ onLoad((query) => {
   if (query.scene) {
     const decodeScene = decodeURIComponent(query.scene) // pid=xxxx
     pid.value = getPidByScene(decodeScene)
+    uni.setStorageSync('pid', pid.value)
+  }else if(query.pid){
+    pid.value = query.pid
     uni.setStorageSync('pid', pid.value)
   }
   else {
@@ -122,7 +125,7 @@ onLoad((query) => {
           <text
             class="block w-68 font-['Poppins'] font-bold text-6 leading-9 text-center gradient-text"
           >
-            邀请你加入他的团队
+            邀请您加入他的团队
           </text>
         </view>
 

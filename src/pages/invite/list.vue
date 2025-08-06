@@ -104,13 +104,13 @@ onLoad(() => {
     >
       <!-- 人员 -->
       <wd-tab title="人员">
-        <view >
+        <view>
           <YpScrollView :query="getInviteListData" ref="ypScrollViewRef" v-model:page="pageParams">
             <template #default="{ list }">
               <view class="px-4">
                 <!-- 统计 -->
                 <InviteStatistics
-                  v-if="list.length > 0"
+                  v-if="list.length > 0 && isSelf"
                   :she-yuan="count.sheyuanCount"
                   :bao-min="count.baominCount"
                   :fen-she="count.fensheCount"
