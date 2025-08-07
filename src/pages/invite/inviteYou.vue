@@ -1,11 +1,16 @@
 <script setup>
 import { useUserStore } from '@/stores'
 import * as InviteAPI from '@/apis/invite'
+import * as TeamAPI from '@/apis/team'
 import router from '@/utils/router'
 
 const userStore = useUserStore()
 const isLogin = computed(() => userStore.isLogin)
 const pid = ref(null)
+const teamInfo = ref({
+  teamName: '未知团队',
+  userName: '未知名称',
+})
 
 function getPidByScene(scene) {
   // scene 格式: "pid=xxxx"
@@ -27,21 +32,19 @@ function getPidByScene(scene) {
 
     if (pid) {
       return pid
-    }
-    else {
+    } else {
       console.warn('[ getPidByScene ] 未找到有效的 pid')
       return null
     }
-  }
-  catch (error) {
+  } catch (error) {
     console.error('[ getPidByScene ] 解析 scene 失败:', error)
     return null
   }
 }
 
-async function addGroup() {
-  const res = await InviteAPI.addGroup({ pid: pid.value })
-  console.log('[ res ] >', res)
+async function getTeamInfoData() {
+  const {data} = await TeamAPI.getTeamInfo({ userId: pid.value })
+  teamInfo.value = data
 }
 
 function handleContinue() {
@@ -66,10 +69,10 @@ function handleContinue() {
   }
   uni.showModal({
     title: '提示',
-    content: `确定加入${pid.value}的团队吗？`,
+    content: `确定加入${teamInfo.value.userName}的团队吗？`,
     success: async ({ confirm }) => {
       if (confirm) {
-        await addGroup()
+        await InviteAPI.addGroup({ pid: pid.value })
         uni.removeStorageSync('pid')
         uni.showToast({
           title: '加入成功',
@@ -91,12 +94,14 @@ onLoad((query) => {
     const decodeScene = decodeURIComponent(query.scene) // pid=xxxx
     pid.value = getPidByScene(decodeScene)
     uni.setStorageSync('pid', pid.value)
-  }else if(query.pid){
+  } else if (query.pid) {
     pid.value = query.pid
     uni.setStorageSync('pid', pid.value)
-  }
-  else {
+  } else {
     pid.value = uni.getStorageSync('pid')
+  }
+  if (pid.value) {
+    getTeamInfoData()
   }
 })
 </script>
@@ -107,11 +112,7 @@ onLoad((query) => {
     <view class="flex-1 flex flex-col pb-16 relative">
       <!-- 插画区域 -->
       <view class="flex-1 flex justify-center items-center px-13 pt-10 pb-5">
-        <image
-          class="w-68 "
-          src="/static/team.png"
-          mode="aspectFit"
-        />
+        <image class="w-68" src="/static/team.png" mode="aspectFit" />
       </view>
 
       <!-- 文案区域 -->
@@ -120,7 +121,7 @@ onLoad((query) => {
           <text
             class="block w-68 font-['Poppins'] font-bold text-6 leading-9 text-center gradient-text"
           >
-            {{ pid }}
+            {{ teamInfo.userName }}
           </text>
           <text
             class="block w-68 font-['Poppins'] font-bold text-6 leading-9 text-center gradient-text"
@@ -142,9 +143,7 @@ onLoad((query) => {
           class="w-48 h-11 bg-gradient-to-br from-[#FD749B] to-[#281AC8] rounded shadow-lg flex justify-center items-center"
           @click="handleContinue"
         >
-          <text
-            class="font-['Poppins'] font-bold text-4 leading-6 text-[#FFFBF7] tracking-wide"
-          >
+          <text class="font-['Poppins'] font-bold text-4 leading-6 text-[#FFFBF7] tracking-wide">
             加入他的团队
           </text>
         </view>

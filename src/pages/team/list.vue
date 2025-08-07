@@ -84,7 +84,9 @@ async function handleEditName() {
     return
   }
   teamInfo.value.name = input.trim()
+  await TeamAPI.updateTeamName({ teamName: teamInfo.value.name, userId: userStore.id! })
   uni.showToast({ title: '修改成功', icon: 'success' })
+  ypScrollViewRef.value.getData()
 }
 
 onMounted(() => {
