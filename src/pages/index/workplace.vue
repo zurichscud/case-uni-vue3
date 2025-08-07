@@ -100,6 +100,13 @@ function subscribe() {
     tmplIds: subscribeTemplate,
     success: (res) => {
       console.log(res)
+      //获取是否勾选总是保持以上选择
+      uni.getSetting({
+        withSubscriptions: true,
+        success: ({subscriptionsSetting}) => {
+          console.log(subscriptionsSetting)
+        },
+      })
     },
     fail: ({ errMsg, errCode }) => {
       console.log(errMsg, errCode)

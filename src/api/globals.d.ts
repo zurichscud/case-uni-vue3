@@ -1,7 +1,7 @@
 /* tslint:disable */
 /* eslint-disable */
 /**
- * Swagger Petstore - OpenAPI 3.0 - version 1.0.26
+ * Swagger Petstore - OpenAPI 3.0 - version 1.0.27
  *
  * This is a sample Pet Store Server based on the OpenAPI 3.0 specification.  You can find out more about
 Swagger at [https://swagger.io](https://swagger.io). In the third iteration of the pet store, we&#x27;ve switched to the design first approach!
@@ -286,7 +286,8 @@ declare global {
        * ```ts
        * type QueryParameters = {
        *   // Status values that need to be considered for filter
-       *   status?: 'available' | 'pending' | 'sold'
+       *   // [required]
+       *   status: 'available' | 'pending' | 'sold'
        * }
        * ```
        *
@@ -318,8 +319,9 @@ declare global {
           params: {
             /**
              * Status values that need to be considered for filter
+             * [required]
              */
-            status?: 'available' | 'pending' | 'sold';
+            status: 'available' | 'pending' | 'sold';
           };
         }
       >(
@@ -338,7 +340,8 @@ declare global {
        * ```ts
        * type QueryParameters = {
        *   // Tags to filter by
-       *   tags?: string[]
+       *   // [required]
+       *   tags: string[]
        * }
        * ```
        *
@@ -370,8 +373,9 @@ declare global {
           params: {
             /**
              * Tags to filter by
+             * [required]
              */
-            tags?: string[];
+            tags: string[];
           };
         }
       >(
