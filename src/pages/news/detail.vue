@@ -4,9 +4,6 @@ import { useUserStore } from '@/stores'
 import QrcodePoster from '@/components/zhangyu-qrcode-poster/zhangyu-qrcode-poster.vue'
 
 const posterRef = ref(null)
-const helloRef = ref(null)
-// 图片链接，生成好的图片放到这里
-const imgUrl = ref(null);
 const userStore = useUserStore()
 const remark = computed(() => userStore.remark)
 const props = defineProps({
@@ -49,7 +46,7 @@ onLoad((query) => {
 <template>
   <view class="main h-screen">
     <!-- 赔案快报 -->
-    <image lazy-load mode="widthFix" :src="imgUrl" @click="handlePreview" />
+    <image lazy-load mode="widthFix" :src="imageUrl" @click="handlePreview" />
     <!-- 分享按钮 -->
     <view class="py-2 px-4">
       <wd-button type="primary" size="large" block @click="handleShare" icon="share">
