@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import { useUserStore } from '@/stores'
 import { subscribeTemplate, shareOptions } from '@/config/wechat'
 import * as TeamAPI from '@/apis/team'
 import { base64ToPath } from '@/utils/image'

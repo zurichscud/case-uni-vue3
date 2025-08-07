@@ -8,11 +8,7 @@ import router from '@/utils/router'
 const { login } = useUserStore()
 const isAgree = ref(false) //用户是否同意协议
 const loading = ref(false) //登录加载
-const query = defineProps({
-  redirect: {
-    type: String,
-  },
-})
+const redirect = ref(null)
 
 function handleUnAgreeLogin() {
   // 未同意协议
@@ -51,7 +47,7 @@ async function getPhoneNumber(res) {
         source: SOURCE.WECHAT,
         mobile: data,
       },
-      query.redirect,
+      redirect.value,
     )
   } catch (error) {
     console.log(error)
@@ -59,6 +55,11 @@ async function getPhoneNumber(res) {
     loading.value = false
   }
 }
+onLoad((query) => {
+  if (query.redirect) {
+    redirect.value = query.redirect
+  }
+})
 </script>
 
 <template>

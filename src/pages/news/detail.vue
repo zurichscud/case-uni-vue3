@@ -1,7 +1,9 @@
 <script setup>
 import { REMARK } from '@/enums/remark'
 import { useUserStore } from '@/stores'
+import QrcodePoster from '@/components/zhangyu-qrcode-poster/zhangyu-qrcode-poster.vue'
 
+const posterRef = ref(null)
 const userStore = useUserStore()
 const remark = computed(() => userStore.remark)
 const props = defineProps({
@@ -28,7 +30,7 @@ function handleShare() {
     })
     return
   }
-  //TODO：生成分享图片
+  posterRef.value.showCanvas()
 }
 onLoad((query) => {
   uni.setNavigationBarTitle({
@@ -39,12 +41,16 @@ onLoad((query) => {
 
 <template>
   <view class="main h-screen">
+    <!-- 赔案快报 -->
     <image lazy-load mode="widthFix" :src="imageUrl" @click="handlePreview" />
+    <!-- 分享按钮 -->
     <view class="py-2 px-4">
       <wd-button type="primary" size="large" block @click="handleShare" icon="share">
         <text>分享</text>
       </wd-button>
     </view>
+    <!-- 海报 -->
+    <QrcodePoster :header-img="imageUrl" ref="posterRef" />
   </view>
 </template>
 

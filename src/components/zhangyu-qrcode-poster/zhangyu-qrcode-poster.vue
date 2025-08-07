@@ -5,7 +5,7 @@ const props = defineProps({
   //海报头图
   headerImg: {
     type: String,
-    default: 'https://app.y9net.cn/data/01/38/wKgBNmPpoLKAD18OAANSHqPedB4675.jpg',
+    default: '',
   },
   title: {
     type: String,

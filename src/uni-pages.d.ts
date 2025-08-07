@@ -29,7 +29,6 @@ interface NavigateToOptions {
        "/pages/chat/components/userTypes" |
        "/pages/team/list" |
        "/pages/team/qrcode" |
-       "/pages/invite/demo" |
        "/pages/invite/inviteYou" |
        "/pages/invite/list" |
        "/pages/invite/components/InviteStatistics" |

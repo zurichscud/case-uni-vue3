@@ -237,10 +237,6 @@
       "root": "pages/invite",
       "pages": [
         {
-          "path": "demo",
-          "type": "page"
-        },
-        {
           "path": "inviteYou",
           "type": "page",
           "name": "inviteYou",

@@ -94,28 +94,31 @@ const menus: Menus = {
   },
 }
 
-function subscribe() {
-  //只能被点击触发
-  uni.requestSubscribeMessage({
-    tmplIds: subscribeTemplate,
-    success: (res) => {
-      console.log(res)
-      //获取是否勾选总是保持以上选择
-      uni.getSetting({
-        withSubscriptions: true,
-        success: ({subscriptionsSetting}) => {
-          console.log(subscriptionsSetting)
+async function subscribe() {
+  try {
+    await uni.requestSubscribeMessage({
+      tmplIds: subscribeTemplate,
+    })
+    const { subscriptionsSetting } = await uni.getSetting({
+      withSubscriptions: true,
+    })
+    console.log(subscriptionsSetting)
+    const { itemSettings } = subscriptionsSetting
+    if (itemSettings[subscribeTemplate[0]] === 'accept') {
+      uni.requestSubscribeMessage({
+        tmplIds: subscribeTemplate,
+        success: (res) => {
+          console.log(res)
         },
       })
-    },
-    fail: ({ errMsg, errCode }) => {
-      console.log(errMsg, errCode)
-      uni.showToast({
-        title: '订阅失败',
-        icon: 'none',
-      })
-    },
-  })
+    }
+  } catch (error) {
+    console.log(error)
+    uni.showToast({
+      title: '订阅失败',
+      icon: 'none',
+    })
+  }
 }
 
 function handleItemClick(url: string, text: string) {
@@ -127,7 +130,7 @@ function handleItemClick(url: string, text: string) {
       })
     }
   }
-  if (text === '我的团队') {
+  if (text === '邀请记录') {
     subscribe()
   }
   router.push(url)
