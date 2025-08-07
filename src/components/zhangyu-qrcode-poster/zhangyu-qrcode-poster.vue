@@ -5,7 +5,7 @@ const props = defineProps({
   //海报头图
   headerImg: {
     type: String,
-    default: '',
+    default: 'https://app.y9net.cn/data/00/00/rBEACGiTAwGATMIgAAg0YDPnDbU289.jpg',
   },
   title: {
     type: String,
@@ -15,9 +15,9 @@ const props = defineProps({
     type: String,
     default: '副标题',
   },
-  tip:{
-    type:String,
-    default:'提示语',
+  tip: {
+    type: String,
+    default: '提示语',
   },
   //底部广告图
   abImg: {
@@ -32,20 +32,9 @@ const ctx = ref(uni.createCanvasContext('my-canvas', instance))
 const isShow = ref(false)
 const qrcode = ref('')
 
-
 // 显示画布
 function showCanvas(qrcodeParam) {
   isShow.value = true
-  // 确保二维码参数有效，如果没有传入则使用默认值或提示用户
-  if (!qrcodeParam || typeof qrcodeParam !== 'string') {
-    console.warn('警告：未提供有效的二维码URL，海报生成可能失败')
-    uni.showToast({
-      title: '二维码参数缺失',
-      icon: 'none',
-    })
-    isShow.value = false
-    return
-  }
   qrcode.value = qrcodeParam
   __init()
 }
@@ -64,84 +53,37 @@ async function __init() {
   drawRoundRect(ctx.value, 0, 0, canvasW.value, canvasH.value, uni.upx2px(18), '#FFFFFF')
   // 获取标题图片
   const headerImg = await getImageInfo(props.headerImg)
-  const hW = uni.upx2px(500)//头图宽
-  const hH = uni.upx2px(700)//头图高
-  const border=(canvasW.value - hW) / 2
+  const hW = uni.upx2px(550) //头图宽
+  const hH = uni.upx2px(900) //头图高
+  const border = (canvasW.value - hW) / 2
   // 绘制标题图
-  drawRoundImg(
-    ctx.value,
-    headerImg.path,
-    border,
-    border,
-    hW,
-    hH,
-    uni.upx2px(16),
-  )
+  drawRoundImg(ctx.value, headerImg.path, border, border, hW, hH, uni.upx2px(16))
   // 绘制标题
-  ctx.value.setFontSize(18) // 设置标题字体大小
-  ctx.value.setFillStyle('#333') // 设置标题文本颜色
-  const tY=border + hH + uni.upx2px(60)//标题y坐标
-  ctx.value.fillText(
-    props.title,
-    border,
-    tY,
-  )
-  // 绘制副标题
-  // ctx.value.setFontSize(14)
-  // ctx.value.setFillStyle('#858585')
-  // const sWidth = ctx.value.measureText(props.subTitle).width
-  // const subTY=tY+uni.upx2px(50)//副标题y坐标
-  // if (sWidth > hW) {
-  //   ctx.value.fillText(
-  //     `${props.subTitle.slice(0, 17)}...`,
-  //     border,
-  //     subTY,
-  //   )
-  // } else {
-  //   ctx.value.fillText(
-  //     props.subTitle,
-  //     border,
-  //     subTY,
-  //   )
-  // }
+  // ctx.value.setFontSize(18) // 设置标题字体大小
+  // ctx.value.setFillStyle('#333') // 设置标题文本颜色
+  // const tY = border + hH + uni.upx2px(60) //标题y坐标
+  // ctx.value.fillText(props.title, border, tY)
   // 绘制虚线
-  const lineY=tY+ uni.upx2px(30)
-  drawDashLine(
-    ctx.value,
-    uni.upx2px(20),
-    lineY,
-    canvasW.value - uni.upx2px(20),
-    lineY,
-    5,
-  )
+  const lineY = hH + uni.upx2px(30)
+  drawDashLine(ctx.value, uni.upx2px(20), lineY, canvasW.value - uni.upx2px(20), lineY, 5)
   // 绘制提示文案
-  const tipY=lineY+ uni.upx2px(50)
+  const tipY = lineY + uni.upx2px(50)
   ctx.value.setFontSize(12)
   ctx.value.setFillStyle('#858585')
-  ctx.value.fillText(
-    props.tip,
-    border+ uni.upx2px(34),
-    tipY,
-  )
+  ctx.value.fillText(props.tip, border + uni.upx2px(34), tipY)
   // 绘制abImg
-  const BottomAdImg = await getImageInfo(props.abImg)
-  const footerY=tipY+ uni.upx2px(30)
-  ctx.value.drawImage(
-    BottomAdImg.path,
-    border,
-    footerY,
-    uni.upx2px(350),
-    uni.upx2px(110),
-  )
   // 绘制二维码
-  const qrcodeImg = await getImageInfo(qrcode.value)
-  ctx.value.drawImage(
-    qrcodeImg.path,
-    uni.upx2px(384),
-    lineY+uni.upx2px(20),
-    uni.upx2px(156),
-    uni.upx2px(156),
-  )
+  if (qrcode.value) {
+    const qrcodeImg = await getImageInfo(qrcode.value)
+    ctx.value.drawImage(
+      qrcodeImg.path,
+      uni.upx2px(384),
+      lineY + uni.upx2px(20),
+      uni.upx2px(156),
+      uni.upx2px(156),
+    )
+  }
+
   // 延迟渲染
   setTimeout(() => {
     ctx.value.draw(true, () => {

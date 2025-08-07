@@ -5,7 +5,6 @@ export function useQRcode() {
   const loading = ref(false)
   const QRImg = ref<string>('')
   const saveLoading = ref(false)
-  const tempPath = ref<string | null>(null)
 
   // 下载/保存二维码
   async function handleSave() {
@@ -15,8 +14,8 @@ export function useQRcode() {
     }
     try {
       saveLoading.value = true
-      tempPath.value = await base64ToPath(QRImg.value)
-      await uni.saveImageToPhotosAlbum({ filePath: tempPath.value })
+      const tempPath = await getTempPath()
+      await uni.saveImageToPhotosAlbum({ filePath: tempPath })
       uni.showToast({ title: '保存成功' })
     } catch (error) {
       console.log(error)
@@ -24,6 +23,10 @@ export function useQRcode() {
     } finally {
       saveLoading.value = false
     }
+  }
+
+  async function getTempPath() {
+    return await base64ToPath(QRImg.value)
   }
 
   async function getMyQRcodeData() {
@@ -36,7 +39,7 @@ export function useQRcode() {
   return {
     loading,
     QRImg,
-    tempPath,
+    getTempPath,
     saveLoading,
     handleSave,
     getMyQRcodeData,

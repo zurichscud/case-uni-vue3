@@ -4,6 +4,9 @@ import { useUserStore } from '@/stores'
 import QrcodePoster from '@/components/zhangyu-qrcode-poster/zhangyu-qrcode-poster.vue'
 
 const posterRef = ref(null)
+const helloRef = ref(null)
+// 图片链接，生成好的图片放到这里
+const imgUrl = ref(null);
 const userStore = useUserStore()
 const remark = computed(() => userStore.remark)
 const props = defineProps({
@@ -22,7 +25,7 @@ function handlePreview() {
   })
 }
 
-function handleShare() {
+async function handleShare() {
   if (remark.value === REMARK.BaoMin) {
     uni.showToast({
       title: '保民暂时不支持分享哦～',
@@ -30,6 +33,9 @@ function handleShare() {
     })
     return
   }
+  // await getMyQRcodeData()
+  // const tempPath = await getTempPath()
+  // console.log('[ tempPath ] >', tempPath)
   posterRef.value.showCanvas()
 }
 onLoad((query) => {
@@ -37,12 +43,13 @@ onLoad((query) => {
     title: query.title,
   })
 })
+
 </script>
 
 <template>
   <view class="main h-screen">
     <!-- 赔案快报 -->
-    <image lazy-load mode="widthFix" :src="imageUrl" @click="handlePreview" />
+    <image lazy-load mode="widthFix" :src="imgUrl" @click="handlePreview" />
     <!-- 分享按钮 -->
     <view class="py-2 px-4">
       <wd-button type="primary" size="large" block @click="handleShare" icon="share">
