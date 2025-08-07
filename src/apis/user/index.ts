@@ -23,6 +23,7 @@ export function login(data: LoginParams) {
   })
 }
 
+//获取手机号
 export function getDecryptPhone(data:{code:string}) {
   return http({
     url: 'iclaim/login/phone',
@@ -48,7 +49,7 @@ export function getUserInfo() {
   })
 }
 
-//获取sessionKey
+//获取sessionKey，已弃用
 export function getSessionKey(data:any) {
   return http({
     url: 'iclaim/login/getSessionKey2',
@@ -66,14 +67,7 @@ export function updateUserInfo(data: UserInfoParams) {
   })
 }
 
-export function selectIdentity(data: IdentityParams) {
-  return http({
-    url: 'lpgsUser/selectUserIdentity',
-    method: 'POST',
-    data
-  })
-}
-
+//获取openID
 export function getOpenid(data: { code: string }) {
   return http({
     url: 'lpgsUser/getOpenId',

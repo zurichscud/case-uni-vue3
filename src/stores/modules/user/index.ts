@@ -69,6 +69,8 @@ export const useUserStore = defineStore('user', {
         openid: data.openid,
         token: data.token,
       })
+      //登录时不会获取openId，完善一下openId
+      await this.getOpenid()
       uni.showToast({
         title: '登录成功',
         icon: 'success',
@@ -80,12 +82,10 @@ export const useUserStore = defineStore('user', {
       }, 1000)
     },
     async getOpenid() {
-      //登录时不会获取openId，完善一下openId
       if (this.openid) {
         return
       }
       const { code } = await uni.login()
-      console.log('[ code ] >', code)
       await UserAPI.getOpenid({ code })
     },
     // 退出

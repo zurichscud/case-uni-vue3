@@ -1,50 +1,19 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
 import { shareOptions } from '@/config/wechat'
-import * as TeamAPI from '@/apis/team'
-import { base64ToPath } from '@/utils/image'
+import { useQRcode } from '@/hooks/useQRcode'
 
-const img = ref<string>('')
-const loading = ref(false)
-const saveLoading = ref(false)
-
-
-// 下载/保存二维码
-async function handleSave() {
-  if (!img.value) {
-    uni.showToast({ title: '二维码生成中...' })
-    return
-  }
-  try {
-    saveLoading.value = true
-    const tempPath = await base64ToPath(img.value)
-    await uni.saveImageToPhotosAlbum({ filePath: tempPath })
-    uni.showToast({ title: '保存成功' })
-  } catch (error) {
-    console.log(error)
-    uni.showToast({ title: '保存失败', icon: 'none' })
-  } finally {
-    saveLoading.value = false
-  }
-}
-
-async function getMyQrcodeData() {
-  loading.value = true
-  const { data } = await TeamAPI.getMyQrcode()
-  img.value = data.qrcode
-  loading.value = false
-}
+const { loading, QRImg, saveLoading, handleSave, getMyQRcodeData } = useQRcode()
 
 function handlePreview() {
   uni.previewImage({
-    urls: [img.value],
+    urls: [QRImg.value],
   })
 }
 
 onShareAppMessage(() => shareOptions)
 
 onLoad(() => {
-  getMyQrcodeData()
+  getMyQRcodeData()
 })
 </script>
 
@@ -58,7 +27,7 @@ onLoad(() => {
           <wd-loading />
           <text>二维码生成中...</text>
         </view>
-        <image v-else :src="img" width="400rpx" mode="scaleToFill" @click="handlePreview" />
+        <image v-else :src="QRImg" width="400rpx" mode="scaleToFill" @click="handlePreview" />
       </view>
 
       <!-- 用户信息 -->
