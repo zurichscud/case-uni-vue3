@@ -12,8 +12,6 @@ import appConfig from '@/config/app'
 import TnSwiper from '@tuniao/tnui-vue3-uniapp/components/swiper/src/swiper.vue'
 
 const currentSwiperIndex = ref(0)
-
-// 轮播图数据
 const swiperData = [img]
 const slogans = appConfig.slogans
 const sloganDuration = appConfig.sloganDuration
@@ -30,6 +28,7 @@ const query = {
 const isLogin = computed(() => userStore.isLogin)
 const currentSubtitleIndex = ref(0)
 const isTextVisible = ref(true)
+const { getOpenid } = userStore
 let scrollTimer = null
 
 // 海报相关数据
@@ -116,6 +115,10 @@ onShow(() => {})
 onMounted(() => {
   getArticleListData()
   startScrollText()
+  //旧用户完善openId
+  if (isLogin.value) {
+    getOpenid()
+  }
 })
 
 onUnmounted(() => {

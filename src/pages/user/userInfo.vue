@@ -7,7 +7,6 @@ import * as UserAPI from '@/apis/user'
 import { uploadImage } from '@/utils/http'
 import TnListItem from '@tuniao/tnui-vue3-uniapp/components/list/src/list-item.vue'
 import TnAvatar from '@tuniao/tnui-vue3-uniapp/components/avatar/src/avatar.vue'
-import { subscribeTemplate } from '@/config/wechat'
 
 const message = useMessage()
 const userStore = useUserStore()

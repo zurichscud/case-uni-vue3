@@ -73,3 +73,11 @@ export function selectIdentity(data: IdentityParams) {
     data
   })
 }
+
+export function getOpenid(data: { code: string }) {
+  return http({
+    url: 'lpgsUser/getOpenId',
+    method: 'GET',
+    data,
+  })
+}

@@ -94,21 +94,43 @@ const menus: Menus = {
   },
 }
 
+//判断用户是否长期订阅
+async function isSubscribe() {
+  const { subscriptionsSetting } = await uni.getSetting({
+    withSubscriptions: true,
+  })
+  console.log('[ subscriptionsSetting ]-100', subscriptionsSetting)
+  const { itemSettings } = subscriptionsSetting
+  if (itemSettings) {
+    return itemSettings[subscribeTemplate[0]] === 'accept'
+  }
+  return false
+}
+
 async function subscribe() {
   try {
+    let isSub = await isSubscribe()
+    if (isSub) {
+      return
+    }
     await uni.requestSubscribeMessage({
       tmplIds: subscribeTemplate,
     })
-    const { subscriptionsSetting } = await uni.getSetting({
-      withSubscriptions: true,
-    })
-    console.log(subscriptionsSetting)
-    const { itemSettings } = subscriptionsSetting
-    if (itemSettings[subscribeTemplate[0]] === 'accept') {
+    isSub = await isSubscribe()
+    console.log('[ isSub ]-120', isSub)
+    if (isSub) {
       uni.requestSubscribeMessage({
         tmplIds: subscribeTemplate,
-        success: (res) => {
-          console.log(res)
+        success: () => {
+          uni.showToast({
+            title: '订阅成功2次',
+            icon: 'success',
+            mask: true,
+          })
+          console.log('订阅二次成功')
+        },
+        fail: (err) => {
+          console.log('[ err ]-132', err)
         },
       })
     }

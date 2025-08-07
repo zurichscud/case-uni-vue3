@@ -15,6 +15,7 @@ export const useUserStore = defineStore('user', {
     photo: undefined,
     remark: undefined,
     pid: undefined,
+    openid: undefined,
   }),
 
   getters: {
@@ -33,12 +34,15 @@ export const useUserStore = defineStore('user', {
     // 设置用户信息
     setUser(info: any) {
       this.$patch(info)
+      if (!this.photo) {
+        this.photo = appConfig.defaultAvatar
+      }
     },
     // 重置用户信息
     resetInfo() {
       this.$reset()
     },
-    // 获取用户信息
+    // 获取用户信息，用户身份随时都会变
     async getUserInfo() {
       const { data } = await UserAPI.getUserInfo()
       this.setUser({
@@ -47,6 +51,7 @@ export const useUserStore = defineStore('user', {
         mobile: data.mobile,
         photo: data.photo,
         remark: data.remark,
+        openid: data.openid,
       })
     },
     // 登录
@@ -59,20 +64,29 @@ export const useUserStore = defineStore('user', {
         id: data.id,
         nickName: data.nickName,
         mobile: data.mobile,
-        photo: data.photo || appConfig.defaultAvatar,
+        photo: data.photo,
         remark: data.remark,
+        openid: data.openid,
         token: data.token,
       })
       uni.showToast({
         title: '登录成功',
         icon: 'success',
       })
-      console.log('[ redirect ]', redirect)
       setTimeout(() => {
         uni.reLaunch({
           url: redirect,
         })
       }, 1000)
+    },
+    async getOpenid() {
+      //登录时不会获取openId，完善一下openId
+      if (this.openid) {
+        return
+      }
+      const { code } = await uni.login()
+      console.log('[ code ] >', code)
+      await UserAPI.getOpenid({ code })
     },
     // 退出
     logout() {
