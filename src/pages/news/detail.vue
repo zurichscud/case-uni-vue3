@@ -116,7 +116,9 @@ onLoad((query) => {
           @click="handlePreviewPoster"
         />
         <view class="flex justify-center items-center mt-4">
-          <wd-button type="primary" icon="download" @click="handleSave">保存</wd-button>
+          <wd-button size="large" type="primary" icon="download" @click="handleSave">
+            保存
+          </wd-button>
         </view>
       </view>
     </wd-popup>
