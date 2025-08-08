@@ -15,7 +15,6 @@ const pageParams = ref({
 const ypScrollViewRef = ref()
 const isLogin = computed(() => userStore.isLogin)
 
-// 获取消息列表 - 纯数据获取逻辑
 async function getMessageListData() {
   return await MessageAPI.getMessageList(pageParams.value)
 }
@@ -35,7 +34,7 @@ onShow(() => {
   <view class="bg-[#f5f6fa]">
     <NoLogin text="登录后可查看您的消息" v-if="!isLogin" />
     <!-- 消息列表容器 -->
-    <view class="h-screen" v-else>
+    <view class="h-[95vh]" v-else>
       <YpScrollView :query="getMessageListData" v-model:page="pageParams" ref="ypScrollViewRef">
         <template #default="{ list }">
           <view class="message-list px-4">
