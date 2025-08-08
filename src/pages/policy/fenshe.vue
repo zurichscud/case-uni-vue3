@@ -12,7 +12,7 @@
 </template>
 
 <script setup>
-import app from '@/config/app'
+
 
 const src='https://app.y9net.cn/data/01/38/wKgBNmPpoIuAZKK9AAQgKJOGCkI935.jpg'
 
@@ -29,7 +29,7 @@ function handlePreview() {
 
 <route lang="json">
 {
-  "name": "fengshePolicy",
+  "name": "fenshePolicy",
   "layout": "default",
   "auth": true,
   "style": {

@@ -32,13 +32,13 @@ onShow(() => {
 </script>
 
 <template>
-  <view class="message-container">
+  <view class="bg-[#f5f6fa]">
     <NoLogin text="登录后可查看您的消息" v-if="!isLogin" />
     <!-- 消息列表容器 -->
-    <view class="h-[95vh]" v-else>
+    <view class="h-[90vh]" v-else>
       <YpScrollView :query="getMessageListData" v-model:page="pageParams" ref="ypScrollViewRef">
         <template #default="{ list }">
-          <view class="message-list">
+          <view class="message-list px-4">
             <view v-for="(item, index) in list" :key="index" class="message-card">
               <!-- 消息图标 -->
               <view class="message-icon">
@@ -78,9 +78,7 @@ onShow(() => {
 </template>
 
 <style scoped lang="scss">
-.message-container {
-  background-color: #f5f6fa;
-}
+
 
 .empty-state {
   display: flex;
@@ -116,13 +114,13 @@ onShow(() => {
 }
 
 .message-list {
-  padding: 20rpx 30rpx;
 
   .message-card {
     display: flex;
     background-color: white;
     border-radius: 24rpx;
     padding: 32rpx;
+    margin-top: 20rpx;
     margin-bottom: 20rpx;
     box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.08);
 

@@ -50,7 +50,7 @@ interface NavigateToOptions {
        "/pages/public/agreement/privacyText" |
        "/pages/public/agreement/serviceText" |
        "/pages/user/userInfo" |
-       "/pages/policy/fengshe" |
+       "/pages/policy/fenshe" |
        "/pages/policy/lianshe" |
        "/pages/policy/sheyuan" |
        "/pages/news/detail" |

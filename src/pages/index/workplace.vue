@@ -54,7 +54,7 @@ function handleSheyuan() {
 }
 
 // 分社社长政策
-function handleFengshe() {
+function handleFenshe() {
   if (remark.value === REMARK.BaoMin) {
     uni.showModal({
       title: '提示',
@@ -62,7 +62,7 @@ function handleFengshe() {
       showCancel: false,
     })
   } else {
-    router.push('/pages/policy/fengshe')
+    router.push('/pages/policy/fenshe')
   }
 }
 
@@ -121,9 +121,9 @@ function handleQuickNews() {
           @itemclick="handleSheyuan()"
         />
         <MenuItem
-          icon="/static/workplace/fengshe.png"
+          icon="/static/workplace/fenshe.png"
           text="分社社长政策"
-          @itemclick="handleFengshe()"
+          @itemclick="handleFenshe()"
         />
         <MenuItem
           icon="/static/workplace/lianshe.png"

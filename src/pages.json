@@ -399,9 +399,9 @@
       "root": "pages/policy",
       "pages": [
         {
-          "path": "fengshe",
+          "path": "fenshe",
           "type": "page",
-          "name": "fengshePolicy",
+          "name": "fenshePolicy",
           "layout": "default",
           "auth": true,
           "style": {
