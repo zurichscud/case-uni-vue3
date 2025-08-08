@@ -80,6 +80,12 @@ function handleLianshe() {
 }
 // 赔案快报
 function handleQuickNews() {
+  if (remark.value === REMARK.BaoMin) {
+    return uni.showToast({
+      title: '请先成为社员',
+      icon: 'none',
+    })
+  }
   router.push('/pages/news/list')
 }
 </script>

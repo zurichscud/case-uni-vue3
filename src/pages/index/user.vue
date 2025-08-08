@@ -254,7 +254,7 @@ function toGZH() {
   height: 500px;
   left: 0px;
   top: -100px;
-  background: linear-gradient(180deg, #1c35d0 0%, rgba(196, 196, 196, 0) 100%);
+  background: linear-gradient(180deg, #162cac 0%, rgba(196, 196, 196, 0) 100%);
 }
 </style>
 

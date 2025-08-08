@@ -47,8 +47,10 @@ async function handleShare() {
         duration: 2000,
       })
     },
+    complete() {
+      uni.hideLoading()
+    },
   })
-  uni.hideLoading()
 }
 
 onLoad((query) => {

@@ -229,7 +229,6 @@
           "type": "page",
           "name": "myQrcode",
           "layout": "default",
-          "dev": true,
           "auth": true,
           "style": {
             "navigationBarTitleText": "邀请二维码"
@@ -245,7 +244,6 @@
           "type": "page",
           "name": "inviteYou",
           "layout": "default",
-          "auth": true,
           "style": {
             "navigationBarTitleText": "邀请加入"
           }
@@ -256,7 +254,6 @@
           "name": "inviteList",
           "layout": "default",
           "auth": true,
-          "dev": true,
           "style": {
             "navigationBarTitleText": "邀请列表"
           }
@@ -406,6 +403,7 @@
           "type": "page",
           "name": "fengshePolicy",
           "layout": "default",
+          "auth": true,
           "style": {
             "navigationBarTitleText": "分社社长政策"
           }
@@ -415,6 +413,7 @@
           "type": "page",
           "name": "lianshePolicy",
           "layout": "default",
+          "auth": true,
           "style": {
             "navigationBarTitleText": "联社社长政策"
           }
@@ -424,6 +423,7 @@
           "type": "page",
           "name": "sheyuanPolicy",
           "layout": "default",
+          "auth": true,
           "style": {
             "navigationBarTitleText": "社员政策"
           }
@@ -437,6 +437,8 @@
           "path": "detail",
           "type": "page",
           "name": "quickNewsDetail",
+          "layout": "default",
+          "auth": true,
           "style": {
             "navigationBarTitleText": "赔案快报"
           }
@@ -445,6 +447,8 @@
           "path": "list",
           "type": "page",
           "name": "quickNews",
+          "layout": "default",
+          "auth": true,
           "style": {
             "navigationBarTitleText": "赔案快报"
           }

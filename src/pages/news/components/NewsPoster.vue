@@ -67,41 +67,42 @@ defineExpose({
 </script>
 
 <template>
+  <!-- 413*735 -->
   <l-painter
-    css="width: 750rpx;padding-top: 10rpx; padding-bottom: 10rpx; background: linear-gradient(180deg,#ff971b 0%, #ff5000 100%)"
-    :hidden="false"
+    css="width: 750rpx; background: linear-gradient(180deg,#ff971b 0%, #ff5000 100%)"
+    :hidden="true"
     @fail="fail"
     @done="done"
     path-type="url"
     ref="poster"
     performance
   >
-    <l-painter-view css="padding-left: 10px;padding-right: 10px; display: block">
-      <l-painter-view css="display: block; margin-bottom: 10rpx;">
+    <l-painter-view css=" display: block">
+      <l-painter-view css="display: block;">
         <l-painter-image :src="src" css="width: 100%; object-fit: cover;" />
-      </l-painter-view>
+        <!-- 文字 -->
+        <l-painter-view css="display:flex; justify-content: space-between; align-items: center;position: absolute;bottom: 0; background:#e8baa0; height:160rpx;padding-left: 30rpx;padding-right: 30rpx;">
+          <l-painter-view css="display:block">
+            <l-painter-view css="display:flex; align-items: center;">
+              <!-- 用户名 -->
+              <l-painter-text
+                :text="username"
+                css="color: #ffffff; font-size: 35rpx; fontWeight: bold; margin-right:40rpx;"
+              />
+              <!-- 手机号 -->
+              <l-painter-text
+                :text="phone"
+                css="color: #ffffff; font-size: 30rpx; fontWeight: bold"
+              />
+            </l-painter-view>
 
-      <l-painter-view css="display:flex; justify-content: space-between; align-items: center;">
-        <l-painter-view css="display:block">
-          <l-painter-view css="display:flex; align-items: center;">
-            <!-- 用户名 -->
             <l-painter-text
-              :text="username"
-              css="color: #ffffff; font-size: 35rpx; fontWeight: bold; margin-right:40rpx;"
-            />
-            <!-- 手机号 -->
-            <l-painter-text
-              :text="phone"
-              css="color: #ffffff; font-size: 30rpx; fontWeight: bold"
+              text="扫描二维码加入我的团队"
+              css="display: block; color: rgba(255,255,255,.7); font-size: 28rpx; margin-top: 10rpx;"
             />
           </l-painter-view>
-
-          <l-painter-text
-            text="扫描二维码加入我的团队"
-            css="display: block; color: rgba(255,255,255,.7); font-size: 28rpx; margin-top: 10rpx;"
-          />
+          <l-painter-image :src="qrcode" css="width: 128rpx; height: 128rpx;" />
         </l-painter-view>
-        <l-painter-image :src="qrcode" css="width: 128rpx; height: 128rpx;" />
       </l-painter-view>
     </l-painter-view>
   </l-painter>
