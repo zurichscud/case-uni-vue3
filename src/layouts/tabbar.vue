@@ -49,10 +49,9 @@ export default {
 <template>
   <wd-config-provider :theme-vars="themeVars" :custom-class="`page-wraper ${theme}`" :theme="theme">
     <!-- 剩余部分 -->
-    <view class="flex-1">
+    <view >
       <slot />
     </view>
-    <!-- 50px -->
     <wd-tabbar
       :model-value="activeTabbar.name"
       placeholder

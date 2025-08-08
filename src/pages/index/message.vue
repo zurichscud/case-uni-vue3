@@ -35,7 +35,7 @@ onShow(() => {
   <view class="bg-[#f5f6fa]">
     <NoLogin text="登录后可查看您的消息" v-if="!isLogin" />
     <!-- 消息列表容器 -->
-    <view class="h-[90vh]" v-else>
+    <view class="h-screen" v-else>
       <YpScrollView :query="getMessageListData" v-model:page="pageParams" ref="ypScrollViewRef">
         <template #default="{ list }">
           <view class="message-list px-4">
@@ -78,8 +78,6 @@ onShow(() => {
 </template>
 
 <style scoped lang="scss">
-
-
 .empty-state {
   display: flex;
   flex-direction: column;
@@ -114,7 +112,6 @@ onShow(() => {
 }
 
 .message-list {
-
   .message-card {
     display: flex;
     background-color: white;
