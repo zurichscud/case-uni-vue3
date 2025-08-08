@@ -2,7 +2,9 @@
 import { REMARK } from '@/enums/remark'
 import { useUserStore } from '@/stores'
 import NewsPoster from './components/NewsPoster.vue'
+import { useQRcode } from '@/hooks/useQRcode'
 
+const { QRURL, getMyQRcodeData } = useQRcode()
 const props = defineProps({
   title: {
     type: String,
@@ -23,8 +25,6 @@ function handlePreview() {
   })
 }
 
-function handleSave() {}
-
 async function handleShare() {
   if (remark.value === REMARK.BaoMin) {
     uni.showToast({
@@ -33,11 +33,10 @@ async function handleShare() {
     })
     return
   }
-  // await getMyQRcodeData()
-  // const tempPath = await getTempPath()
-  // console.log('[ tempPath ] >', tempPath)
 
-  loading.value = true
+  uni.showLoading({
+    title: '生成海报中...',
+  })
   const res = await posterRef.value.save()
   uni.saveImageToPhotosAlbum({
     filePath: res,
@@ -49,10 +48,11 @@ async function handleShare() {
       })
     },
   })
-  loading.value = false
+  uni.hideLoading()
 }
 
 onLoad((query) => {
+  getMyQRcodeData()
   uni.setNavigationBarTitle({
     title: query.title,
   })
@@ -77,9 +77,13 @@ onLoad((query) => {
       </wd-button>
     </view>
     <!-- 海报 -->
-    <!-- <QrcodePoster :header-img="imageUrl" ref="posterRef" /> -->
-    <!-- class="hidden" -->
-    <news-poster ref="posterRef" :username="userStore.nickName" :src="imageUrl" />
+    <news-poster
+      ref="posterRef"
+      :username="userStore.nickName"
+      :src="imageUrl"
+      :qrcode="QRURL"
+      :phone="userStore.mobile"
+    />
   </view>
 </template>
 

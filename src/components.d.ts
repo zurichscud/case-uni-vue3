@@ -49,6 +49,5 @@ declare module 'vue' {
     Webview: typeof import('./components/webview.vue')['default']
     YpScrollView: typeof import('./components/YpScrollView.vue')['default']
     YpTag: typeof import('./components/YpTag.vue')['default']
-    ZhangyuQrcodePosterZhangyuQrcodePoster: typeof import('./components/zhangyu-qrcode-poster/zhangyu-qrcode-poster.vue')['default']
   }
 }

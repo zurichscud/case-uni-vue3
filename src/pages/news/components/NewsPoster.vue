@@ -11,6 +11,14 @@ defineProps({
     type: String,
     default: '',
   },
+  phone: {
+    type: String,
+    default: '',
+  },
+  qrcode: {
+    type: String,
+    default: '',
+  },
 })
 
 function fail(e) {
@@ -70,20 +78,31 @@ defineExpose({
   >
     <l-painter-view css="padding-left: 10px;padding-right: 10px; display: block">
       <l-painter-view css="display: block; margin-bottom: 10rpx;">
-        <l-painter-image
-          :src="src"
-          css="width: 100%; object-fit: cover;"
-        />
+        <l-painter-image :src="src" css="width: 100%; object-fit: cover;" />
       </l-painter-view>
 
-      <l-painter-text
-        :text="username"
-        css="display: block; padding-bottom: 10rpx; color: #ffffff; font-size: 35rpx; fontWeight: bold"
-      />
-      <l-painter-text
-        text="扫一扫加入我的团队"
-        css="color: rgba(255,255,255,.7); font-size: 28rpx"
-      />
+      <l-painter-view css="display:flex; justify-content: space-between; align-items: center;">
+        <l-painter-view css="display:block">
+          <l-painter-view css="display:flex; align-items: center;">
+            <!-- 用户名 -->
+            <l-painter-text
+              :text="username"
+              css="color: #ffffff; font-size: 35rpx; fontWeight: bold; margin-right:40rpx;"
+            />
+            <!-- 手机号 -->
+            <l-painter-text
+              :text="phone"
+              css="color: #ffffff; font-size: 30rpx; fontWeight: bold"
+            />
+          </l-painter-view>
+
+          <l-painter-text
+            text="扫描二维码加入我的团队"
+            css="display: block; color: rgba(255,255,255,.7); font-size: 28rpx; margin-top: 10rpx;"
+          />
+        </l-painter-view>
+        <l-painter-image :src="qrcode" css="width: 128rpx; height: 128rpx;" />
+      </l-painter-view>
     </l-painter-view>
   </l-painter>
 </template>

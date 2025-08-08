@@ -2,11 +2,11 @@
 import { shareOptions } from '@/config/wechat'
 import { useQRcode } from '@/hooks/useQRcode'
 
-const { loading, QRImg, saveLoading, handleSave, getMyQRcodeData } = useQRcode()
+const { loading, QRURL, saveLoading, handleSave, getMyQRcodeData } = useQRcode()
 
 function handlePreview() {
   uni.previewImage({
-    urls: [QRImg.value],
+    urls: [QRURL.value],
   })
 }
 
@@ -27,7 +27,7 @@ onLoad(() => {
           <wd-loading />
           <text>二维码生成中...</text>
         </view>
-        <image v-else :src="QRImg" width="400rpx" mode="scaleToFill" @click="handlePreview" />
+        <image v-else :src="QRURL" width="400rpx" mode="scaleToFill" @click="handlePreview" />
       </view>
 
       <!-- 用户信息 -->
