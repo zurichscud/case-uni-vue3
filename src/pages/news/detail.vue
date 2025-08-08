@@ -1,11 +1,8 @@
 <script setup>
 import { REMARK } from '@/enums/remark'
 import { useUserStore } from '@/stores'
-import QrcodePoster from '@/components/zhangyu-qrcode-poster/zhangyu-qrcode-poster.vue'
+import NewsPoster from './components/NewsPoster.vue'
 
-const posterRef = ref(null)
-const userStore = useUserStore()
-const remark = computed(() => userStore.remark)
 const props = defineProps({
   title: {
     type: String,
@@ -15,12 +12,18 @@ const props = defineProps({
     type: String,
   },
 })
+const posterRef = ref(null)
+const userStore = useUserStore()
+const remark = computed(() => userStore.remark)
+const loading = ref(false)
 
 function handlePreview() {
   uni.previewImage({
     urls: [props.imageUrl],
   })
 }
+
+function handleSave() {}
 
 async function handleShare() {
   if (remark.value === REMARK.BaoMin) {
@@ -33,14 +36,27 @@ async function handleShare() {
   // await getMyQRcodeData()
   // const tempPath = await getTempPath()
   // console.log('[ tempPath ] >', tempPath)
-  posterRef.value.showCanvas()
+
+  loading.value = true
+  const res = await posterRef.value.save()
+  uni.saveImageToPhotosAlbum({
+    filePath: res,
+    success() {
+      uni.showToast({
+        title: '已保存到相册',
+        icon: 'success',
+        duration: 2000,
+      })
+    },
+  })
+  loading.value = false
 }
+
 onLoad((query) => {
   uni.setNavigationBarTitle({
     title: query.title,
   })
 })
-
 </script>
 
 <template>
@@ -49,12 +65,21 @@ onLoad((query) => {
     <image lazy-load mode="widthFix" :src="imageUrl" @click="handlePreview" />
     <!-- 分享按钮 -->
     <view class="py-2 px-4">
-      <wd-button type="primary" size="large" block @click="handleShare" icon="share">
+      <wd-button
+        type="primary"
+        size="large"
+        block
+        @click="handleShare"
+        icon="share"
+        :loading="loading"
+      >
         <text>分享</text>
       </wd-button>
     </view>
     <!-- 海报 -->
-    <QrcodePoster :header-img="imageUrl" ref="posterRef" />
+    <!-- <QrcodePoster :header-img="imageUrl" ref="posterRef" /> -->
+    <!-- class="hidden" -->
+    <news-poster ref="posterRef" :username="userStore.nickName" :src="imageUrl" />
   </view>
 </template>
 

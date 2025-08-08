@@ -448,6 +448,10 @@
         {
           "path": "components/NewsCard",
           "type": "page"
+        },
+        {
+          "path": "components/NewsPoster",
+          "type": "page"
         }
       ]
     }

@@ -108,39 +108,9 @@ async function isSubscribe() {
 }
 
 async function subscribe() {
-  try {
-    let isSub = await isSubscribe()
-    if (isSub) {
-      return
-    }
-    await uni.requestSubscribeMessage({
-      tmplIds: subscribeTemplate,
-    })
-    isSub = await isSubscribe()
-    console.log('[ isSub ]-120', isSub)
-    if (isSub) {
-      uni.requestSubscribeMessage({
-        tmplIds: subscribeTemplate,
-        success: () => {
-          uni.showToast({
-            title: '订阅成功2次',
-            icon: 'success',
-            mask: true,
-          })
-          console.log('订阅二次成功')
-        },
-        fail: (err) => {
-          console.log('[ err ]-132', err)
-        },
-      })
-    }
-  } catch (error) {
-    console.log(error)
-    uni.showToast({
-      title: '订阅失败',
-      icon: 'none',
-    })
-  }
+  uni.requestSubscribeMessage({
+    tmplIds: subscribeTemplate,
+  })
 }
 
 function handleItemClick(url: string, text: string) {

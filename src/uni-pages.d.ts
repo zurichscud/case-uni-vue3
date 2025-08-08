@@ -54,7 +54,8 @@ interface NavigateToOptions {
        "/pages/policy/upgrade" |
        "/pages/news/detail" |
        "/pages/news/list" |
-       "/pages/news/components/NewsCard";
+       "/pages/news/components/NewsCard" |
+       "/pages/news/components/NewsPoster";
 }
 interface RedirectToOptions extends NavigateToOptions {}
 
