@@ -69,7 +69,7 @@ defineExpose({
   <!-- 413*735 -->
   <l-painter
     css="width: 750rpx; background: linear-gradient(180deg,#ff971b 0%, #ff5000 100%)"
-    :hidden="false"
+    :hidden="true"
     @fail="fail"
     @done="done"
     path-type="url"
