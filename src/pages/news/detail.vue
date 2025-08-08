@@ -18,6 +18,12 @@ const posterRef = ref(null)
 const userStore = useUserStore()
 const remark = computed(() => userStore.remark)
 const loading = ref(false)
+const visible = ref(false)
+const posterUrl = ref('')
+
+function handleClose() {
+  visible.value = false
+}
 
 function handlePreview() {
   uni.previewImage({
@@ -38,8 +44,14 @@ async function handleShare() {
     title: '生成海报中...',
   })
   const res = await posterRef.value.save()
+  posterUrl.value = res
+  visible.value = true
+  uni.hideLoading()
+}
+
+function handleSave() {
   uni.saveImageToPhotosAlbum({
-    filePath: res,
+    filePath: posterUrl.value,
     success() {
       uni.showToast({
         title: '已保存到相册',
@@ -47,9 +59,12 @@ async function handleShare() {
         duration: 2000,
       })
     },
-    complete() {
-      uni.hideLoading()
-    },
+  })
+}
+
+function handlePreviewPoster() {
+  uni.previewImage({
+    urls: [posterUrl.value],
   })
 }
 
@@ -78,7 +93,7 @@ onLoad((query) => {
         <text>分享</text>
       </wd-button>
     </view>
-    <!-- 海报 -->
+    <!-- 海报画板 -->
     <news-poster
       ref="posterRef"
       :username="userStore.nickName"
@@ -86,6 +101,25 @@ onLoad((query) => {
       :qrcode="QRURL"
       :phone="userStore.mobile"
     />
+    <wd-popup
+      v-model="visible"
+      position="center"
+      closable
+      custom-style="border-radius: 20rpx;background: transparent;"
+      @close="handleClose"
+    >
+      <view class="w-[700rpx] h-[80vh]">
+        <image
+          :src="posterUrl"
+          style="height: 1000rpx"
+          mode="aspectFit"
+          @click="handlePreviewPoster"
+        />
+        <view class="flex justify-center items-center mt-4">
+          <wd-button type="primary" icon="download" @click="handleSave">保存</wd-button>
+        </view>
+      </view>
+    </wd-popup>
   </view>
 </template>
 

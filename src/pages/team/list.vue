@@ -83,6 +83,10 @@ async function handleEditName() {
     uni.showToast({ title: '团队名称不能为空', icon: 'none' })
     return
   }
+  if (input.length > 10) {
+    uni.showToast({ title: '团队名称不能超过10个字', icon: 'none' })
+    return
+  }
   teamInfo.value.name = input.trim()
   await TeamAPI.updateTeamName({ teamName: teamInfo.value.name, userId: userStore.id! })
   uni.showToast({ title: '修改成功', icon: 'success' })
