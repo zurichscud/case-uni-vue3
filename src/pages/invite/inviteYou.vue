@@ -161,10 +161,6 @@ onLoad((query) => {
   -webkit-text-fill-color: transparent;
   color: transparent;
 
-  /* 降级处理 */
-  @supports not (background-clip: text) {
-    color: #281ac8;
-  }
 }
 </style>
 
