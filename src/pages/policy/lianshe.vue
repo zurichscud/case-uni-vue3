@@ -1,19 +1,18 @@
-<!-- 邀请好友享两大福利 -->
 <template>
-  <view class="main">
+  <view >
     <image
       lazy-load
       mode="widthFix"
       :src="src"
       @click="handlePreview"
+      alt=""
+      style="width: 100%"
     ></image>
-
   </view>
 </template>
 
 <script setup>
-
-const src='https://app.y9net.cn/data/01/38/wKgBNmPpoLKAD18OAANSHqPedB4675.jpg'
+const src='https://app.y9net.cn/data/01/38/wKgBNmPpoIuAZKK9AAQgKJOGCkI935.jpg'
 
 function handlePreview() {
   uni.previewImage({
@@ -23,24 +22,15 @@ function handlePreview() {
 }
 </script>
 
-<style lang="scss">
-.main {
-  position: relative;
-
-  image {
-    width: 100%;
-    vertical-align: middle;
-  }
-}
-</style>
+<style scoped lang="scss"></style>
 
 <route lang="json">
 {
-  "name": "sheyuanPolicy",
+  "name": "lianshePolicy",
   "layout": "default",
   "auth": true,
   "style": {
-    "navigationBarTitleText": "社员政策"
+    "navigationBarTitleText": "联社社长政策"
   }
 }
 </route>

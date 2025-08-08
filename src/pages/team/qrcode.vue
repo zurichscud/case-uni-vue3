@@ -62,7 +62,6 @@ onLoad(() => {
 {
   "name": "myQrcode",
   "layout": "default",
-  "dev": true,
   "auth": true,
   "style": {
     "navigationBarTitleText": "邀请二维码"

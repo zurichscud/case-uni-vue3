@@ -172,7 +172,6 @@ onLoad((query) => {
 {
   "name": "inviteYou",
   "layout": "default",
-  "auth": true,
   "style": {
     "navigationBarTitleText": "邀请加入"
   }

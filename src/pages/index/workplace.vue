@@ -3,109 +3,11 @@ import router from '@/utils/router'
 import { useUserStore } from '@/stores'
 import { REMARK } from '@/enums/remark'
 import { subscribeTemplate } from '@/config/wechat'
+import MenuItem from './components/MenuItem.vue'
 
-// 定义菜单项类型
-interface MenuItem {
-  icon: string
-  text: string
-  url: string
-}
-
-// 定义菜单分类类型
-interface MenuSection {
-  title: string
-  list: MenuItem[]
-}
-
-// 定义整个菜单的类型
-interface Menus {
-  case: MenuSection
-  team: MenuSection
-  policy: MenuSection
-  article: MenuSection
-}
 const userStore = useUserStore()
 const isLogin = computed(() => userStore.isLogin)
-const menus: Menus = {
-  case: {
-    title: '案件',
-    list: [
-      {
-        icon: '/static/workplace/case.png',
-        text: '全部案件',
-        url: '/pages/case/list',
-      },
-    ],
-  },
-  team: {
-    title: '团队',
-    list: [
-      {
-        text: '我的团队',
-        icon: '/static/workplace/team.png',
-        url: '/pages/team/list',
-      },
-      {
-        text: '邀请记录',
-        icon: '/static/workplace/invite.png',
-        url: '/pages/invite/list',
-      },
-      {
-        text: '邀请二维码',
-        icon: '/static/workplace/qrcode.png',
-        url: '/pages/team/qrcode',
-      },
-    ],
-  },
-  policy: {
-    title: '奖励与晋升',
-    list: [
-      {
-        text: '社员政策',
-        icon: '/static/workplace/sheyuan.png',
-        url: '/pages/policy/sheyuan',
-      },
-      {
-        text: '分社社长政策',
-        icon: '/static/workplace/fengshe.png',
-        url: '/pages/policy/fengshe',
-      },
-      {
-        text: '联社社长政策',
-        icon: '/static/workplace/lianshe.png',
-        url: '/pages/policy/fengshe',
-      },
-      {
-        text: '晋升办法',
-        icon: '/static/workplace/up.png',
-        url: '/pages/policy/upgrade',
-      },
-    ],
-  },
-  article: {
-    title: '文章',
-    list: [
-      {
-        text: '赔案快报',
-        icon: '/static/workplace/news.png',
-        url: '/pages/news/list',
-      },
-    ],
-  },
-}
-
-//判断用户是否长期订阅
-async function isSubscribe() {
-  const { subscriptionsSetting } = await uni.getSetting({
-    withSubscriptions: true,
-  })
-  console.log('[ subscriptionsSetting ]-100', subscriptionsSetting)
-  const { itemSettings } = subscriptionsSetting
-  if (itemSettings) {
-    return itemSettings[subscribeTemplate[0]] === 'accept'
-  }
-  return false
-}
+const remark = computed(() => userStore.remark)
 
 async function subscribe() {
   uni.requestSubscribeMessage({
@@ -113,43 +15,125 @@ async function subscribe() {
   })
 }
 
-function handleItemClick(url: string, text: string) {
-  if (userStore.remark === REMARK.BaoMin) {
-    if (text === '邀请二维码' || text === '邀请记录') {
-      return uni.showToast({
-        title: '请先成为社员',
-        icon: 'none',
-      })
-    }
+// 全部案件
+function handleCase() {
+  router.push('/pages/case/list')
+}
+
+//我的团队
+function handleTeam() {
+  router.push('/pages/team/list')
+}
+
+//邀请记录
+function handleInvite() {
+  if (remark.value === REMARK.BaoMin) {
+    return uni.showToast({
+      title: '请先成为社员',
+      icon: 'none',
+    })
   }
-  if (text === '邀请记录') {
-    subscribe()
+  subscribe()
+  router.push('/pages/invite/list')
+}
+
+// 邀请二维码
+function handleQRcode() {
+  if (remark.value === REMARK.BaoMin) {
+    return uni.showToast({
+      title: '请先成为社员',
+      icon: 'none',
+    })
   }
-  router.push(url)
+  router.push('/pages/team/qrcode')
+}
+
+// 社员政策
+function handleSheyuan() {
+  router.push('/pages/policy/sheyuan')
+}
+
+// 分社社长政策
+function handleFengshe() {
+  if (remark.value === REMARK.BaoMin) {
+    uni.showModal({
+      title: '提示',
+      content: '升级成为社员即可查看',
+      showCancel: false,
+    })
+  } else {
+    router.push('/pages/policy/fengshe')
+  }
+}
+
+// 联社社长政策
+function handleLianshe() {
+  if (remark.value === REMARK.BaoMin || remark.value === REMARK.SheYuan) {
+    uni.showModal({
+      title: '提示',
+      content: '升级成为分社社长即可查看',
+      showCancel: false,
+    })
+  } else {
+    router.push('/pages/policy/lianshe')
+  }
+}
+// 赔案快报
+function handleQuickNews() {
+  router.push('/pages/news/list')
 }
 </script>
 
 <template>
   <view>
     <NoLogin text="登录后可查看您的工作室" v-if="!isLogin" />
-    <view v-else v-for="menu in menus" :key="menu.title">
-      <!-- 标题 -->
-      <view class="section-title">
-        {{ menu.title }}
-      </view>
-      <!-- 菜单 -->
+    <view v-else>
+      <!-- 案件 -->
+      <view class="section-title">案件</view>
       <wd-grid clickable :column="4">
-        <wd-grid-item
-          v-for="item in menu.list"
-          :key="item.text"
-          :text="item.text"
-          use-icon-slot
-          @itemclick="handleItemClick(item.url, item.text)"
-        >
-          <template #icon>
-            <image :src="item.icon" style="width: 50rpx; height: 50rpx" mode="scaleToFill" />
-          </template>
-        </wd-grid-item>
+        <MenuItem icon="/static/workplace/case.png" text="全部案件" @itemclick="handleCase()" />
+      </wd-grid>
+
+      <!-- 团队 -->
+      <view class="section-title">团队</view>
+      <wd-grid clickable :column="4">
+        <MenuItem icon="/static/workplace/team.png" text="我的团队" @itemclick="handleTeam()" />
+        <MenuItem icon="/static/workplace/invite.png" text="邀请记录" @itemclick="handleInvite()" />
+        <MenuItem
+          icon="/static/workplace/qrcode.png"
+          text="邀请二维码"
+          @itemclick="handleQRcode()"
+        />
+      </wd-grid>
+
+      <!-- 奖励与晋升 -->
+      <view class="section-title">奖励与晋升</view>
+      <wd-grid clickable :column="4">
+        <MenuItem
+          icon="/static/workplace/sheyuan.png"
+          text="社员政策"
+          @itemclick="handleSheyuan()"
+        />
+        <MenuItem
+          icon="/static/workplace/fengshe.png"
+          text="分社社长政策"
+          @itemclick="handleFengshe()"
+        />
+        <MenuItem
+          icon="/static/workplace/lianshe.png"
+          text="联社社长政策"
+          @itemclick="handleLianshe()"
+        />
+      </wd-grid>
+
+      <!-- 文章 -->
+      <view class="section-title">文章</view>
+      <wd-grid clickable :column="4">
+        <MenuItem
+          icon="/static/workplace/news.png"
+          text="赔案快报"
+          @itemclick="handleQuickNews()"
+        />
       </wd-grid>
     </view>
   </view>

@@ -10,6 +10,7 @@ interface NavigateToOptions {
        "/pages/index/workplace" |
        "/pages/index/article/detail" |
        "/pages/index/article/more" |
+       "/pages/index/components/MenuItem" |
        "/pages/index/components/SharePoster" |
        "/pages/index/components/TypicalCase" |
        "/pages/AI/chat" |
@@ -50,8 +51,8 @@ interface NavigateToOptions {
        "/pages/public/agreement/serviceText" |
        "/pages/user/userInfo" |
        "/pages/policy/fengshe" |
+       "/pages/policy/lianshe" |
        "/pages/policy/sheyuan" |
-       "/pages/policy/upgrade" |
        "/pages/news/detail" |
        "/pages/news/list" |
        "/pages/news/components/NewsCard" |

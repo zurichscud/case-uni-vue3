@@ -4,71 +4,36 @@
     <image
       lazy-load
       mode="widthFix"
-      src="https://iclaim.oss-cn-beijing.aliyuncs.com/2025/01/1a45d78411cd4eca8f7b59735996f212.png"
+      :src="src"
+      @click="handlePreview"
     ></image>
-    <button class="wx_code" @click="visible = true">申请成为分社社长</button>
 
-    <wd-popup v-model="visible" closable>
-      <view class="popup-content" @click="handlePreviewImg">
-        <image class="popup-image" :src="app.daliuWx" mode="widthFix" />
-        <image class="popup-image" :src="app.linyunWx" mode="widthFix" />
-      </view>
-    </wd-popup>
   </view>
 </template>
 
 <script setup>
 import app from '@/config/app'
 
-const imgs = [app.daliuWx, app.linyunWx]
-const visible = ref(false)
+const src='https://app.y9net.cn/data/01/38/wKgBNmPpoIuAZKK9AAQgKJOGCkI935.jpg'
 
-function handlePreviewImg() {
+function handlePreview() {
   uni.previewImage({
     current: 0,
-    urls: imgs,
+    urls: [src],
   })
 }
 </script>
 
 <style lang="scss">
-.invite {
-  position: relative;
-
-  image {
-    width: 100%;
-    vertical-align: middle;
-  }
-}
-
-.popup_box {
-  width: 70%;
-  height: 500rpx;
-}
-
-.wx_code {
-  position: absolute;
-  width: 381rpx;
-  height: 125rpx;
-  opacity: 0;
-  background-color: red;
-  bottom: 118rpx;
-  left: 178rpx;
-}
-
-.popup-content {
-  width: 400rpx;
-  border-radius: 20rpx;
-  overflow: hidden;
-}
 </style>
 
 <route lang="json">
 {
   "name": "fengshePolicy",
   "layout": "default",
+  "auth": true,
   "style": {
-    "navigationBarTitleText": "分社社长福利"
+    "navigationBarTitleText": "分社社长政策"
   }
 }
 </route>

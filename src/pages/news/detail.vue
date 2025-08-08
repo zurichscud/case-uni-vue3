@@ -102,6 +102,8 @@ onLoad((query) => {
 <route lang="json">
 {
   "name": "quickNewsDetail",
+  "layout": "default",
+  "auth": true,
   "style": {
     "navigationBarTitleText": "赔案快报"
   }

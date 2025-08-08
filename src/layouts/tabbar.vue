@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import { useMessageStore, useUserStore } from '@/stores'
 import { IS_PROD } from '@/utils/env'
-import { useShare } from '@/hooks/useShare'
 import router from '@/utils/router'
 
 const userStore = useUserStore()

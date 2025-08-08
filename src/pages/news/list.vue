@@ -35,6 +35,8 @@ onLoad(() => {
 <route lang="json">
 {
   "name": "quickNews",
+  "layout": "default",
+  "auth": true,
   "style": {
     "navigationBarTitleText": "赔案快报"
   }
