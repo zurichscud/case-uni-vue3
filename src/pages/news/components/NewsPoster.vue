@@ -20,7 +20,6 @@ defineProps({
     default: '',
   },
 })
-
 function fail(e) {
   console.log(e)
 }
@@ -70,7 +69,7 @@ defineExpose({
   <!-- 413*735 -->
   <l-painter
     css="width: 750rpx; background: linear-gradient(180deg,#ff971b 0%, #ff5000 100%)"
-    :hidden="true"
+    :hidden="false"
     @fail="fail"
     @done="done"
     path-type="url"
@@ -81,26 +80,29 @@ defineExpose({
       <l-painter-view css="display: block;">
         <l-painter-image :src="src" css="width: 100%; object-fit: cover;" />
         <!-- 文字 -->
-        <l-painter-view css="display:flex; justify-content: space-between; align-items: center;position: absolute;bottom: 0; background:#e8baa0; height:160rpx;padding-left: 30rpx;padding-right: 30rpx;">
+        <l-painter-view
+          css="display:flex; justify-content: space-between; align-items: center;position: absolute;bottom: 0; background:#e8baa0; height:160rpx;padding-left: 46rpx;padding-right: 40rpx;"
+        >
           <l-painter-view css="display:block">
             <l-painter-view css="display:flex; align-items: center;">
               <!-- 用户名 -->
               <l-painter-text
                 :text="username"
-                css="color: #ffffff; font-size: 35rpx; fontWeight: bold; margin-right:40rpx;"
+                css="color: #41464F; font-size: 30rpx; fontWeight: bold; margin-right:40rpx;"
               />
               <!-- 手机号 -->
               <l-painter-text
                 :text="phone"
-                css="color: #ffffff; font-size: 30rpx; fontWeight: bold"
+                css="color: #41464F; font-size: 25rpx; fontWeight: bold"
               />
             </l-painter-view>
 
             <l-painter-text
               text="扫描二维码加入我的团队"
-              css="display: block; color: rgba(255,255,255,.7); font-size: 28rpx; margin-top: 10rpx;"
+              css="display: block; color: #41464F; font-size: 25rpx; margin-top: 10rpx;"
             />
           </l-painter-view>
+          <!-- 二维码 -->
           <l-painter-image :src="qrcode" css="width: 128rpx; height: 128rpx;" />
         </l-painter-view>
       </l-painter-view>
@@ -108,4 +110,8 @@ defineExpose({
   </l-painter>
 </template>
 
-<style scoped></style>
+<style scoped>
+.demo{
+  color: #41464F;
+}
+</style>
