@@ -24,14 +24,14 @@ async function subscribe() {
   }
 }
 
-function handleTabbarChange({ value }: { value: string }) {
+async function handleTabbarChange({ value }: { value: string }) {
   setTabbarItemActive(value)
   if (IS_PROD) {
     uni.vibrateShort()
   }
   if (isLogin.value) {
     getUnReadNumData()
-    getUserInfo()
+    await getUserInfo()
     subscribe()
   }
   //切换tab不需要防抖
