@@ -23,6 +23,7 @@ const posterUrl = ref('')
 
 function handleClose() {
   visible.value = false
+  posterUrl.value = ''
 }
 
 function handlePreview() {
@@ -58,6 +59,7 @@ function handleSave() {
         icon: 'success',
         duration: 2000,
       })
+      handleClose()
     },
   })
 }

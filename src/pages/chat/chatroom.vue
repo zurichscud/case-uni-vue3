@@ -4,6 +4,7 @@ import dayjs from 'dayjs'
 
 const robotAvatar = 'https://app.y9net.cn/images/imgs/icon_xiaoyi3.png'
 const nowTime = dayjs().format('HH:mm')
+
 // 预览图片
 function previewImage(url) {
   uni.previewImage({
@@ -31,10 +32,7 @@ function handleSubmit() {
 <template>
   <view class="h-screen bg-gray-100 flex flex-col pb-4 box-border">
     <!-- 顶部标题栏 -->
-    <!-- <view class="py-4 px-2 bg-blue-500 text-white shadow-md">
-      <text class="text-lg font-bold">在线客服</text>
-      <text class="text-xs block mt-1">客服工作时间: 9:00-18:00</text>
-    </view> -->
+
 
     <!-- 聊天消息区域 -->
     <scroll-view
