@@ -16,6 +16,7 @@ export const useUserStore = defineStore('user', {
     remark: undefined,
     pid: undefined,
     openid: undefined,
+    subNumber:0
   }),
 
   getters: {
@@ -52,6 +53,7 @@ export const useUserStore = defineStore('user', {
         photo: data.photo,
         remark: data.remark,
         openid: data.openid,
+        subNumber: data.subNumber,
       })
     },
     // 登录

@@ -2,6 +2,8 @@
 import { useMessageStore, useUserStore } from '@/stores'
 import { IS_PROD } from '@/utils/env'
 import router from '@/utils/router'
+import { subscribeTemplate } from '@/config/wechat'
+import * as LPGSAPI from'@/apis/lpgs'
 
 const userStore = useUserStore()
 const { themeVars, theme } = useTheme()
@@ -9,6 +11,18 @@ const { activeTabbar, getTabbarItemValue, setTabbarItemActive, tabbarList } = us
 const { getUnReadNumData } = useMessageStore()
 const { getUserInfo } = useUserStore()
 const isLogin = computed(() => userStore.isLogin)
+
+//订阅消息：如果订阅次数小于等于0，就订阅消息
+async function subscribe() {
+  if (userStore.subNumber <= 0) {
+    uni.requestSubscribeMessage({
+      tmplIds: subscribeTemplate,
+      success: () => {
+        LPGSAPI.subUpgrade()
+      },
+    })
+  }
+}
 
 function handleTabbarChange({ value }: { value: string }) {
   setTabbarItemActive(value)
@@ -18,6 +32,7 @@ function handleTabbarChange({ value }: { value: string }) {
   if (isLogin.value) {
     getUnReadNumData()
     getUserInfo()
+    subscribe()
   }
   //切换tab不需要防抖
   // router.push(`/pages/index/${value}`)
@@ -49,7 +64,7 @@ export default {
 <template>
   <wd-config-provider :theme-vars="themeVars" :custom-class="`page-wraper ${theme}`" :theme="theme">
     <!-- 剩余部分 -->
-    <view >
+    <view>
       <slot />
     </view>
     <wd-tabbar

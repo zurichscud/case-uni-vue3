@@ -4,16 +4,13 @@ import { useUserStore } from '@/stores'
 import { REMARK } from '@/enums/remark'
 import { subscribeTemplate } from '@/config/wechat'
 import MenuItem from './components/MenuItem.vue'
+import * as LPGSAPI from '@/apis/lpgs'
 
 const userStore = useUserStore()
 const isLogin = computed(() => userStore.isLogin)
 const remark = computed(() => userStore.remark)
 
-async function subscribe() {
-  uni.requestSubscribeMessage({
-    tmplIds: subscribeTemplate,
-  })
-}
+
 
 // 全部案件
 function handleCase() {
@@ -33,7 +30,6 @@ function handleInvite() {
       icon: 'none',
     })
   }
-  subscribe()
   router.push('/pages/invite/list')
 }
 

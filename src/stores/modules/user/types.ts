@@ -7,4 +7,5 @@ export interface UserState {
   mobile?: string
   openid?: string
   pid?: string //  推荐人id
+  subNumber:number//订阅微信消息的次数
 }

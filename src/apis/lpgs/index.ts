@@ -41,3 +41,12 @@ export function remindBaoMin(data: { userId: number }) {
     data,
   })
 }
+
+
+//订阅微信消息
+export function subUpgrade() {
+  return http({
+    url: 'lpgsUser/subNumber',
+    method: 'PUT',
+  })
+}
