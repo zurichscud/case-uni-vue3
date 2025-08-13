@@ -150,14 +150,6 @@
           }
         },
         {
-          "path": "poster",
-          "type": "page",
-          "name": "poster",
-          "style": {
-            "navigationBarTitleText": "提交案件"
-          }
-        },
-        {
           "path": "components/StepsPopup",
           "type": "page"
         }

@@ -17,7 +17,6 @@ interface NavigateToOptions {
        "/pages/AI/components/Feedback" |
        "/pages/AI/components/HistoryDrawer" |
        "/pages/case/list" |
-       "/pages/case/poster" |
        "/pages/case/components/StepsPopup" |
        "/pages/chat/chatroom" |
        "/pages/chat/files" |
