@@ -29,10 +29,10 @@ function handleError() {
 }
 
 function handlePreview() {
-  uni.previewImage({
-    current: 0,
-    urls: [src],
-  })
+  // uni.previewImage({
+  //   current: 0,
+  //   urls: [src],
+  // })
 }
 onMounted(() => {
   uni.showLoading({
@@ -58,7 +58,7 @@ onMounted(() => {
   "layout": "default",
   "auth": true,
   "style": {
-    "navigationBarTitleText": "社员政策"
+    "navigationBarTitleText": "社员专属权益"
   }
 }
 </route>

@@ -10,6 +10,7 @@ import { useUserStore } from '@/stores'
 import router from '@/utils/router'
 import appConfig from '@/config/app'
 import TnSwiper from '@tuniao/tnui-vue3-uniapp/components/swiper/src/swiper.vue'
+import { REMARK } from '@/enums/remark'
 
 const currentSwiperIndex = ref(0)
 const swiperData = [img]
@@ -42,13 +43,13 @@ function handleShare() {
     router.push('/pages/login/login')
     return
   }
-  // if (userStore.remark <= 5) {
-  //   uni.showToast({
-  //     title: '只有社员才能邀请',
-  //     icon: 'none',
-  //   })
-  //   return
-  // }
+  if (userStore.remark === REMARK.BaoMin) {
+    uni.showToast({
+      title: '保民暂时不支持分享哦～',
+      icon: 'none',
+    })
+    return
+  }
   shareVisible.value = true
 }
 
@@ -103,17 +104,26 @@ async function getArticleListData() {
 }
 
 onShareAppMessage(() => {
-  return {
-    title: '快来和我一起加入理赔公社吧',
-    path: `/pages/invite/inviteYou?pid=${userStore.id}`,
-    imageUrl: 'https://app.y9net.cn/data/01/33/wKgBNmNrSeSAbR2TAAEp5UKyBy8155.png',
+  if (userStore.remark === REMARK.BaoMin) {
+    return {
+      title: '快来和我一起加入理赔公社吧',
+      path: `/pages/index/index`,
+      imageUrl: 'https://app.y9net.cn/data/01/33/wKgBNmNrSeSAbR2TAAEp5UKyBy8155.png',
+    }
+  } else {
+    return {
+      title: '快来和我一起加入理赔公社吧',
+      path: `/pages/invite/inviteYou?pid=${userStore.id}`,
+      imageUrl: 'https://app.y9net.cn/data/01/33/wKgBNmNrSeSAbR2TAAEp5UKyBy8155.png',
+    }
   }
 })
 
-onShow(() => {})
+onShow(() => {
+  getArticleListData()
+})
 
 onMounted(() => {
-  getArticleListData()
   startScrollText()
   //旧用户完善openId
   if (isLogin.value) {
@@ -336,7 +346,7 @@ page {
 .index_box {
   position: relative;
   box-sizing: border-box;
-  padding: 40rpx 40rpx ;
+  padding: 40rpx 40rpx;
   border-top-left-radius: 40rpx;
   border-top-right-radius: 40rpx;
   background-color: white;

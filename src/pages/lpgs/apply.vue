@@ -55,8 +55,18 @@ async function handleReSubmit() {
 
 // 自定义上传函数
 async function handleUpload(file: ImageUploadFile) {
-  const { data } = await uploadImage((file as UniApp.ChooseImageSuccessCallbackResultFile).path)
-  return data
+  try {
+    uni.showLoading({
+      title: '上传中...',
+      mask:true
+    })
+    const { data } = await uploadImage((file as UniApp.ChooseImageSuccessCallbackResultFile).path)
+    return data
+  } catch (error) {
+    console.log('[ error ] >', error)
+  } finally {
+    uni.hideLoading()
+  }
 }
 
 async function handleSubmit() {

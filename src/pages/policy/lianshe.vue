@@ -27,10 +27,10 @@ function handleError() {
 }
 
 function handlePreview() {
-  uni.previewImage({
-    current: 0,
-    urls: [src],
-  })
+  // uni.previewImage({
+  //   current: 0,
+  //   urls: [src],
+  // })
 }
 onMounted(() => {
   uni.showLoading({
@@ -47,7 +47,7 @@ onMounted(() => {
   "layout": "default",
   "auth": true,
   "style": {
-    "navigationBarTitleText": "联社社长政策"
+    "navigationBarTitleText": "联社社长权益"
   }
 }
 </route>

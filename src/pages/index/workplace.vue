@@ -113,17 +113,17 @@ function handleQuickNews() {
       <wd-grid clickable :column="4">
         <MenuItem
           icon="/static/workplace/sheyuan.png"
-          text="社员政策"
+          text="社员专属权益"
           @itemclick="handleSheyuan()"
         />
         <MenuItem
           icon="/static/workplace/fenshe.png"
-          text="分社社长政策"
+          text="分社社长权益"
           @itemclick="handleFenshe()"
         />
         <MenuItem
           icon="/static/workplace/lianshe.png"
-          text="联社社长政策"
+          text="联社社长权益"
           @itemclick="handleLianshe()"
         />
       </wd-grid>
