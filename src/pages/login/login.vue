@@ -74,7 +74,7 @@ onLoad((query) => {
         <view class="subT">专业 便捷 公允 价值</view>
         <view class="login_title">欢迎来到理赔公社</view>
       </view>
-      <view class="login_wx">
+      <view >
         <wd-button v-if="!isAgree" block size="large" @click="handleUnAgreeLogin">
           手机号快捷登录
         </wd-button>

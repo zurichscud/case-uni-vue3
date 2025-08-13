@@ -23,7 +23,6 @@ const posterUrl = ref('')
 
 function handleClose() {
   visible.value = false
-  posterUrl.value = ''
 }
 
 function handlePreview() {
@@ -40,14 +39,17 @@ async function handleShare() {
     })
     return
   }
-
-  uni.showLoading({
-    title: '生成海报中...',
-  })
-  const res = await posterRef.value.save()
-  posterUrl.value = res
+  //没有生成过才调用生成海报
+  if (posterUrl.value === '') {
+    uni.showLoading({
+      title: '生成海报中...',
+    })
+    const res = await posterRef.value.save()
+    posterUrl.value = res
+    uni.hideLoading()
+  } else {
+  }
   visible.value = true
-  uni.hideLoading()
 }
 
 function handleSave() {

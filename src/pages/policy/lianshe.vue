@@ -14,7 +14,9 @@
 </template>
 
 <script setup>
-const src='https://app.y9net.cn/data/01/38/wKgBNmPpoIuAZKK9AAQgKJOGCkI935.jpg'
+import appConfig from '@/config/app'
+
+const src = appConfig.lianshePolicy
 const isError = ref(false)
 
 function handleLoad() {

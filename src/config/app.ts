@@ -9,7 +9,7 @@ export default {
   linyunWx: 'https://app.y9net.cn/data/01/47/wKgBNmZVTgCAHxQ8AAJGY8sYbNQ37.jpeg',
   lpgsPolicy: 'https://app.y9net.cn/data/01/35/wKgBNmOadJaADjD8AAPqITMmQZs194.pdf',
   fenshePolicy: 'https://app.y9net.cn/data/00/01/rBEACGicBfqAbmlQACz-pdhAX9Q707.jpg',
-  lianshePolicy: '#',
+  lianshePolicy: 'https://app.y9net.cn/data/00/01/rBEACGicUiuAeRvPAB1LZy3FO7A276.jpg',
   sheyuanPolicy: 'https://app.y9net.cn/data/00/01/rBEACGicBbiAAMxoADJ84COSFcA782.jpg',
   invitePoster: '#',
 }

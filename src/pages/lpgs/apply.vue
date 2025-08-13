@@ -28,6 +28,7 @@ const submitBtnText = computed(() => {
 })
 
 // 获取上一次的申请记录
+//TODO：我希望数据出现再渲染模板
 async function getApplyData() {
   const { data } = await LPGSAPI.getApplyDataByUserId({
     userId: userStore.id!,

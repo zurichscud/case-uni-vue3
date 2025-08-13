@@ -57,11 +57,16 @@ function handleLogout() {
 
 //选择头像
 async function handleChooseAvatar({ detail }) {
+  uni.showLoading({
+    title:'上传中...',
+    mask:true
+  })
   const { data } = await uploadImage(detail.avatarUrl)
   await UserAPI.updateUserInfo({
     id: userStore.id,
     photo: data,
   })
+  uni.hideLoading()
   uni.showToast({
     title: '修改成功',
     icon: 'success',

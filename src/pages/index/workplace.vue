@@ -10,8 +10,6 @@ const userStore = useUserStore()
 const isLogin = computed(() => userStore.isLogin)
 const remark = computed(() => userStore.remark)
 
-
-
 // 全部案件
 function handleCase() {
   router.push('/pages/case/list')
@@ -19,6 +17,12 @@ function handleCase() {
 
 //我的团队
 function handleTeam() {
+  if (remark.value === REMARK.BaoMin) {
+    return uni.showToast({
+      title: '请先成为社员',
+      icon: 'none',
+    })
+  }
   router.push('/pages/team/list')
 }
 

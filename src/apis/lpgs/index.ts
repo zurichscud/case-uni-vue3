@@ -20,6 +20,10 @@ export function getApplyDataByUserId(data: { userId: number }) {
     url: 'lpgsUser/getUpgradeByUserId',
     method: 'GET',
     data,
+    // custom:{
+    //   showLoading:true,
+    //   loadingMsg:'审核校验中...'
+    // }
   })
 }
 
