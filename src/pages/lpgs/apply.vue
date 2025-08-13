@@ -123,15 +123,15 @@ onMounted(() => {
     <!-- 表单 -->
     <view v-if="active === 0">
       <view class="flex flex-col gap-4 my-6">
-        <TnTitle title="现任职岗位/职业" mode="vLine" />
+        <TnTitle title="现任职岗位/职业" mode="vLine" size="lg" />
         <TnInput v-model="formData.profession" placeholder="请输入现任职岗位/职业" />
       </view>
       <view class="flex flex-col gap-2 my-6">
-        <TnTitle title="现服务企业" mode="vLine" />
+        <TnTitle title="现服务企业" mode="vLine" size="lg" />
         <TnInput v-model="formData.company" placeholder="请输入现服务企业" />
       </view>
       <view class="flex flex-col gap-2 my-6">
-        <TnTitle title="证明材料" mode="vLine" />
+        <TnTitle title="证明材料" mode="vLine" size="lg" />
         <wd-notice-bar
           text="请上传岗位证、职业资格证、获奖证明等能证明现在或曾经从事过保险行业的证明"
           prefix="warn-bold"
