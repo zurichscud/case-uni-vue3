@@ -6,7 +6,7 @@ import BaseItem from '@/components/BaseCard/BaseItem.vue'
 import * as TeamAPI from '@/apis/team'
 import router from '@/utils/router'
 import { useUserStore } from '@/stores'
-import cityPicker from '@/uni_modules/piaoyi-cityPicker/components/piaoyi-cityPicker/piaoyi-cityPicker'
+import CityPicker from './components/CityPicker/index.vue'
 
 const cityPickerVisible = ref(false)
 const userStore = useUserStore()
@@ -97,9 +97,10 @@ async function handleEditName() {
   ypScrollViewRef.value.getData()
 }
 
-function handleRegionChange(e: any) {
+function handleRegionChange({ cityName }: { cityName: string }) {
   cityPickerVisible.value = false
-  console.log(e)
+  console.log(cityName.slice(0, -1))
+
 }
 
 onMounted(() => {
@@ -182,13 +183,12 @@ onMounted(() => {
         </view>
       </template>
     </YpScrollView>
-
-    <cityPicker
+    <!-- 省市区选择，uniapp的picker组件，不支持三级联动 -->
+    <CityPicker
       column="2"
       :visible="cityPickerVisible"
       @confirm="handleRegionChange"
       @cancel="() => cityPickerVisible = false"
-      @close="() => cityPickerVisible = false"
     />
   </view>
 </template>

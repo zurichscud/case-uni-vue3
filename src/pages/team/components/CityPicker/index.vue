@@ -1,54 +1,7 @@
-<template>
-  <view class="pupop">
-    <view class="popup-box" :animation="animationData">
-      <view class="pupop-btn">
-        <view @tap.stop="cancel">取消</view>
-        <view @tap.stop="confirm" style="color: #2979ff">确定</view>
-      </view>
-      <picker-view
-        :value="value"
-        :indicator-style="indicatorStyle"
-        @change="bindChange"
-        class="picker-view"
-      >
-        <picker-view-column>
-          <view class="item" v-for="(item, index) in provinceList" :key="index">
-            {{ item.name }}
-          </view>
-        </picker-view-column>
-        <picker-view-column>
-          <view class="item" v-for="(item, index) in cityList" :key="index">{{ item.name }}</view>
-        </picker-view-column>
-        <picker-view-column v-if="column == 3">
-          <view class="item" v-for="(item, index) in areaList" :key="index">{{ item.name }}</view>
-        </picker-view-column>
-      </picker-view>
-    </view>
-    <view
-      @tap="close"
-      @touchmove.stop.prevent
-      :class="visible ? 'pupop-model' : 'pupop-models'"
-    ></view>
-  </view>
-</template>
-
 <script>
 import { addressList } from './cityData.js'
+
 export default {
-  data() {
-    return {
-      value: [],
-      addressList,
-      provinceList: [],
-      cityList: [],
-      areaList: [],
-      indicatorStyle: `height: 50px;`,
-      provinceIndex: 0,
-      cityIndex: 0,
-      areaIndex: 0,
-      animationData: {},
-    }
-  },
   props: {
     column: {
       type: Number,
@@ -66,6 +19,20 @@ export default {
       default: () => true,
     },
   },
+  data() {
+    return {
+      value: [],
+      addressList,
+      provinceList: [],
+      cityList: [],
+      areaList: [],
+      indicatorStyle: `height: 50px;`,
+      provinceIndex: 0,
+      cityIndex: 0,
+      areaIndex: 0,
+      animationData: {},
+    }
+  },
   watch: {
     visible(val) {
       this.changeActive()
@@ -79,7 +46,7 @@ export default {
   },
   methods: {
     init() {
-      var provinceList = []
+      const provinceList = []
       addressList.filter((item) => {
         provinceList.push({
           code: item.code,
@@ -90,7 +57,8 @@ export default {
       if (!this.defaultValue) {
         this.cityList = addressList[0].children
         this.areaList = addressList[0].children[0].children
-      } else {
+      }
+      else {
         var city = {
           11: '北京',
           12: '天津',
@@ -156,11 +124,13 @@ export default {
               this.value = JSON.parse(
                 JSON.stringify([this.provinceIndex, this.cityIndex, this.areaIndex]),
               )
-            } else if (this.column == 2) {
+            }
+            else if (this.column == 2) {
               this.value = JSON.parse(JSON.stringify([this.provinceIndex, this.cityIndex]))
             }
           })
-        } else if (/^\d{6}$/.test(this.defaultValue)) {
+        }
+        else if (/^\d{6}$/.test(this.defaultValue)) {
           var province = this.defaultValue.substr(0, 2)
           var city = this.defaultValue.substr(0, 4)
           this.provinceIndex = 0
@@ -185,11 +155,13 @@ export default {
               this.value = JSON.parse(
                 JSON.stringify([this.provinceIndex, this.cityIndex, this.areaIndex]),
               )
-            } else if (this.column == 2) {
+            }
+            else if (this.column == 2) {
               this.value = JSON.parse(JSON.stringify([this.provinceIndex, this.cityIndex]))
             }
           })
-        } else {
+        }
+        else {
           uni.showToast({
             title: '地区编码格式不正确',
             icon: 'none',
@@ -200,32 +172,41 @@ export default {
       this.changeActive()
     },
     confirm() {
+      // 区
       if (this.column == 3) {
         this.$emit('confirm', {
           code: addressList[this.provinceIndex].children[this.cityIndex].children[this.areaIndex]
             .code,
           name:
-            addressList[this.provinceIndex].name +
-            addressList[this.provinceIndex].children[this.cityIndex].name +
-            addressList[this.provinceIndex].children[this.cityIndex].children[this.areaIndex].name,
+            addressList[this.provinceIndex].name
+            + addressList[this.provinceIndex].children[this.cityIndex].name
+            + addressList[this.provinceIndex].children[this.cityIndex].children[this.areaIndex].name,
           provinceName: addressList[this.provinceIndex].name,
           cityName: addressList[this.provinceIndex].children[this.cityIndex].name,
           areaName:
             addressList[this.provinceIndex].children[this.cityIndex].children[this.areaIndex].name,
         })
-      } else if (this.column == 2) {
+        // 市区
+      }
+      else if (this.column == 2) {
+        // 如果城市名称是"市辖区"，则返回直辖市的名字
+        const cityName = addressList[this.provinceIndex].children[this.cityIndex].name === '市辖区'
+          ? addressList[this.provinceIndex].name
+          : addressList[this.provinceIndex].children[this.cityIndex].name
+
         this.$emit('confirm', {
           code:
-            addressList[this.provinceIndex].children[this.cityIndex].children[
+            `${addressList[this.provinceIndex].children[this.cityIndex].children[
               this.areaIndex
-            ].code.substring(0, 4) + '00',
+            ].code.substring(0, 4)}00`,
           name:
-            addressList[this.provinceIndex].name +
-            addressList[this.provinceIndex].children[this.cityIndex].name,
+            addressList[this.provinceIndex].name
+            + cityName,
           provinceName: addressList[this.provinceIndex].name,
-          cityName: addressList[this.provinceIndex].children[this.cityIndex].name,
+          cityName,
         })
-      } else {
+      }
+      else {
         uni.showToast({
           title: '目前column只能传2和3',
           icon: 'none',
@@ -237,11 +218,11 @@ export default {
     },
     // 动画
     changeActive() {
-      var active = '-415px'
+      let active = '-415px'
       if (this.visible) {
         active = 0
       }
-      var animation = uni.createAnimation({
+      const animation = uni.createAnimation({
         duration: 400,
         timingFunction: 'linear',
       })
@@ -255,10 +236,12 @@ export default {
       if (e.detail.value[0] != this.provinceIndex) {
         // console.log('监听第一列')
         this.provinceChange(e.detail.value[0])
-      } else if (e.detail.value[1] != this.cityIndex) {
+      }
+      else if (e.detail.value[1] != this.cityIndex) {
         // console.log('监听第二列')
         this.cityChange(e.detail.value[1])
-      } else if (e.detail.value[2] != this.areaIndex) {
+      }
+      else if (e.detail.value[2] != this.areaIndex) {
         // console.log('监听第三列')
         this.areaChange(e.detail.value[2])
       }
@@ -294,6 +277,48 @@ export default {
   },
 }
 </script>
+
+<template>
+  <view class="pupop">
+    <view class="popup-box" :animation="animationData">
+      <view class="pupop-btn">
+        <view @tap.stop="cancel">
+          取消
+        </view>
+        <view @tap.stop="confirm" style="color: #2979ff">
+          确定
+        </view>
+      </view>
+      <picker-view
+        :value="value"
+        :indicator-style="indicatorStyle"
+        @change="bindChange"
+        class="picker-view"
+      >
+        <picker-view-column>
+          <view class="item" v-for="(item, index) in provinceList" :key="index">
+            {{ item.name }}
+          </view>
+        </picker-view-column>
+        <picker-view-column>
+          <view class="item" v-for="(item, index) in cityList" :key="index">
+            {{ item.name }}
+          </view>
+        </picker-view-column>
+        <picker-view-column v-if="column == 3">
+          <view class="item" v-for="(item, index) in areaList" :key="index">
+            {{ item.name }}
+          </view>
+        </picker-view-column>
+      </picker-view>
+    </view>
+    <view
+      @tap="close"
+      @touchmove.stop.prevent
+      :class="visible ? 'pupop-model' : 'pupop-models'"
+    ></view>
+  </view>
+</template>
 
 <style scoped lang="scss">
 .pupop {
