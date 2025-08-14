@@ -35,8 +35,6 @@ async function getTeamListData() {
   const { data } = await TeamAPI.getTeamList()
   const { myTeamList, myteamName } = data
   teamInfo.value.name = myteamName.nickName
-  teamInfo.value.branch = myteamName.branch
-  teamInfo.value.headquarters = myteamName.headquarters
   // 为什么这样返回，问后端啊，跟我说不支持分页
   return {
     rows: myTeamList,
@@ -119,15 +117,6 @@ onMounted(() => {
               </text>
               <text class="iconfont icon-zhongmingming ml-2 text-gray-500" @tap="handleEditName" />
             </view>
-            <text
-              v-if="teamInfo.headquarters"
-              class="text-gray-600 text-base font-normal text-center"
-            >
-              所属联社：{{ teamInfo.headquarters }}
-            </text>
-            <text v-if="teamInfo.branch" class="text-gray-600 text-base font-normal text-center">
-              所属分社：{{ teamInfo.branch }}
-            </text>
           </view>
         </view>
       </view>
