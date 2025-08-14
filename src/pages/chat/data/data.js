@@ -16,7 +16,7 @@ export default [
   },
   {
     msgType: 1,
-    content: '你可以直接联系理赔公社客服或直接添加微信与他们沟通案情',
+    content: '你可以直接联系理赔公社客服或添加下方微信沟通案情',
     sender: 'service',
   },
   {
