@@ -6,7 +6,7 @@ const robotAvatar = 'https://app.y9net.cn/images/imgs/icon_xiaoyi3.png'
 const nowTime = dayjs().format('HH:mm')
 
 // 预览图片
-function previewImage(url) {
+function handlePreview(url) {
   uni.previewImage({
     urls: [url],
     current: url,
@@ -16,7 +16,7 @@ function previewImage(url) {
 function handleSubmit() {
   wx.openCustomerServiceChat({
     extInfo: {
-      url: 'https://work.weixin.qq.com/kfid/kfc0661c6f158062ace'
+      url: 'https://work.weixin.qq.com/kfid/kfc0661c6f158062ace',
     },
     corpId: 'ww0defd58c63edff8e',
     success(res) {
@@ -33,13 +33,9 @@ function handleSubmit() {
   <view class="h-screen bg-gray-100 flex flex-col pb-4 box-border">
     <!-- 顶部标题栏 -->
 
-
     <!-- 聊天消息区域 -->
-    <scroll-view
-      scroll-y="true"
-      class="overflow-auto mx-2 h-full flex-1"
-    >
-      <wd-gap ></wd-gap>
+    <scroll-view scroll-y="true" class="overflow-auto mx-2 h-full flex-1">
+      <wd-gap></wd-gap>
       <view class="text-center text-xs text-gray-500 mb-4">{{ nowTime }}</view>
       <!-- robot message -->
       <view
@@ -60,12 +56,12 @@ function handleSubmit() {
               </text>
             </view>
             <!-- 图片消息 -->
-            <view v-else-if="msg.msgType === 2" >
+            <view v-else-if="msg.msgType === 2">
               <image
                 :src="msg.content"
-                class=" rounded-lg  max-w-[300rpx]"
+                class="rounded-lg w-[300rpx]"
                 mode="widthFix"
-                @click="previewImage(msg.content)"
+                @click="handlePreview(msg.content)"
               />
             </view>
           </view>
@@ -80,17 +76,7 @@ function handleSubmit() {
                 {{ msg.content }}
               </text>
             </view>
-            <!-- 图片消息 -->
-            <view v-else-if="msg.msgType === 2" class="max-w-[300px]">
-              <image
-                :src="msg.content"
-                class="w-full rounded-lg cursor-pointer"
-                mode="widthFix"
-                @click="previewImage(msg.content)"
-              />
-            </view>
           </view>
-          <image src="/static/user-avatar.png" class="w-10 h-10 rounded-full ml-2" />
         </view>
       </view>
     </scroll-view>
@@ -106,7 +92,6 @@ function handleSubmit() {
 </template>
 
 <style>
-/* 确保滚动视图正确工作 */
 scroll-view {
   display: flex;
   flex-direction: column;
