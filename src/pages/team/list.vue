@@ -51,7 +51,8 @@ function toInviteList(id: any) {
   if (id) {
     const limit = id === userStore.id ? 0 : 1
     router.push('/pages/invite/list', { id, limit })
-  } else {
+  }
+  else {
     uni.showToast({
       title: 'id不能为空',
       icon: 'none',
@@ -64,7 +65,8 @@ function toCaseList(id: any) {
   if (id) {
     const limit = id === userStore.id ? 0 : 1
     router.push('/pages/case/list', { id, limit })
-  } else {
+  }
+  else {
     uni.showToast({
       title: 'id不能为空',
       icon: 'none',
@@ -96,12 +98,12 @@ async function handleEditName() {
 }
 
 function handleRegionChange(e: any) {
+  cityPickerVisible.value = false
   console.log(e)
 }
 
 onMounted(() => {
   ypScrollViewRef.value.getData()
-  cityPickerVisible.value = true
 })
 </script>
 
@@ -131,8 +133,14 @@ onMounted(() => {
       </view>
     </view>
 
+    <wd-button type="primary" @click="cityPickerVisible = true">
+      选择地区
+    </wd-button>
+
     <!-- 分社列表标题 -->
-    <text class="text-gray-900 text-[40rpx] font-bold px-4 pb-3 pt-5 block">分社列表</text>
+    <text class="text-gray-900 text-[40rpx] font-bold px-4 pb-3 pt-5 block">
+      分社列表
+    </text>
 
     <!-- 分社列表 -->
     <YpScrollView :query="getTeamListData" v-model:page="pageParams" ref="ypScrollViewRef">
@@ -146,7 +154,9 @@ onMounted(() => {
             <template #default>
               <view class="flex items-center gap-2">
                 <view>{{ item.teamName || '未知团队名称' }}</view>
-                <wd-tag type="primary" plain v-if="item.type === TEAM_TYPE.DIRECT">直辖</wd-tag>
+                <wd-tag type="primary" plain v-if="item.type === TEAM_TYPE.DIRECT">
+                  直辖
+                </wd-tag>
                 <wd-tag type="success" plain v-else-if="item.type === TEAM_TYPE.NON_DIRECT">
                   非直辖
                 </wd-tag>
@@ -173,7 +183,13 @@ onMounted(() => {
       </template>
     </YpScrollView>
 
-    <cityPicker column="2" :visible="cityPickerVisible" @confirm="handleRegionChange"  />
+    <cityPicker
+      column="2"
+      :visible="cityPickerVisible"
+      @confirm="handleRegionChange"
+      @cancel="() => cityPickerVisible = false"
+      @close="() => cityPickerVisible = false"
+    />
   </view>
 </template>
 
