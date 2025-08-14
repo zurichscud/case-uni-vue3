@@ -99,6 +99,12 @@ onLoad((query) => {
                   label="提交时间"
                   :value="formatTime(item.registerTime, 'YYYY-MM-DD HH:mm:ss')"
                 />
+                <BaseItem
+                  v-if="item.signTime"
+                  icon="icon-shijian"
+                  label="签约时间"
+                  :value="formatTime(item.signTime, 'YYYY-MM-DD')"
+                />
               </template>
 
               <template #actions>

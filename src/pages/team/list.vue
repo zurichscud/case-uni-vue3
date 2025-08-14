@@ -6,7 +6,9 @@ import BaseItem from '@/components/BaseCard/BaseItem.vue'
 import * as TeamAPI from '@/apis/team'
 import router from '@/utils/router'
 import { useUserStore } from '@/stores'
+import cityPicker from '@/uni_modules/piaoyi-cityPicker/components/piaoyi-cityPicker/piaoyi-cityPicker'
 
+const cityPickerVisible = ref(false)
 const userStore = useUserStore()
 const TEAM_TYPE = {
   DIRECT: 0, // 直辖
@@ -29,12 +31,14 @@ const pageParams = ref({
   pageSize: 4,
 })
 const ypScrollViewRef = ref()
+const region = ref(['', '', ''])
 
 // 获取团队信息
 async function getTeamListData() {
   const { data } = await TeamAPI.getTeamList()
   const { myTeamList, myteamName } = data
-  teamInfo.value.name = myteamName.nickName
+  console.log('[ myTeamList ]-39', myTeamList)
+  teamInfo.value.name = myteamName.teamName
   // 为什么这样返回，问后端啊，跟我说不支持分页
   return {
     rows: myTeamList,
@@ -91,8 +95,13 @@ async function handleEditName() {
   ypScrollViewRef.value.getData()
 }
 
+function handleRegionChange(e: any) {
+  console.log(e)
+}
+
 onMounted(() => {
   ypScrollViewRef.value.getData()
+  cityPickerVisible.value = true
 })
 </script>
 
@@ -136,7 +145,7 @@ onMounted(() => {
 
             <template #default>
               <view class="flex items-center gap-2">
-                <view>{{ item.branch || '未知团队名称' }}</view>
+                <view>{{ item.teamName || '未知团队名称' }}</view>
                 <wd-tag type="primary" plain v-if="item.type === TEAM_TYPE.DIRECT">直辖</wd-tag>
                 <wd-tag type="success" plain v-else-if="item.type === TEAM_TYPE.NON_DIRECT">
                   非直辖
@@ -163,6 +172,8 @@ onMounted(() => {
         </view>
       </template>
     </YpScrollView>
+
+    <cityPicker column="2" :visible="cityPickerVisible" @confirm="handleRegionChange"  />
   </view>
 </template>
 
