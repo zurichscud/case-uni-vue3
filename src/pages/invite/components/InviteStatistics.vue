@@ -37,7 +37,7 @@ const statisticsData = computed<StatItem[]>(() => [
       >
         <!-- 数量 -->
         <view class="mb-1">
-          <text class="text-xl font-bold">
+          <text class="text-sm font-bold">
             {{ item.count }}
           </text>
         </view>

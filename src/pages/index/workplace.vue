@@ -17,9 +17,9 @@ function handleCase() {
 
 //我的团队
 function handleTeam() {
-  if (remark.value === REMARK.BaoMin) {
+  if (remark.value === REMARK.BaoMin && remark.value === REMARK.SheYuan) {
     return uni.showToast({
-      title: '请先成为社员',
+      title: '请先成为分社社长',
       icon: 'none',
     })
   }
