@@ -61,6 +61,10 @@
       "type": "page"
     },
     {
+      "path": "pages/index/components/SharePopup",
+      "type": "page"
+    },
+    {
       "path": "pages/index/components/SharePoster",
       "type": "page"
     },

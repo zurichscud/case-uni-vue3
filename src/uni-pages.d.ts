@@ -11,6 +11,7 @@ interface NavigateToOptions {
        "/pages/index/article/detail" |
        "/pages/index/article/more" |
        "/pages/index/components/MenuItem" |
+       "/pages/index/components/SharePopup" |
        "/pages/index/components/SharePoster" |
        "/pages/index/components/TypicalCase" |
        "/pages/AI/chat" |
