@@ -29,7 +29,6 @@ const pageParams = ref({
   pageSize: 4,
 })
 const ypScrollViewRef = ref()
-const region = ref(['', '', ''])
 
 // 获取团队信息
 async function getTeamListData() {
