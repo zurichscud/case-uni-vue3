@@ -30,6 +30,7 @@ interface NavigateToOptions {
        "/pages/chat/components/userTypes" |
        "/pages/team/list" |
        "/pages/team/qrcode" |
+       "/pages/team/rename" |
        "/pages/team/components/CityPicker/index" |
        "/pages/invite/inviteYou" |
        "/pages/invite/list" |

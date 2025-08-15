@@ -231,6 +231,16 @@
           }
         },
         {
+          "path": "rename",
+          "type": "page",
+          "name": "renameTeamName",
+          "layout": "default",
+          "auth": true,
+          "style": {
+            "navigationBarTitleText": "命名我的团队"
+          }
+        },
+        {
           "path": "components/CityPicker/index",
           "type": "page"
         }

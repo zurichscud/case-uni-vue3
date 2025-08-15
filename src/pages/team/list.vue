@@ -6,9 +6,7 @@ import BaseItem from '@/components/BaseCard/BaseItem.vue'
 import * as TeamAPI from '@/apis/team'
 import router from '@/utils/router'
 import { useUserStore } from '@/stores'
-import CityPicker from './components/CityPicker/index.vue'
 
-const cityPickerVisible = ref(false)
 const userStore = useUserStore()
 const TEAM_TYPE = {
   DIRECT: 0, // 直辖
@@ -97,11 +95,7 @@ async function handleEditName() {
   ypScrollViewRef.value.getData()
 }
 
-function handleRegionChange({ cityName }: { cityName: string }) {
-  cityPickerVisible.value = false
-  console.log(cityName.slice(0, -1))
 
-}
 
 onMounted(() => {
   ypScrollViewRef.value.getData()
@@ -127,16 +121,13 @@ onMounted(() => {
               <text class="text-gray-900 text-[40rpx] font-bold text-center">
                 {{ teamInfo.name }}
               </text>
-              <text class="iconfont icon-zhongmingming ml-2 text-gray-500" @tap="handleEditName" />
+              <text class="iconfont icon-zhongmingming ml-2 text-gray-500" @tap="router.push('/pages/team/rename')" />
             </view>
           </view>
         </view>
       </view>
     </view>
 
-    <wd-button type="primary" @click="cityPickerVisible = true">
-      选择地区
-    </wd-button>
 
     <!-- 分社列表标题 -->
     <text class="text-gray-900 text-[40rpx] font-bold px-4 pb-3 pt-5 block">
@@ -183,13 +174,7 @@ onMounted(() => {
         </view>
       </template>
     </YpScrollView>
-    <!-- 省市区选择，uniapp的picker组件，不支持三级联动 -->
-    <CityPicker
-      column="2"
-      :visible="cityPickerVisible"
-      @confirm="handleRegionChange"
-      @cancel="() => cityPickerVisible = false"
-    />
+
   </view>
 </template>
 
