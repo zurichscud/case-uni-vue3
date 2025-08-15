@@ -11,15 +11,18 @@ import router from '@/utils/router'
 import appConfig from '@/config/app'
 import TnSwiper from '@tuniao/tnui-vue3-uniapp/components/swiper/src/swiper.vue'
 import { REMARK } from '@/enums/remark'
+import { useQRcode } from '@/hooks/useQRcode'
 
+const { QRURL, getMyQRcodeData } = useQRcode()
 const currentSwiperIndex = ref(0)
 const swiperData = [img]
 const slogans = appConfig.slogans
 const sloganDuration = appConfig.sloganDuration
 const shareVisible = ref(false)
-const posterVisible = ref(false)
+const previewVisible = ref(false)
 const userStore = useUserStore()
 const articleList = ref([])
+const posterUrl = ref('')
 const query = {
   isAsc: 'desc',
   orderByColumn: 'updateTime',
@@ -31,14 +34,10 @@ const currentSubtitleIndex = ref(0)
 const isTextVisible = ref(true)
 const { getOpenid } = userStore
 let scrollTimer = null
-
-// 海报相关数据
-const qrCodeUrl = computed(() => {
-  return String(userStore.id)
-})
+const posterRef = ref(null)
 
 // 处理分享功能
-function handleShare() {
+async function handleShare() {
   if (!isLogin.value) {
     router.push('/pages/login/login')
     return
@@ -64,19 +63,25 @@ function handleShareToFriend() {
 }
 
 // 处理生成海报
-function handleGeneratePoster() {
+async function handleGeneratePoster() {
+  shareVisible.value = false
   if (!isLogin.value) {
     router.push('/pages/login/login')
     return
   }
+  uni.showLoading({
+    title: '生成海报中...',
+    mask: true,
+  })
+  await getMyQRcodeData()
+  console.log(QRURL.value)
 
-  shareVisible.value = false
-  posterVisible.value = true
-}
+  const res = await posterRef.value.build(QRURL.value)
+  posterUrl.value = res
+  console.log('[ posterUrl.value ]-80', posterUrl.value)
 
-// 关闭海报预览
-function handleClosePoster() {
-  posterVisible.value = false
+  uni.hideLoading()
+  previewVisible.value = true
 }
 
 // 启动滚动文字
@@ -118,6 +123,19 @@ onShareAppMessage(() => {
     }
   }
 })
+
+function handleSave() {
+  posterRef.value.save()
+  previewVisible.value = close
+}
+
+function handlePreviewPoster() {
+  uni.previewImage({
+    urls: [posterUrl.value],
+  })
+}
+
+function handlePreviewClose() {}
 
 onShow(() => {
   getArticleListData()
@@ -258,12 +276,30 @@ onUnmounted(() => {
       </view>
     </wd-popup>
 
+    <wd-popup
+      v-model="previewVisible"
+      position="center"
+      closable
+      custom-style="border-radius: 20rpx;background: transparent;"
+      @close="handlePreviewClose"
+    >
+      <view class="w-[700rpx] h-[80vh]">
+        <image
+          :src="posterUrl"
+          style="height: 1000rpx"
+          mode="aspectFit"
+          @click="handlePreviewPoster"
+        />
+        <view class="flex justify-center items-center mt-4">
+          <wd-button size="large" type="primary" icon="download" @click="handleSave">
+            保存
+          </wd-button>
+        </view>
+      </view>
+    </wd-popup>
+
     <!-- 海报组件 -->
-    <SharePoster
-      v-model:visible="posterVisible"
-      :qr-code-url="qrCodeUrl"
-      @close="handleClosePoster"
-    />
+    <SharePoster ref="posterRef" />
   </view>
 </template>
 

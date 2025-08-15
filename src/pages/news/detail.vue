@@ -59,7 +59,6 @@ function handleSave() {
       uni.showToast({
         title: '已保存到相册',
         icon: 'success',
-        duration: 2000,
       })
       handleClose()
     },
