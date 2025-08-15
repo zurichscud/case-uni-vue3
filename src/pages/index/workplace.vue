@@ -2,9 +2,7 @@
 import router from '@/utils/router'
 import { useUserStore } from '@/stores'
 import { REMARK } from '@/enums/remark'
-import { subscribeTemplate } from '@/config/wechat'
 import MenuItem from './components/MenuItem.vue'
-import * as LPGSAPI from '@/apis/lpgs'
 
 const userStore = useUserStore()
 const isLogin = computed(() => userStore.isLogin)
@@ -17,7 +15,7 @@ function handleCase() {
 
 //我的团队
 function handleTeam() {
-  if (remark.value === REMARK.BaoMin && remark.value === REMARK.SheYuan) {
+  if (remark.value === REMARK.BaoMin || remark.value === REMARK.SheYuan) {
     return uni.showToast({
       title: '请先成为分社社长',
       icon: 'none',
