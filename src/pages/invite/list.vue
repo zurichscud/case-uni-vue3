@@ -128,6 +128,8 @@ onLoad(() => {
                         {{ item.nickName }}
                       </text>
                       <yp-tag :status="4" :text="item.remarkName || '未知身份'" />
+                      <wd-tag type="primary" plain v-if="item.currentDepth === 1">直邀</wd-tag>
+                      <wd-tag type="success" plain v-else>非直邀</wd-tag>
                     </view>
                   </view>
                   <BaseItem icon="icon-dianhuahaoma" label="手机号码" :value="item.mobile" />
@@ -178,6 +180,8 @@ onLoad(() => {
                   <text class="text-[32rpx] text-[#333] font-bold">
                     {{ item.membersClubName || '暂无团队名称' }}
                   </text>
+                  <wd-tag type="primary" plain v-if="item.currentDepth === 1">直邀</wd-tag>
+                  <wd-tag type="success" plain v-else>非直邀</wd-tag>
                 </view>
                 <BaseItem icon="icon-chengyuan" label="成员数量" :value="item.count" />
               </BaseCard>

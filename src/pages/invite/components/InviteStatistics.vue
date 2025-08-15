@@ -18,9 +18,9 @@ const props = withDefaults(
 )
 
 const statisticsData = computed<StatItem[]>(() => [
-  { count: props.baoMin, label: '保民' },
-  { count: props.sheYuan, label: '社员' },
-  { count: props.fenShe, label: '分社社长' },
+  { count: props.baoMin, label: '直邀保民' },
+  { count: props.sheYuan, label: '直邀社员' },
+  { count: props.fenShe, label: '直邀分社社长' },
 ])
 </script>
 
