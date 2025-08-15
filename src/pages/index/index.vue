@@ -59,7 +59,6 @@ function handleClose() {
 // 处理分享给好友
 function handleShareToFriend() {
   shareVisible.value = false
-  // 微信小程序会自动触发onShareAppMessage
 }
 
 // 处理生成海报
@@ -69,18 +68,17 @@ async function handleGeneratePoster() {
     router.push('/pages/login/login')
     return
   }
-  uni.showLoading({
-    title: '生成海报中...',
-    mask: true,
-  })
-  await getMyQRcodeData()
-  console.log(QRURL.value)
+  if (posterUrl.value === '') {
+    uni.showLoading({
+      title: '生成海报中...',
+      mask: true,
+    })
+    await getMyQRcodeData()
 
-  const res = await posterRef.value.build(QRURL.value)
-  posterUrl.value = res
-  console.log('[ posterUrl.value ]-80', posterUrl.value)
-
-  uni.hideLoading()
+    const res = await posterRef.value.build(QRURL.value)
+    posterUrl.value = res
+    uni.hideLoading()
+  }
   previewVisible.value = true
 }
 
@@ -282,8 +280,9 @@ onUnmounted(() => {
       closable
       custom-style="border-radius: 20rpx;background: transparent;"
       @close="handlePreviewClose"
+      :z-index="600"
     >
-      <view class="w-[700rpx] h-[80vh]">
+      <view class="w-[700rpx] h-[70vh]">
         <image
           :src="posterUrl"
           style="height: 1000rpx"

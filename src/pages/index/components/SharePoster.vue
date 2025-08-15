@@ -1,28 +1,26 @@
 <script setup>
 import appConfig from '@/config/app'
 
-const poster = ref(null)
-const tempFilePath = ref(null)
-const posterUrl = appConfig.invitePoster
-const qrcodeUrl = ref('')
-
 defineProps({
   qrcode: {
     type: String,
     default: '',
   },
 })
+const poster = ref(null)
+const tempFilePath = ref(null)
+const posterUrl = appConfig.invitePoster
+const qrcodeUrl = ref('')
+
+
 function fail(e) {
-  console.log('fail',e)
-}
-function sleep(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms))
+  console.log('fail', e)
 }
 
 async function build(qrcode) {
-  qrcodeUrl.value=qrcode
-  console.log('[ qrcode ]-25', qrcode)
-    await sleep(5000) // 暂停 5 秒
+  qrcodeUrl.value = qrcode
+  await nextTick()
+  await new Promise(resolve => setTimeout(resolve, 3000))
   // 如果返回的是base64是无法使用 saveImageToPhotosAlbum，需要设置 pathType为url
   try {
     const res = await poster.value.canvasToTempFilePath({
@@ -41,6 +39,10 @@ async function build(qrcode) {
 }
 
 function save() {
+  uni.showLoading({
+    title: '保存中...',
+    mask: true,
+  })
   uni.saveImageToPhotosAlbum({
     filePath: tempFilePath.value,
     success() {
@@ -50,6 +52,7 @@ function save() {
       })
     },
   })
+  uni.hideLoading()
 }
 
 defineExpose({
@@ -72,11 +75,10 @@ defineExpose({
       <!-- 海报 -->
       <l-painter-image :src="posterUrl" css="width: 100%; object-fit: cover;" />
       <!-- 二维码 -->
-      <l-painter-view css="width: 100%;position: absolute;bottom:140rpx; display:flex;justify-content:center">
-        <l-painter-image
-          :src="qrcodeUrl"
-          css="width: 200rpx; height: 200rpx; "
-        />
+      <l-painter-view
+        css="width: 100%;position: absolute;bottom:140rpx; display:flex;justify-content:center"
+      >
+        <l-painter-image :src="qrcodeUrl" css="width: 200rpx; height: 200rpx; " />
       </l-painter-view>
     </l-painter-view>
   </l-painter>
