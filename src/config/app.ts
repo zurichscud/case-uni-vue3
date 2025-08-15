@@ -10,6 +10,6 @@ export default {
   lpgsPolicy: 'https://app.y9net.cn/data/01/35/wKgBNmOadJaADjD8AAPqITMmQZs194.pdf',
   fenshePolicy: 'https://app.y9net.cn/data/00/01/rBEACGicBfqAbmlQACz-pdhAX9Q707.jpg',
   lianshePolicy: 'https://app.y9net.cn/data/00/01/rBEACGicUiuAeRvPAB1LZy3FO7A276.jpg',
-  sheyuanPolicy: 'https://app.y9net.cn/data/00/01/rBEACGicBbiAAMxoADJ84COSFcA782.jpg',
+  sheyuanPolicy: 'https://app.y9net.cn/data/00/01/rBEACGifAcOAXZf2ADPl5BFYlQs689.jpg',
   invitePoster: 'https://app.y9net.cn/data/00/01/rBEACGielDyAKHE0AELR3KJW4Wk774.jpg',
 }
