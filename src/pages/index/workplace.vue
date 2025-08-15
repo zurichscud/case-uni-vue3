@@ -16,9 +16,10 @@ function handleCase() {
 //我的团队
 function handleTeam() {
   if (remark.value === REMARK.BaoMin || remark.value === REMARK.SheYuan) {
-    return uni.showToast({
-      title: '请先成为分社社长',
-      icon: 'none',
+    return uni.showModal({
+      title: '提示',
+      content: '升级成为分社社长即可查看',
+      showCancel: false,
     })
   }
   router.push('/pages/team/list')
@@ -27,9 +28,10 @@ function handleTeam() {
 //邀请记录
 function handleInvite() {
   if (remark.value === REMARK.BaoMin) {
-    return uni.showToast({
-      title: '请先成为社员',
-      icon: 'none',
+    return uni.showModal({
+      title: '提示',
+      content: '升级成为社员即可查看',
+      showCancel: false,
     })
   }
   router.push('/pages/invite/list')
@@ -38,9 +40,10 @@ function handleInvite() {
 // 邀请二维码
 function handleQRcode() {
   if (remark.value === REMARK.BaoMin) {
-    return uni.showToast({
-      title: '请先成为社员',
-      icon: 'none',
+    return uni.showModal({
+      title: '提示',
+      content: '升级成为社员即可查看',
+      showCancel: false,
     })
   }
   router.push('/pages/team/qrcode')
